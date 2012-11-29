@@ -1,0 +1,83 @@
+body{
+	background-image:url('background.jpg');
+}
+
+input[type = text]{
+	width: 90%;
+}
+
+input{
+	border: 1px solid #000;
+	color: #000;
+	background: #FFF;
+	padding: 5px 10px;
+}
+
+div.login{
+	margin-left: auto;
+	margin-right: auto;
+	width: 60%;
+	height: 60%;
+	border: 1px solid black;
+	padding: 5px;
+	display: block;
+	background: white;
+	text-align: center;
+}
+
+div.leftDiv{
+	float: left;
+	display: none;
+}
+
+div.leftDivContent{
+	margin-left: auto;
+	margin-right: auto;
+	width: 200px;
+	border: 1px solid black;
+	padding: 5px;
+	background: white;
+	display:none;
+	text-align: center;
+}
+
+div.console{
+	margin-left: auto;
+	margin-right: auto;
+	width: 60%;
+	height: 60%;
+	border: 1px solid black;
+	padding: 5px;
+	display: none;
+	background: white;
+}
+
+div.output{
+	margin-left: auto;
+	margin-right: auto;
+	width: 90%;
+	height: 75%;
+	border: 1px solid black;
+	padding: 2px;
+	padding-bottom: 0px;
+	overflow: auto;
+	margin-bottom: 5px;
+	background: white;
+}
+
+div.input{
+	margin-left: auto;
+	margin-right: auto;
+	width: 90%;
+	padding: 2px;
+	border: 1px solid black;
+	overflow: auto;
+	background: white;
+}
+
+div.log{
+	background: #33CCFF;
+	margin-bottom: 2px;
+	padding-left: 2px;
+	padding-right: 2px;
+}
