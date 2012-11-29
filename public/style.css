@@ -1,5 +1,9 @@
 body{
 	background-image:url('background.jpg');
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
 }
 
 input[type = text]{
