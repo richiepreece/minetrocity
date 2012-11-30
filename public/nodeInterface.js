@@ -69,8 +69,8 @@ $(function(){
 	});
 	
 	$("#command").keyup(function(event){
-    if(event.keyCode == 13){
-        $("#submitCommand").click();
-    }
-});
+		if(event.keyCode == 13){			//If enter, then execute click on submit button
+			$("#submitCommand").click();
+		}
+	});
 });
