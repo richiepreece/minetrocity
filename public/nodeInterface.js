@@ -59,9 +59,18 @@ $(function(){
 	});
 	
 	$("#submitCommand").click(function(){
-		var cmd = $('#command')[0].value;
-		
-		console.log('Sending command ' + cmd);
-		$.post('/cmd', cmd);
+		if($('#command')[0].value.length > 0){
+			var cmd = $('#command')[0].value;
+			$('#command')[0].value = "";
+			
+			console.log('Sending command ' + cmd);
+			$.post('/cmd', cmd);
+		}
 	});
+	
+	$("#command").keyup(function(event){
+    if(event.keyCode == 13){
+        $("#submitCommand").click();
+    }
+});
 });
