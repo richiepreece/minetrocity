@@ -2,24 +2,63 @@ $(function(){
 	var socket = io.connect();
 	var length = 200;
 	var loggedIn = false;
+	var settings = null;
 	console.log('connecting');
+	
+	function showLogin(){
+		$("#login").show(length);
+		$("#settingsSection").hide();
+		$(".console").hide();
+		
+		
+		$(".leftDiv").hide();
+	}
+	
+	function showConsole(){
+		$("#login").hide();
+		$("#settingsSection").hide();
+		$(".console").show(length);
+		
+		
+		$(".leftDiv").show(length);
+		$("#logout").show(length);
+		$("#console").show(length);
+		$("#settings").show(length);
+		
+		$("#command")[0].focus();
+	}
+	
+	function showSettings(){
+		$("#login").hide();
+		$("#settingsSection").show(length);
+		$(".console").hide();
+		
+		
+		$(".leftDiv").show(length);
+		$("#logout").show(length);
+		$("#console").show(length);
+		$("#settings").show(length);
+	}
 	
 	$("#login").click(function(){
 		loggedIn = true;
-		$("#login").hide();
-		//$("#startStop").show(length);
-		$(".console").show(length);
-		$(".leftDiv").show(length);
-		$("#logout").show(length);
+		$.get('/status');
+		showConsole();
 	});
 	
 	$("#logout").click(function(){
 		loggedIn = false;
-		$("#login").show(length);
-		//$("#startStop").show(length);
-		$(".console").hide();
-		$(".leftDiv").hide();
-		$("#logout").hide();
+		showLogin();
+	});
+	
+	$("#settings").click(function(){
+		showSettings();
+		console.log('Requesting settings');
+		$.get('/settings');
+	});
+	
+	$("#console").click(function(){
+		showConsole();
 	});
 	
 	socket.on('msg', function(data){
@@ -46,6 +85,11 @@ $(function(){
 		}
 	});
 	
+	socket.on('settings', function(data){
+		settings = data;
+		console.log(settings);
+	});
+	
 	$("#startServer").click(function(){
 		if(this.value === "Start"){
 			console.log('Starting');
@@ -56,6 +100,11 @@ $(function(){
 			$.get('/stop');
 			this.value = "Start";
 		}
+	});
+	
+	$("#restartButton").click(function(){
+		$.get('/restart');
+		$("#restart").hide();
 	});
 	
 	$("#submitCommand").click(function(){

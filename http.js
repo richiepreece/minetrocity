@@ -73,42 +73,107 @@ var child = null;
 var output = null;
 var input = null;
 
+function startServer(){
+	if(child === null){
+		console.log('Starting server');
+		var currDir = process.cwd();
+		console.log('We are in ' + currDir);
+		process.chdir('server');
+		child = require('child_process').exec('java -jar minecraft_server.jar');
+		process.chdir(currDir);
+		output = child.stderr;
+		input = child.stdin;
+		
+		output.on('data', function(data){
+			io.sockets.emit('msg', data);
+		});
+		
+		child.on('close', function(){
+			console.log('Program closed');
+
+			child = null;
+			output = null;
+			input = null;
+			
+			io.sockets.emit('status', 'stopped');
+		});
+	}
+}
+
+function stopServer(){
+	if(child !== null){
+		console.log("Got stop command");
+		input.write("/stop\n");
+	} else {
+		console.log('Child appears to be NULL');
+		console.log(child);
+	}
+}
+
 //When a user requests the server to start, execute this
 app.get('/start', function(request, response, next){
-	console.log('Starting server');
-	var currDir = process.cwd();
-	console.log('We are in ' + currDir);
-	process.chdir('server');
-	child = require('child_process').exec('java -jar minecraft_server.jar');
-	process.chdir(currDir);
-	output = child.stderr;
-	input = child.stdin;
-	
-	output.on('data', function(data){
-		io.sockets.emit('msg', data);
-	});
-	
-	child.on('close', function(){
-		console.log('Program closed');
-
-		child = null;
-		output = null;
-		input = null;
-		
-		io.sockets.emit('status', 'stopped');
-	});
-	
 	response.send('');
+	startServer();	
 });
 
-app.get('/stop', function(requesst, response, next){
-	console.log("Got stop command");
-	input.write("/stop\n");
-	
-	child = null;
-	output = null;
-	input = null;
+app.get('/stop', function(request, response, next){
 	response.send('');
+	console.log('Stopping server');
+	stopServer();
+});
+
+app.get('/status', function(request, response, next){
+	response.send('');
+	
+	if(child !== null){
+		io.sockets.emit('status', 'running');
+	} else {
+		io.sockets.emit('status', 'stopped');
+	}
+});
+
+app.get('/restart', function(request, response, next){
+	response.send('');
+	
+	console.log('RESTART STOP');
+	stopServer();
+	timers.setTimeout(function(){
+		console.log('RESTART START');
+		startServer();
+		io.sockets.emit('status', 'running');
+	}, 2000);
+});
+
+app.get('/settings', function(request, response, next){
+	response.send('');
+	
+	//Read in settings file
+	fs.readFile('server/server.properties', 'utf-8', function(err, data){
+		if(err){
+			console.log('server.properties doesn\'t exist');
+			io.sockets.emit('settings', null);
+			return;
+		}
+		console.log('server.properties exists, reading in...');		
+		var settings = data.split('\n');
+	
+		for(var i = 0; i < settings.length; i++){
+			console.log(settings[i]);
+			
+			if(settings[i] !== '' && settings[i].indexOf('#') == -1){
+				settings[i] = settings[i].split('=');
+				for(var j = 0; j < settings[i].length; j++){
+					settings[i][j] = settings[i][j].replace('\r', '');
+				}
+			} else {
+				console.log('Removing ' + settings[i]);
+				settings.splice(i--, 1);
+			}
+		}
+		
+		console.log(settings);
+		io.sockets.emit('settings', settings);
+	});
 });
 
 app.post('/cmd', function(request, response, next){
@@ -131,11 +196,3 @@ app.post('/cmd', function(request, response, next){
 	console.log('Responding');
 	response.send('');
 });
-
-timers.setInterval(function(){
-	if(child !== null){
-		io.sockets.emit('status', 'running');
-	} else {
-		io.sockets.emit('status', 'stopped');
-	}
-}, 10000);
