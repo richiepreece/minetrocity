@@ -5,6 +5,7 @@ var io = require('socket.io');
 var fs = require('fs');
 var url = require('url');
 var timers = require('timers');
+var os = require('os');
 
 var app = express();
 var server = http.createServer(app);
@@ -196,3 +197,30 @@ app.post('/cmd', function(request, response, next){
 	console.log('Responding');
 	response.send('');
 });
+
+timers.setInterval(function(){	
+	var toSend = new Array();
+	
+	toSend['totalMem'] = os.totalmem();
+	toSend['freeMem'] = os.freemem();
+	toSend['cpu'] = new Array();
+	
+	var cpus = os.cpus();
+	
+	for(var i = 0; i < cpus.length; i++){
+		var cpu = cpus[i];
+		var total = 0;
+		
+		for(type in cpu.times){
+			//console.log("CPU" + (i + 1) + " " + type + " " + cpu.times[type]);
+			total += cpu.times[type];
+		}
+		
+		var times = cpu.times;
+		var idle = times.idle;
+		console.log("CPU " + (i + 1) + " is " + Math.round(100 * (idle / total)) + "% idle");
+		toSend['cpu']['cpu' + (i + 1)] = 100 - Math.round(100 * (idle / total));
+	}
+	
+	io.sockets.emit('cpustats', toSend);
+}, 1000);
