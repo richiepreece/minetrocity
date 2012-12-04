@@ -31,13 +31,16 @@ $(function(){
 	function showSettings(){
 		$("#login").hide();
 		$("#settingsSection").show(length);
-		$(".console").hide();
-		
+		$(".console").hide();		
 		
 		$(".leftDiv").show(length);
 		$("#logout").show(length);
 		$("#console").show(length);
 		$("#settings").show(length);
+	}
+	
+	function showRestart(){
+		$("#restart").show(length);
 	}
 	
 	$("#login").click(function(){
