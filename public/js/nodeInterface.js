@@ -129,6 +129,30 @@ $(function(){
 	socket.on('settings', function(data){
 		settings = data;
 		console.log(settings);
+		
+		for(temp in data){
+			var curr = data[temp];
+			
+			var inCurr = new Array();
+			
+			for(attrib in curr){
+				inCurr.push(attrib);
+			}
+			
+			console.log("Setting " + curr[inCurr[0]] + curr[inCurr[1]] + " to selected");
+			var element = document.getElementById(curr[inCurr[0]] + curr[inCurr[1]]);
+			
+			if(element == null){
+				console.log("Setting value of " + curr[inCurr[0]] + " to " + curr[inCurr[1]]);
+				element = document.getElementById(curr[inCurr[0]]);
+				if(element != null){
+					element.value = curr[inCurr[1]];
+				}
+			} else {
+				element.selected = true;
+			}
+			console.log(element);
+		}
 	});
 	
 	socket.on('upgrade', function(data){
