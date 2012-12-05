@@ -2,6 +2,7 @@ $(function(){
 	var socket = io.connect();
 	var length = 200;
 	var loggedIn = false;
+	var upgrading = false;
 	var settings = null;
 	console.log('connecting');
 	
@@ -89,8 +90,12 @@ $(function(){
 	});
 	
 	$("#upgradeButton").click(function(){
+		console.log("upgrading...");
+		$("#startStop").hide();
 		$("#upgrade").hide();
+		$("#upgrading").show(length);
 		$.get('/upgrade');
+		upgrading = true;
 	});
 	
 	socket.on('msg', function(data){
@@ -108,11 +113,15 @@ $(function(){
 			if(data === 'running'){
 				console.log('Setting value to Stop');
 				$("#startServer")[0].value = "Stop";
-				$("#startStop").show(length);
+				if(!upgrading){
+					$("#startStop").show(length);
+				}
 			} else if(data === 'stopped'){
 				console.log('Setting value to Start');
 				$("#startServer")[0].value = "Start";
-				$("#startStop").show(length);
+				if(!upgrading){
+					$("#startStop").show(length);
+				}
 			}
 		}
 	});
@@ -123,8 +132,18 @@ $(function(){
 	});
 	
 	socket.on('upgrade', function(data){
+		console.log('Time to upgrade');
 		if(loggedIn && data){
 			$("#upgrade").show(length);
+		}
+	});
+	
+	socket.on('upgraded', function(data){
+		console.log('Upgraded');
+		if(loggedIn){
+			upgrading = false;
+			$("#startStop").show(length);
+			$("#upgrading").hide();
 		}
 	});
 	

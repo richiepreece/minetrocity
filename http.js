@@ -20,20 +20,18 @@ app.configure(function(){
 });
 
 var needToUpgrade = false;
+var upgrading = false;
+var restarting = false;
 
-/*
-var handler = function(request, response, next){
-	console.log('sending message');
-	io.sockets.emit('msg', 'hello');
-	response.send('');		
-}
-
-app.get('/send', handler);
-
-io.sockets.on('connection', function(socket){
-	console.log('connection received');
-});
-*/
+//Where the minecraft_server.jar file is found on the web
+var file_url = 'https://s3.amazonaws.com/MinecraftDownload/launcher/minecraft_server.jar';
+	
+//Options
+var options = {
+	host: url.parse(file_url).host,
+	port: 80,
+	path: url.parse(file_url).pathname
+};
 
 /*
  * This section will ensure that the minecraft_server.jar file exists in the server/ folder
@@ -42,40 +40,58 @@ io.sockets.on('connection', function(socket){
 //Make sure the folder exists
 fs.mkdir('server', function(err, stdout, stderr) {
     if (err){
+		//If the folder exists, ensure the file exists
 		fs.readdir('server', function(err, files){
 			if(!err && files.indexOf('minecraft_server.jar') < 0){
+				//If the file doesn't exist, download it
 				download_file_httpget();
 			}
 		});
 	} else {
+		//If the folder doesn't exist, download the file to
+		//the newly created folder
 		download_file_httpget();	
 	}
 });
 
+//Download the file to the server folder
 var download_file_httpget = function() {
-	var file_url = 'https://s3.amazonaws.com/MinecraftDownload/launcher/minecraft_server.jar';
-	
-	var options = {
-		host: url.parse(file_url).host,
-		port: 80,
-		path: url.parse(file_url).pathname
-	};
-
+	//get file name
 	var file_name = url.parse(file_url).pathname.split('/').pop();
+	//Get dir so we can return
 	var currDir = process.cwd();
 	console.log('We are in ' + currDir);
+	//Change dir and download
 	process.chdir('server');
 	var file = fs.createWriteStream(process.cwd() + '/' + file_name);
+	//return to directory
 	process.chdir(currDir);
 
+	
 	http.get(options, function(res) {
 		res.on('data', function(data) {
 				file.write(data);
 		}).on('end', function() {
 				file.end();
+				downloadVersion('version');
 		});
 	});
 };
+
+// END SERVER INSTALL
+
+
+/*
+ * This section will upgrade the minecraft_server.jar file
+ */
+
+app.get('/upgrade', function(request, response, next){
+	response.send('');
+	upgrading = true;
+	stopServer();
+});
+
+//END UPGRADE
 
 var child = null;
 var output = null;
@@ -104,6 +120,17 @@ function startServer(){
 			input = null;
 			
 			io.sockets.emit('status', 'stopped');
+			
+			if(upgrading){
+				download_file_httpget();
+			}
+			
+			if(restarting){
+				console.log('RESTART START');
+				startServer();
+				io.sockets.emit('status', 'running');
+				restarting = false;
+			}
 		});
 	}
 }
@@ -115,6 +142,15 @@ function stopServer(){
 	} else {
 		console.log('Child appears to be NULL');
 		console.log(child);
+		if(upgrading){
+			download_file_httpget();
+		}
+		if(restarting){
+			console.log('RESTART START');
+			startServer();
+			io.sockets.emit('status', 'running');
+			restarting = false;
+		}
 	}
 }
 
@@ -142,14 +178,10 @@ app.get('/status', function(request, response, next){
 
 app.get('/restart', function(request, response, next){
 	response.send('');
+	restarting = true;
 	
 	console.log('RESTART STOP');
 	stopServer();
-	timers.setTimeout(function(){
-		console.log('RESTART START');
-		startServer();
-		io.sockets.emit('status', 'running');
-	}, 2000);
 });
 
 app.get('/settings', function(request, response, next){
@@ -182,12 +214,6 @@ app.get('/settings', function(request, response, next){
 		console.log(settings);
 		io.sockets.emit('settings', settings);
 	});
-});
-
-app.get('/upgrade', function(request, response, next){
-	response.send('');
-	
-	download_file_httpget();
 });
 
 app.post('/cmd', function(request, response, next){
@@ -239,14 +265,20 @@ timers.setInterval(function(){
 	io.sockets.emit('cpustats', toSend);
 }, 1000);
 
-timers.setInterval(function() {
+function downloadVersion(file){
+	console.log('Getting server version for file ' + file);
+	
+	if(!file){
+		file = 'server';
+	}
+	
 	var options = {
 		host: url.parse('http://richiepreece.com/version').host,
 		port: 80,
 		path: url.parse('http://richiepreece.com/version').pathname
 	};
 
-	var file_name = 'server';
+	var file_name = file;
 	var currDir = process.cwd();
 	console.log('We are in ' + currDir);
 	process.chdir('version_info');
@@ -259,10 +291,18 @@ timers.setInterval(function() {
 				file.write(data);
 		}).on('end', function() {
 				file.end();
-				checkUpdateStatus();
+				
+				if(upgrading){
+					io.sockets.emit('upgraded');
+					upgrading = false;
+				} else {
+					checkUpdateStatus();
+				}
 		});
 	});
-}, 5000);// * 60 * 60);
+}
+
+timers.setInterval(downloadVersion, 1000 * 60);// * 60 * 60);
 
 function checkUpdateStatus(){
 	console.log('Checking for update');
