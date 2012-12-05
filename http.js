@@ -6,6 +6,7 @@ var fs = require('fs');
 var url = require('url');
 var timers = require('timers');
 var os = require('os');
+// END INCLUDES
 
 var app = express();
 var server = http.createServer(app);
@@ -67,12 +68,13 @@ var download_file_httpget = function() {
 	//return to directory
 	process.chdir(currDir);
 
-	
+	//Get file
 	http.get(options, function(res) {
 		res.on('data', function(data) {
 				file.write(data);
 		}).on('end', function() {
 				file.end();
+				//Get version on file
 				downloadVersion('version');
 		});
 	});
@@ -87,44 +89,55 @@ var download_file_httpget = function() {
 
 app.get('/upgrade', function(request, response, next){
 	response.send('');
+	//Notify system of upgrade
 	upgrading = true;
+	//Stop server (will upgrade once stopped)
 	stopServer();
 });
 
 //END UPGRADE
 
+//Minecraft Server Interface
 var child = null;
 var output = null;
 var input = null;
 
+//This will start the server
 function startServer(){
+	//If server is not already running, then proceed
 	if(child === null){
 		console.log('Starting server');
 		var currDir = process.cwd();
 		console.log('We are in ' + currDir);
 		process.chdir('server');
+		//Change directory to 'server' to keep server files in their correct place
 		child = require('child_process').exec('java -jar minecraft_server.jar');
 		process.chdir(currDir);
 		output = child.stderr;
 		input = child.stdin;
 		
+		//When server returns information, send that to client
 		output.on('data', function(data){
 			io.sockets.emit('msg', data);
 		});
 		
+		//When server closes...
 		child.on('close', function(){
 			console.log('Program closed');
-
+			//Set variables to null
 			child = null;
 			output = null;
 			input = null;
 			
+			//alert client
 			io.sockets.emit('status', 'stopped');
 			
+			//If upgrading, proceed with upgrade
 			if(upgrading){
 				download_file_httpget();
 			}
 			
+			//If restarting, proceed with restart
 			if(restarting){
 				console.log('RESTART START');
 				startServer();
@@ -135,11 +148,17 @@ function startServer(){
 	}
 }
 
+//END SERVER INTERFACE
+
+//Stop Server
 function stopServer(){
 	if(child !== null){
+		//If server is running, send it the stop command
 		console.log("Got stop command");
 		input.write("/stop\n");
 	} else {
+		//If server is not running, then do nothing
+		//unless upgrading or restarting
 		console.log('Child appears to be NULL');
 		console.log(child);
 		if(upgrading){
@@ -154,35 +173,52 @@ function stopServer(){
 	}
 }
 
-//When a user requests the server to start, execute this
-app.get('/start', function(request, response, next){
-	response.send('');
-	startServer();	
-});
-
+//When receiving stop command
 app.get('/stop', function(request, response, next){
 	response.send('');
 	console.log('Stopping server');
+	//Run stop server function
 	stopServer();
 });
 
+//END STOP SERVER
+
+//START SERVER
+app.get('/start', function(request, response, next){
+	response.send('');
+	//Run start command
+	startServer();	
+});
+
+//END START SERVER
+
+//RESTART
+app.get('/restart', function(request, response, next){
+	response.send('');
+	//Notify system of restart
+	restarting = true;
+	
+	console.log('RESTART STOP');
+	//Run stop command (will restart when finished)
+	stopServer();
+});
+
+//END RESTART
+
+//Status request
 app.get('/status', function(request, response, next){
 	response.send('');
 	
 	if(child !== null){
+		//If running, report
 		io.sockets.emit('status', 'running');
 	} else {
+		//If stopped, report
 		io.sockets.emit('status', 'stopped');
 	}
 });
 
-app.get('/restart', function(request, response, next){
-	response.send('');
-	restarting = true;
-	
-	console.log('RESTART STOP');
-	stopServer();
-});
+//END STATUS
 
 app.get('/settings', function(request, response, next){
 	response.send('');
