@@ -19,6 +19,8 @@ app.configure(function(){
 	app.use(express.static(__dirname + "/public"));
 });
 
+var needToUpgrade = false;
+
 /*
 var handler = function(request, response, next){
 	console.log('sending message');
@@ -36,18 +38,23 @@ io.sockets.on('connection', function(socket){
 /*
  * This section will ensure that the minecraft_server.jar file exists in the server/ folder
  */
-var file_url = 'https://s3.amazonaws.com/MinecraftDownload/launcher/minecraft_server.jar';
 
 //Make sure the folder exists
 fs.mkdir('server', function(err, stdout, stderr) {
     if (err){
-		//If it exists, we'll assume that the server exists... for now
+		fs.readdir('server', function(err, files){
+			if(!err && files.indexOf('minecraft_server.jar') < 0){
+				download_file_httpget();
+			}
+		});
 	} else {
-		download_file_httpget(file_url);	
+		download_file_httpget();	
 	}
 });
 
-var download_file_httpget = function(file_url) {
+var download_file_httpget = function() {
+	var file_url = 'https://s3.amazonaws.com/MinecraftDownload/launcher/minecraft_server.jar';
+	
 	var options = {
 		host: url.parse(file_url).host,
 		port: 80,
@@ -177,6 +184,12 @@ app.get('/settings', function(request, response, next){
 	});
 });
 
+app.get('/upgrade', function(request, response, next){
+	response.send('');
+	
+	download_file_httpget();
+});
+
 app.post('/cmd', function(request, response, next){
 	console.log('Getting a post command');
 	if(input !== null){
@@ -225,3 +238,89 @@ timers.setInterval(function(){
 	//console.log(toSend);
 	io.sockets.emit('cpustats', toSend);
 }, 1000);
+
+timers.setInterval(function() {
+	var options = {
+		host: url.parse('http://richiepreece.com/version').host,
+		port: 80,
+		path: url.parse('http://richiepreece.com/version').pathname
+	};
+
+	var file_name = 'server';
+	var currDir = process.cwd();
+	console.log('We are in ' + currDir);
+	process.chdir('version_info');
+	var file = fs.createWriteStream(process.cwd() + '/' + file_name);
+	process.chdir(currDir);
+	canReadVersion = false;
+
+	http.get(options, function(res) {
+		res.on('data', function(data) {
+				file.write(data);
+		}).on('end', function() {
+				file.end();
+				checkUpdateStatus();
+		});
+	});
+}, 5000);// * 60 * 60);
+
+function checkUpdateStatus(){
+	console.log('Checking for update');
+	
+	var version;
+	var server_version;
+	
+	fs.readFile('version_info/version', 'utf-8', function(err, data){
+		if(err){
+			return;
+		}	
+		version = data.split('\n');
+	
+		for(var i = 0; i < version.length; i++){			
+			if(version[i] !== ''){
+				version[i] = version[i].split('=');
+				for(var j = 0; j < version[i].length; j++){
+					version[i][j] = version[i][j].replace('\r', '');
+					version[i][j] = version[i][j].split('.');
+				}
+			} else {
+				version.splice(i--, 1);
+			}
+		}
+		
+		fs.readFile('version_info/server', 'utf-8', function(err, data){
+			if(err){
+				return;
+			}	
+			server_version = data.split('\n');
+		
+			for(var i = 0; i < server_version.length; i++){			
+				if(server_version[i] !== ''){
+					server_version[i] = server_version[i].split('=');
+					for(var j = 0; j < server_version[i].length; j++){
+						server_version[i][j] = server_version[i][j].replace('\r', '');
+						server_version[i][j] = server_version[i][j].split('.');
+					}
+				} else {
+					server_version.splice(i--, 1);
+				}
+			}
+			
+			for(var i = 0; i < version.length; i++){
+				if(version[i][0] == 'mc'){
+					for(var j = 0; j < version[i][1].length; j++){
+						if(version[i][1][j] < server_version[i][1][j]){
+							console.log('Time to upgrade');
+							io.sockets.emit('upgrade', true);
+							needToUpgrade = true;
+							return;
+						}
+					}
+				}
+			}
+			
+			console.log('No upgrade needed');
+			needToUpgrade = false;
+		});
+	});	
+}

@@ -88,6 +88,11 @@ $(function(){
 		showGraph();
 	});
 	
+	$("#upgradeButton").click(function(){
+		$("#upgrade").hide();
+		$.get('/upgrade');
+	});
+	
 	socket.on('msg', function(data){
 		console.log('message received');
 		data = data.replace('<', '&lt;');
@@ -115,6 +120,12 @@ $(function(){
 	socket.on('settings', function(data){
 		settings = data;
 		console.log(settings);
+	});
+	
+	socket.on('upgrade', function(data){
+		if(loggedIn && data){
+			$("#upgrade").show(length);
+		}
 	});
 	
 	socket.on('cpustats', function(data){
@@ -161,13 +172,11 @@ $(function(){
 	});
 	
 	var cpuArray = null;
-	var colors = null;
 	
 	function drawCpu(cpus)
 	{
 		if(cpuArray == null){
 			cpuArray = new Array();
-			colors = new Array();
 			
 			var i = 0;
 			for(curr in cpus){
@@ -183,7 +192,7 @@ $(function(){
 		line.Set('chart.linewidth', 1);
 		line.Set('chart.filled', false);
 		line.Set('chart.ymax', 100);
-		line.Set('chart.numxticks', 6);
+		line.Set('chart.numxticks', 10);
 		line.Set('chart.ylabels.count', 3);
 		line.Set('chart.title', 'CPU Usage (%)');
 		line.Set('chart.labels', ['Now','60s']);
@@ -201,8 +210,8 @@ $(function(){
 		RGraph.ObjectRegistry.Clear();
 		
 		var line = new RGraph.Line('mem', mem);
-		line.Set('chart.colors', ['green']);
-		line.Set('chart.linewidth', 1);
+		line.Set('chart.colors', ['red']);
+		line.Set('chart.linewidth', 2);
 		line.Set('chart.filled', false);
 		line.Set('chart.ymax', 100);
 		line.Set('chart.numxticks', 6);
@@ -232,8 +241,8 @@ $(function(){
 		
 		
 		var line = new RGraph.Line('avgCpu', avgCpu);
-		line.Set('chart.colors', ['green']);
-		line.Set('chart.linewidth', 1);
+		line.Set('chart.colors', ['red']);
+		line.Set('chart.linewidth', 2);
 		line.Set('chart.filled', false);
 		line.Set('chart.ymax', 100);
 		line.Set('chart.numxticks', 6);
