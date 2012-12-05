@@ -199,11 +199,11 @@ app.post('/cmd', function(request, response, next){
 });
 
 timers.setInterval(function(){	
-	var toSend = new Array();
+	var toSend = new Object();
 	
 	toSend['totalMem'] = os.totalmem();
 	toSend['freeMem'] = os.freemem();
-	toSend['cpu'] = new Array();
+	toSend['cpu'] = new Object();
 	
 	var cpus = os.cpus();
 	
@@ -218,9 +218,10 @@ timers.setInterval(function(){
 		
 		var times = cpu.times;
 		var idle = times.idle;
-		console.log("CPU " + (i + 1) + " is " + Math.round(100 * (idle / total)) + "% idle");
+		//console.log("CPU " + (i + 1) + " is " + (100 - Math.round(100 * (idle / total))) + "% used");
 		toSend['cpu']['cpu' + (i + 1)] = 100 - Math.round(100 * (idle / total));
 	}
 	
+	//console.log(toSend);
 	io.sockets.emit('cpustats', toSend);
 }, 1000);

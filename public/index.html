@@ -4,16 +4,20 @@
 	</head>
 	<body>
 		<div class="leftDiv">
+			<div class="leftDivContent" id="logout">
+				<input type="button" id="logout" value="Logout" />
+			</div>
+			
 			<div class="leftDivContent" id="console">
-				<input type="button" id="console" value="console" />
+				<input type="button" id="console" value="Console" />
 			</div>
 			
 			<div class="leftDivContent" id="settings">
-				<input type="button" id="settings" value="settings" />
+				<input type="button" id="settings" value="Settings" />
 			</div>
 			
-			<div class="leftDivContent" id="logout">
-				<input type="button" id="logout" value="Logout" />
+			<div class="leftDivContent" id="cpuGraph">
+				<input type="button" id="cpustats" value="CPU Stats" />
 			</div>
 			
 			<div class="leftDivContent" id="startStop">
@@ -27,6 +31,12 @@
 				<br />
 				<input type="button" id="restartButton" value="Restart" />
 			</div>
+		</div>
+		
+		<div class="rightDiv">
+			<canvas id="mem" width="200" height="100">[No canvas support]</canvas>
+			<br />
+			<canvas id="avgCpu" width="200" height="100">[No canvas support]</canvas>
 		</div>
 		
 		<div id="minecraftConsole" class="console" >
@@ -47,8 +57,14 @@
 		
 		</div>
 		
+		<div id="cpuGraphSection" class="graph">
+			<canvas id="cpu" width="700" height="350">[No canvas support]</canvas>
+		</div>
+		
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
+		<script src="js/RGraph.common.core.js" ></script>
+		<script src="js/RGraph.line.js" ></script>
 		<script src="js/nodeInterface.js"></script>
 	</body>
 </html>
