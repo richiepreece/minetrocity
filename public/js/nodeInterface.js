@@ -89,6 +89,11 @@ $(function(){
 		showGraph();
 	});
 	
+	$("#submitSettings").click(function(){
+		console.log("need to save");
+		$("#restart").show(length);
+	});
+	
 	$("#upgradeButton").click(function(){
 		console.log("upgrading...");
 		$("#startStop").hide();
@@ -128,7 +133,6 @@ $(function(){
 	
 	socket.on('settings', function(data){
 		settings = data;
-		console.log(settings);
 		
 		for(temp in data){
 			var curr = data[temp];
@@ -139,11 +143,9 @@ $(function(){
 				inCurr.push(attrib);
 			}
 			
-			console.log("Setting " + curr[inCurr[0]] + curr[inCurr[1]] + " to selected");
 			var element = document.getElementById(curr[inCurr[0]] + curr[inCurr[1]]);
 			
 			if(element == null){
-				console.log("Setting value of " + curr[inCurr[0]] + " to " + curr[inCurr[1]]);
 				element = document.getElementById(curr[inCurr[0]]);
 				if(element != null){
 					element.value = curr[inCurr[1]];
@@ -151,7 +153,6 @@ $(function(){
 			} else {
 				element.selected = true;
 			}
-			console.log(element);
 		}
 	});
 	
