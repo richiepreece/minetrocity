@@ -111,7 +111,7 @@ function startServer(){
 		console.log('We are in ' + currDir);
 		process.chdir('server');
 		//Change directory to 'server' to keep server files in their correct place
-		child = require('child_process').exec('java -jar minecraft_server.jar');
+		child = require('child_process').exec('java -jar minecraft_server.jar');// nogui');
 		process.chdir(currDir);
 		output = child.stderr;
 		input = child.stdin;
@@ -252,8 +252,30 @@ app.get('/settings', function(request, response, next){
 	});
 });
 
+app.post('/settings', function(request, response, next){
+	response.send('');
+	console.log('Getting posted settings');
+	
+	console.log(input);
+	console.log(request);
+	if(input !== null){
+		var data = '';
+		
+		request.on('data', function(d){
+			console.log(data + " : " + d);
+			data += d;
+		});
+		
+		request.on('end', function(){
+			console.log(data);
+		});
+	}
+});
+
 app.post('/cmd', function(request, response, next){
+	response.send('');
 	console.log('Getting a post command');
+	
 	if(input !== null){
 		var data = '';
 		
@@ -270,7 +292,6 @@ app.post('/cmd', function(request, response, next){
 	}
 	
 	console.log('Responding');
-	response.send('');
 });
 
 timers.setInterval(function(){	

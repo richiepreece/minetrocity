@@ -91,7 +91,40 @@ $(function(){
 	
 	$("#submitSettings").click(function(){
 		console.log("need to save");
+		
 		$("#restart").show(length);
+		var settingsDiv = $("#settingsSection")[0].childNodes;
+		
+		var retArray = new Array();
+		var currIndex = 0;
+		
+		for(var i = 1; i < settingsDiv.length; i++){
+			var currSetting = settingsDiv[i].childNodes;
+			for(var j = 0; j < currSetting.length; j++){
+				switch(currSetting[j].tagName){
+					case 'SELECT':
+						retArray[currIndex] = new Array();
+						retArray[currIndex].push(currSetting[j].id);
+						retArray[currIndex++].push(currSetting[j].options[currSetting[j].selectedIndex].value);
+						console.log(currSetting[j].id + "=" + currSetting[j].options[currSetting[j].selectedIndex].value);
+						break;
+					case 'INPUT':
+						if(currSetting[j].type !== 'button'){
+							retArray[currIndex] = new Array();
+							retArray[currIndex].push(currSetting[j].id);
+							retArray[currIndex++].push(currSetting[j].value);
+							console.log(currSetting[j].id + "=" + currSetting[j].value);
+						}
+						break;
+					default:
+						//Do nothing
+						break;
+				}
+			}
+		}
+		
+		console.log(retArray);
+		$.post('/settings', { 'settings[]' : retArray });
 	});
 	
 	$("#upgradeButton").click(function(){
@@ -133,6 +166,7 @@ $(function(){
 	
 	socket.on('settings', function(data){
 		settings = data;
+		console.log(settings);
 		
 		for(temp in data){
 			var curr = data[temp];
