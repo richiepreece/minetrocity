@@ -263,9 +263,212 @@ app.post('/settings', function(request, response, next){
 	});
 	
 	request.on('end', function(){
-		console.log(JSON.parse(data));
+		settings = JSON.parse(data);
+		
+		var outputString = '';
+		
+		for(var i = 0; i < settings.length; i++){
+			for(var j = 0; j < settings[i].length; j++){
+				outputString += settings[i][j];
+				if(j == 0){
+					outputString += '=';
+				}
+			}
+			
+			outputString += "\r\n";
+		}
+		
+		console.log(outputString);
+		
+		fs.writeFile('server/server.properties', outputString, function(err){
+			if(!err){
+				console.log('Settings saved.');
+			}
+		});
 	});
 });
+
+app.post('/ban', function(request, response, next){
+	response.send('');
+	console.log('Banning user');
+	
+	var data = '';
+	
+	request.on('data', function(d){
+		data += d;
+	});
+	
+	request.on('end', function(){
+		data = JSON.parse(data);
+		
+		if(input !== null){
+			// /ban playerid reason
+			input.write("/ban " + data[0] + " " + data[1] + "\n");
+		} else {
+			//add code to edit banned file if stream isn't open
+		}
+	});
+}
+
+app.post('/pardon', function(request, response, next){
+	response.send('');
+	console.log('Pardoning user');
+	
+	var data = '';
+	
+	request.on('data', function(d){
+		data += d;
+	});
+	
+	request.on('end', function(){		
+		if(input !== null){
+			// /pardon playerid
+			input.write("/pardon " + data + "\n");
+		} else {
+			//add code to edit banned file if stream isn't open
+		}
+	});
+}
+
+app.post('/banip', function(request, response, next){
+	response.send('');
+	console.log('Banning ip');
+	
+	var data = '';
+	
+	request.on('data', function(d){
+		data += d;
+	});
+	
+	request.on('end', function(){
+		data = JSON.parse(data);
+		
+		if(input !== null){
+			// /ban-ip ip reason
+			input.write("/ban " + data[0] + " " + data[1] + "\n");
+		} else {
+			//add code to edit banned file if stream isn't open
+		}
+	});
+}
+
+app.post('/pardonip', function(request, response, next){
+	response.send('');
+	console.log('Pardoning ip');
+	
+	var data = '';
+	
+	request.on('data', function(d){
+		data += d;
+	});
+	
+	request.on('end', function(){		
+		if(input !== null){
+			// /pardon-ip playerid
+			input.write("/pardon-ip " + data + "\n");
+		} else {
+			//add code to edit banned file if stream isn't open
+		}
+	});
+}
+
+app.post('/whitelistadd', function(request, response, next){
+	response.send('');
+	console.log('Whitelisting player');
+	
+	var data = '';
+	
+	request.on('data', function(d){
+		data += d;
+	});
+	
+	request.on('end', function(){		
+		if(input !== null){
+			// /pardon-ip playerid
+			input.write("/whitelist add " + data + "\n");
+		} else {
+			//add code to edit banned file if stream isn't open
+		}
+	});
+}
+
+app.post('/whitelistremove', function(request, response, next){
+	response.send('');
+	console.log('De-whitelisting player');
+	
+	var data = '';
+	
+	request.on('data', function(d){
+		data += d;
+	});
+	
+	request.on('end', function(){		
+		if(input !== null){
+			// /pardon-ip playerid
+			input.write("/whitelist remove " + data + "\n");
+		} else {
+			//add code to edit banned file if stream isn't open
+		}
+	});
+}
+
+app.get('/whiteliston', function(request, response, next){
+	response.send('');
+	
+	if(input !== null){
+		input.write("/whitelist on\n");
+	} else {
+	
+	}
+});
+
+app.get('/whitelistoff', function(request, response, next){
+	response.send('');
+	
+	if(input !== null){
+		input.write("/whitelist off\n");
+	} else {
+	
+	}
+});
+
+app.post('/op', function(request, response, next){
+	response.send('');
+	console.log('Opping user');
+	
+	var data = '';
+	
+	request.on('data', function(d){
+		data += d;
+	});
+	
+	request.on('end', function(){
+		if(input !== null){
+			input.write("/op " + data + "\n");
+		} else {
+			//add code to edit op file if stream isn't open
+		}
+	});
+}
+
+app.deop('/deop', function(request, response, next){
+	response.send('');
+	console.log('De-opping user');
+	
+	var data = '';
+	
+	request.on('data', function(d){
+		data += d;
+	});
+	
+	request.on('end', function(){
+		if(input !== null){
+			input.write("/deop " + data + "\n");
+		} else {
+			//add code to edit op file if stream isn't open
+		}
+	});
+}
 
 app.post('/cmd', function(request, response, next){
 	response.send('');

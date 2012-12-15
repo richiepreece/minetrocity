@@ -122,8 +122,6 @@ $(function(){
 				}
 			}
 		}
-		
-		console.log(JSON.stringify(retArray));
 		$.post('/settings', JSON.stringify(retArray));
 	});
 	
@@ -166,7 +164,6 @@ $(function(){
 	
 	socket.on('settings', function(data){
 		settings = data;
-		console.log(settings);
 		
 		for(temp in data){
 			var curr = data[temp];
