@@ -256,20 +256,15 @@ app.post('/settings', function(request, response, next){
 	response.send('');
 	console.log('Getting posted settings');
 	
-	console.log(input);
-	console.log(request);
-	if(input !== null){
-		var data = '';
-		
-		request.on('data', function(d){
-			console.log(data + " : " + d);
-			data += d;
-		});
-		
-		request.on('end', function(){
-			console.log(data);
-		});
-	}
+	var data = '';
+	
+	request.on('data', function(d){
+		data += d;
+	});
+	
+	request.on('end', function(){
+		console.log(JSON.parse(data));
+	});
 });
 
 app.post('/cmd', function(request, response, next){

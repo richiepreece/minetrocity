@@ -123,8 +123,8 @@ $(function(){
 			}
 		}
 		
-		console.log(retArray);
-		$.post('/settings', { 'settings[]' : retArray });
+		console.log(JSON.stringify(retArray));
+		$.post('/settings', JSON.stringify(retArray));
 	});
 	
 	$("#upgradeButton").click(function(){
