@@ -1,9 +1,23 @@
+/*
+ * COLORS
+ */
+ 
+.colorOne{
+	background-color: #0f1923;
+	color: #D0D0D0;
+}
+
+.colorTwo{
+	background-color: #39414A;
+}
+
 body{
-	background-image:url('../img/background.jpg');
+	background-color: #39414A;
+	/*background-image:url('../img/background.jpg');
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
-	background-size: cover;
+	background-size: cover;*/
 }
 
 input[type = text]{
@@ -15,6 +29,25 @@ input{
 	color: #000;
 	background: #FFF;
 	padding: 5px 10px;
+}
+
+div.header{
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	padding-top: 10px;
+	padding-bottom: 10px;	
+}
+
+div.footer{
+	position: fixed;
+	bottom: 0px;
+	left: 0px;
+	width: 100%;
+	text-align: right;
+	padding-top: 10px;
+	padding-bottom: 10px;
 }
 
 div.mainSection{
