@@ -16,6 +16,11 @@
 	color: white;
 }
 
+.colorFour{
+	background-color: #5DB0E6;
+	color: white;
+}
+
 body{
 	background-color: #39414A;
 	padding: 0px;
@@ -27,6 +32,12 @@ body{
 	background-size: cover;*/
 }
 
+input.leftButton{
+	width: 90%;
+	padding: 5px;
+}
+
+/*
 input[type = text]{
 	width: 90%;
 }
@@ -37,6 +48,17 @@ input{
 	background: #FFF;
 	padding: 5px 10px;
 }
+*/
+
+input.headerButton{
+	height: 90%;
+	width: 100px;
+	padding: 5px;
+	
+	background: none;
+	border: 1px solid white;
+	color: white;
+}
 
 div.header{
 	position: fixed;
@@ -44,6 +66,7 @@ div.header{
 	top: 0px;
 	left: 0px;
 	width: 100%;
+	text-align: center;
 }
 
 div.body{
@@ -68,6 +91,7 @@ div.leftBar{
 	height: 70%;
 	width: 15%;
 	overflow: auto;
+	text-align: center;
 }
 
 div.rightBar{
@@ -106,25 +130,15 @@ div.settings{
 	overflow: auto;
 }
 
-div.leftDiv{
-	float: left;
-	display: none;
-}
-
-div.rightDiv{
-	float: right;
-	display: none;
-	background: white;
-}
-
 div.leftDivContent{
 	margin-left: auto;
 	margin-right: auto;
 	width: 100%;
-	border: 1px solid black;
 	padding: 5px;
-	background: white;
-	text-align: center;
+}
+
+div.Selected{
+	background-color: #2D353E; 
 }
 
 div.setting{

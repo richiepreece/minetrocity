@@ -4,46 +4,55 @@
 	</head>
 	<body>
 		<div id="header" class="header colorOne">
-			Test Text
+			<input type="button" id="startServer" class="headerButton" value="Start" />
 		</div>
 	
 		<div id="body" class="body colorTwo">
 			<div id="leftBar" class="leftBar colorThree">
-				<div class="leftDivContent" id="logout">
-					<input type="button" id="logout" value="Logout" />
+				<div id="logout" class="leftDivContent">
+					Logout
+					<!-- <input type="button" id="logout" class="leftButton colorFour" value="Logout" /> -->
 				</div>
 				
-				<div class="leftDivContent" id="console">
-					<input type="button" id="console" value="Console" />
+				<div id="console" class="leftDivContent Selected">
+					Console
+					<!-- <input type="button" id="console" class="leftButton colorFour" value="Console" /> -->
 				</div>
 				
-				<div class="leftDivContent" id="settings">
-					<input type="button" id="settings" value="Settings" />
+				<div id="users" class="leftDivContent">
+					Users
+					<!-- <input type="button" id="users" class="leftButton colorFour" value="Users" /> -->
 				</div>
 				
-				<div class="leftDivContent" id="cpuGraph">
-					<input type="button" id="cpustats" value="CPU Stats" />
+				<div id="settings" class="leftDivContent">
+					Settings
+					<!-- <input type="button" id="settings" class="leftButton colorFour" value="Settings" /> -->
 				</div>
 				
-				<div class="leftDivContent" id="startStop">
+				<div id="cpuGraph" class="leftDivContent">
+					CPU Stats
+					<!-- <input type="button" id="cpustats" class="leftButton colorFour" value="CPU Stats" /> -->
+				</div>
+				
+				<div class="leftDivContent colorFour" id="startStop">
 					Start and stop the server here:
 					<br />
 					<input type="button" id="startServer" value="Start" />
 				</div>
 				
-				<div class="leftDivContent" id="restart">
+				<div class="leftDivContent colorFour" id="restart">
 					Server must restart for changes to take effect:
 					<br />
 					<input type="button" id="restartButton" value="Restart" />
 				</div>
 				
-				<div class="leftDivContent" id="upgrade">
+				<div class="leftDivContent colorFour" id="upgrade">
 					Minecraft Server is out of date:
 					<br />
 					<input type="button" id="upgradeButton" value="Upgrade" />
 				</div>
 				
-				<div class="leftDivContent" id="upgrading">
+				<div class="leftDivContent colorFour" id="upgrading">
 					Upgrading...
 					<br />
 					<img src="img/spin.gif" />

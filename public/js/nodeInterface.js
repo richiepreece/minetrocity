@@ -4,6 +4,7 @@ $(function(){
 	var loggedIn = false;
 	var upgrading = false;
 	var settings = null;
+	var selected = document.getElementById('console');
 	console.log('connecting');
 	
 	$("#leftBar").mouseenter(function(){
@@ -87,14 +88,26 @@ $(function(){
 		showSettings();
 		console.log('Requesting settings');
 		$.get('/settings');
+		
+		$("#" + selected.id).removeClass('Selected');
+		$(this).addClass('Selected');
+		selected = this;
 	});
 	
 	$("#console").click(function(){
 		showConsole();
+		
+		$("#" + selected.id).removeClass('Selected');
+		$(this).addClass('Selected');
+		selected = this;
 	});
 	
 	$("#cpuGraph").click(function(){
 		showGraph();
+		
+		$("#" + selected.id).removeClass('Selected');
+		$(this).addClass('Selected');
+		selected = this;
 	});
 	
 	$("#submitSettings").click(function(){
