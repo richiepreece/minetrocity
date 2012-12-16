@@ -4,77 +4,55 @@
 	</head>
 	<body>
 		<div id="header" class="header colorOne">
-			<input type="button" id="startServer" class="headerButton" value="Start" />
+			<input type="button" id="startServer" value="Start" />
+			<input type="button" id="restartServer" value="Restart" style="display:none;"/>
+			<input type="button" id="upgradeServer" value="Upgrade" style="display:none;"/>
+			<img id="upgrading" src="img/spin.gif" style="display:none;"/>
 		</div>
-	
-		<div id="body" class="body colorTwo">
-			<div id="leftBar" class="leftBar colorThree">
-				<div id="logout" class="leftDivContent">
-					Logout
-					<!-- <input type="button" id="logout" class="leftButton colorFour" value="Logout" /> -->
-				</div>
-				
-				<div id="console" class="leftDivContent Selected">
-					Console
-					<!-- <input type="button" id="console" class="leftButton colorFour" value="Console" /> -->
-				</div>
-				
-				<div id="users" class="leftDivContent">
-					Users
-					<!-- <input type="button" id="users" class="leftButton colorFour" value="Users" /> -->
-				</div>
-				
-				<div id="settings" class="leftDivContent">
-					Settings
-					<!-- <input type="button" id="settings" class="leftButton colorFour" value="Settings" /> -->
-				</div>
-				
-				<div id="cpuGraph" class="leftDivContent">
-					CPU Stats
-					<!-- <input type="button" id="cpustats" class="leftButton colorFour" value="CPU Stats" /> -->
-				</div>
-				
-				<div class="leftDivContent colorFour" id="startStop">
-					Start and stop the server here:
-					<br />
-					<input type="button" id="startServer" value="Start" />
-				</div>
-				
-				<div class="leftDivContent colorFour" id="restart">
-					Server must restart for changes to take effect:
-					<br />
-					<input type="button" id="restartButton" value="Restart" />
-				</div>
-				
-				<div class="leftDivContent colorFour" id="upgrade">
-					Minecraft Server is out of date:
-					<br />
-					<input type="button" id="upgradeButton" value="Upgrade" />
-				</div>
-				
-				<div class="leftDivContent colorFour" id="upgrading">
-					Upgrading...
-					<br />
-					<img src="img/spin.gif" />
-				</div>
+		
+		<div id="menu" class="menu colorOne">
+			<div id="logout" class="menuItem colorOne">
+				<img src="img/logout.png" width="75%" />
 			</div>
 			
-			<div id="login" class="login mainSection colorThree">
+			<div id="console" class="menuItem colorOne selected">
+				<img src="img/console.png" width="75%" />
+			</div>
+			
+			<div id="users" class="menuItem colorOne">
+				<img src="img/users.png" width="75%" />
+			</div>
+			
+			<div id="settings" class="menuItem colorOne">
+				<img src="img/settings.png" width="75%" />
+			</div>
+			
+			<div id="cpu" class="menuItem colorOne">
+				<img src="img/cpu.png" width="75%" />
+			</div>
+		</div>
+		
+		<div id="content" class="content colorTwo">			
+			<div id="logoutDiv" class="login colorOne" style="display: block;">
 				<input type="button" id="loginButton" value="Login" />
 			</div>
 			
-			<div id="minecraftConsole" class="console mainSection colorThree" >
-				<div class="output" >
+			<div id="consoleDiv" class="mainSection colorOne">
+				<div class="output colorTwo" >
 					<!-- output to go here -->
 				</div>
-				<div class="input" >
+				<div class="input colorTwo" >
 					<input type="text" id="command" />
 					<input type="button" id="submitCommand" value="Submit" />
 				</div>
 			</div>
 			
-			<div id="settingsSection" class="settings mainSection colorThree">
-				<div class="setting">
+			<div id="usersDiv" class="mainSection colorOne">
+			
+			</div>
+			
+			<div id="settingsDiv" class="mainSection colorOne">
+				<div class="setting colorTwo">
 					Allow flight:
 					<select id="allow-flight">
 						<option id="allow-flighttrue" value="true">True</option>
@@ -82,7 +60,7 @@
 					</select>
 				</div>
 				
-				<div class="setting">
+				<div class="setting colorTwo">
 					Allow Nether:
 					<select id="allow-nether">
 						<option id="allow-nethertrue" value="true">True</option>
@@ -90,7 +68,7 @@
 					</select>
 				</div>
 				
-				<div class="setting">
+				<div class="setting colorTwo">
 					Difficulty:
 					<select id="difficulty">
 						<option id="difficulty0" value="0">Peacefull</option>
@@ -100,7 +78,7 @@
 					</select>
 				</div>
 				
-				<div class="setting">
+				<div class="setting colorTwo">
 					Game Mode:
 					<select id="gamemode">
 						<option id="gamemode0" value="0">Survival</option>
@@ -109,7 +87,7 @@
 					</select>
 				</div>
 				
-				<div class="setting">
+				<div class="setting colorTwo">
 					Generate Structures:
 					<select id="generate-structures">
 						<option id="generate-structurestrue" value="true">True</option>
@@ -117,7 +95,7 @@
 					</select>
 				</div>
 				
-				<div class="setting">
+				<div class="setting colorTwo">
 					Hardcore Mode:
 					<select id="hardcore">
 						<option id="hardcoretrue" value="true">True</option>
@@ -125,17 +103,17 @@
 					</select>
 				</div>
 				
-				<div class="setting">
+				<div class="setting colorTwo">
 					Level Name:
 					<input type="text" id="level-name" />
 				</div>
 				
-				<div class="setting">
+				<div class="setting colorTwo">
 					Level Seed:
 					<input type="text" id="level-seed" />
 				</div>
 				
-				<div class="setting">
+				<div class="setting colorTwo">
 					Level Type:
 					<select id="level-type">
 						<option id="level-typeDEFAULT" value="DEFAULT">Default</option>
@@ -144,22 +122,22 @@
 					</select>
 				</div>
 				
-				<div class="setting">
+				<div class="setting colorTwo">
 					Max Build height:
 					<input type="number" id="max-build-height" min="0" max="256" value="256" />
 				</div>
 				
-				<div class="setting">
+				<div class="setting colorTwo">
 					Max Number of Players:
 					<input type="number" id="max-players" min="1" max="2147483647" value="20" />
 				</div>
 				
-				<div class="setting">
+				<div class="setting colorTwo">
 					MOTD:
 					<input type="text" id="motd" maxlength="59" value="20" />
 				</div>
 				
-				<div class="setting">
+				<div class="setting colorTwo">
 					Player vs Player:
 					<select id="pvp">
 						<option id="pvptrue" value="true">True</option>
@@ -167,12 +145,12 @@
 					</select>
 				</div>
 				
-				<div class="setting">
+				<div class="setting colorTwo">
 					Server Port:
 					<input type="number" id="server-port" min="1" max="65534" value="25565" />
 				</div>
 				
-				<div class="setting">
+				<div class="setting colorTwo">
 					Snooper Enabled:
 					<select id="snooper-enabled">
 						<option id="snooper-enabledtrue" value="true">True</option>
@@ -180,7 +158,7 @@
 					</select>
 				</div>
 				
-				<div class="setting">
+				<div class="setting colorTwo">
 					Spawn Animals:
 					<select id="spawn-animals">
 						<option id="spawn-animalstrue" value="true">True</option>
@@ -188,7 +166,7 @@
 					</select>
 				</div>
 				
-				<div class="setting">
+				<div class="setting colorTwo">
 					Spawn Monsters:
 					<select id="spawn-monsters">
 						<option id="spawn-monsterstrue" value="true">True</option>
@@ -196,7 +174,7 @@
 					</select>
 				</div>
 				
-				<div class="setting">
+				<div class="setting colorTwo">
 					Spawn Non-Player Characters:
 					<select id="spawn-npcs">
 						<option id="spawn-npcstrue" value="true">True</option>
@@ -204,17 +182,17 @@
 					</select>
 				</div>
 				
-				<div class="setting">
+				<div class="setting colorTwo">
 					Spawn Protection:
 					<input type="number" id="spawn-protection" min="0" value="16" />
 				</div>
 				
-				<div class="setting">
+				<div class="setting colorTwo">
 					View Distance:
 					<input type="number" id="view-distance" min="3" max="15" value="10" />
 				</div>
 				
-				<div class="setting">
+				<div class="setting colorTwo">
 					White List:
 					<select id="white-list">
 						<option id="white-listtrue" value="true">True</option>
@@ -222,7 +200,7 @@
 					</select>
 				</div>
 				
-				<div class="setting">
+				<div class="setting colorTwo">
 					Admin Slot:
 					<select id="admin-slot">
 						<option id="admin-slottrue" value="true">True</option>
@@ -230,24 +208,18 @@
 					</select>
 				</div>
 				
-				<div class="setting">
+				<div class="setting colorTwo">
 					<input type="button" id="submitSettings" value="Save" />
 				</div>
 			</div>
 			
-			<div id="cpuGraphSection" class="graph mainSection colorThree">
-				<canvas id="cpu" width="700" height="350">[No canvas support]</canvas>
-			</div>
+			<div id="cpuDiv" class="mainSection colorOne">
 			
-			<div id="rightBar" class="rightBar colorThree">
-				<canvas id="mem" width="100%" height="100">[No canvas support]</canvas>
-				<br />
-				<canvas id="avgCpu" width="100%" height="100">[No canvas support]</canvas>
 			</div>
 		</div>
 		
 		<div id="footer" class="footer colorOne">
-			Version 0.0.1
+			
 		</div>
 		
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>

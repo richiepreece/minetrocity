@@ -111,18 +111,7 @@ function startServer(){
 		console.log('We are in ' + currDir);
 		process.chdir('server');
 		//Change directory to 'server' to keep server files in their correct place
-		child = require('child_process').exec('java -jar minecraft_server.jar');// nogui');
-		process.chdir(currDir);
-		output = child.stderr;
-		input = child.stdin;
-		
-		//When server returns information, send that to client
-		output.on('data', function(data){
-			io.sockets.emit('msg', data);
-		});
-		
-		//When server closes...
-		child.on('close', function(){
+		child = require('child_process').exec('java -jar minecraft_server.jar', function (err, stdout, stderr){
 			console.log('Program closed');
 			//Set variables to null
 			child = null;
@@ -141,9 +130,19 @@ function startServer(){
 			if(restarting){
 				console.log('RESTART START');
 				startServer();
-				io.sockets.emit('status', 'running');
 				restarting = false;
 			}
+		});// nogui');
+		process.chdir(currDir);	
+		output = child.stderr;
+		input = child.stdin;
+
+		console.log('emitting status');
+		io.sockets.emit('status', 'running');		
+		
+		//When server returns information, send that to client
+		output.on('data', function(data){
+			io.sockets.emit('msg', data);
 		});
 	}
 }
@@ -308,7 +307,7 @@ app.post('/ban', function(request, response, next){
 			//add code to edit banned file if stream isn't open
 		}
 	});
-}
+});
 
 app.post('/pardon', function(request, response, next){
 	response.send('');
@@ -328,7 +327,7 @@ app.post('/pardon', function(request, response, next){
 			//add code to edit banned file if stream isn't open
 		}
 	});
-}
+});
 
 app.post('/banip', function(request, response, next){
 	response.send('');
@@ -350,7 +349,7 @@ app.post('/banip', function(request, response, next){
 			//add code to edit banned file if stream isn't open
 		}
 	});
-}
+});
 
 app.post('/pardonip', function(request, response, next){
 	response.send('');
@@ -370,7 +369,7 @@ app.post('/pardonip', function(request, response, next){
 			//add code to edit banned file if stream isn't open
 		}
 	});
-}
+});
 
 app.post('/whitelistadd', function(request, response, next){
 	response.send('');
@@ -390,7 +389,7 @@ app.post('/whitelistadd', function(request, response, next){
 			//add code to edit banned file if stream isn't open
 		}
 	});
-}
+});
 
 app.post('/whitelistremove', function(request, response, next){
 	response.send('');
@@ -410,7 +409,7 @@ app.post('/whitelistremove', function(request, response, next){
 			//add code to edit banned file if stream isn't open
 		}
 	});
-}
+});
 
 app.get('/whiteliston', function(request, response, next){
 	response.send('');
@@ -449,9 +448,9 @@ app.post('/op', function(request, response, next){
 			//add code to edit op file if stream isn't open
 		}
 	});
-}
+});
 
-app.deop('/deop', function(request, response, next){
+app.post('/deop', function(request, response, next){
 	response.send('');
 	console.log('De-opping user');
 	
@@ -468,7 +467,7 @@ app.deop('/deop', function(request, response, next){
 			//add code to edit op file if stream isn't open
 		}
 	});
-}
+});
 
 app.post('/cmd', function(request, response, next){
 	response.send('');
