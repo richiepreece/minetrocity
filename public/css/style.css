@@ -11,8 +11,15 @@
 	background-color: #39414A;
 }
 
+.colorThree{
+	background-color: #181C21;
+	color: white;
+}
+
 body{
 	background-color: #39414A;
+	padding: 0px;
+	margin: 0px;
 	/*background-image:url('../img/background.jpg');
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
@@ -33,31 +40,52 @@ input{
 
 div.header{
 	position: fixed;
+	height: 40px;
 	top: 0px;
 	left: 0px;
 	width: 100%;
-	padding-top: 10px;
-	padding-bottom: 10px;	
+}
+
+div.body{
+	width: 100%;
+	height: 100%;
 }
 
 div.footer{
 	position: fixed;
+	height: 40px;
 	bottom: 0px;
 	left: 0px;
 	width: 100%;
 	text-align: right;
-	padding-top: 10px;
-	padding-bottom: 10px;
+}
+
+div.leftBar{
+	display: none;
+	position: fixed;
+	left: -14%;
+	top: 15%;
+	height: 70%;
+	width: 15%;
+	overflow: auto;
+}
+
+div.rightBar{
+	display: none;
+	position: fixed;
+	right: -14%;
+	top: 15%;
+	height: 70%;
+	width: 15%;
 }
 
 div.mainSection{
 	margin-left: auto;
 	margin-right: auto;
+	position: relative;
+	top: 15%;
 	width: 60%;
-	height: 80%;
-	border: 1px solid black;
-	padding: 10px;
-	background: white;
+	height: 70%;
 	text-align: center;
 }
 
@@ -92,11 +120,10 @@ div.rightDiv{
 div.leftDivContent{
 	margin-left: auto;
 	margin-right: auto;
-	width: 200px;
+	width: 100%;
 	border: 1px solid black;
 	padding: 5px;
 	background: white;
-	display:none;
 	text-align: center;
 }
 

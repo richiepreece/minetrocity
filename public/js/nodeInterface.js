@@ -6,14 +6,34 @@ $(function(){
 	var settings = null;
 	console.log('connecting');
 	
+	$("#leftBar").mouseenter(function(){
+		var pos = $("#leftBar").offset().left;
+		$("#leftBar").css({left:pos}).animate({"left":"0%"}, "slow");
+	});
+	
+	$("#leftBar").mouseleave(function(){
+		var pos = $("#leftBar").offset().left;
+		$("#leftBar").css({left:pos}).animate({"left":"-14%"}, "slow");
+	});
+	
+	$("#rightBar").mouseenter(function(){
+		var pos = $("#rightBar").offset().right;
+		$("#rightBar").css({right:pos}).animate({"right":"0%"}, "slow");
+	});
+	
+	$("#rightBar").mouseleave(function(){
+		var pos = $("#rightBar").offset().right;
+		$("#rightBar").css({right:pos}).animate({"right":"-14%"}, "slow");
+	});
+	
 	function showLogin(){
 		$("#login").show(length);
 		$("#settingsSection").hide();
 		$("#cpuGraphSection").hide();
 		$(".console").hide();		
 		
-		$(".leftDiv").hide();
-		$(".rightDiv").hide();
+		$(".leftBar").hide();
+		$(".rightBar").hide();
 	}
 	
 	function showConsole(){
@@ -22,12 +42,8 @@ $(function(){
 		$("#cpuGraphSection").hide();
 		$(".console").show(length);		
 		
-		$(".leftDiv").show(length);
-		$(".rightDiv").show(length);
-		$("#logout").show(length);
-		$("#console").show(length);
-		$("#settings").show(length);
-		$("#cpuGraph").show(length);
+		$(".leftBar").show(length);
+		$(".rightBar").show(length);
 		
 		$("#command")[0].focus();
 	}
@@ -38,12 +54,8 @@ $(function(){
 		$("#cpuGraphSection").hide();
 		$(".console").hide();		
 		
-		$(".leftDiv").show(length);
-		$(".rightDiv").show(length);
-		$("#logout").show(length);
-		$("#console").show(length);
-		$("#settings").show(length);
-		$("#cpuGraph").show(length);
+		$(".leftBar").show(length);
+		$(".rightBar").show(length);
 	}
 	
 	function showGraph(){
@@ -52,12 +64,8 @@ $(function(){
 		$("#cpuGraphSection").show(length);
 		$(".console").hide();		
 		
-		$(".leftDiv").show(length);
-		$(".rightDiv").show(length);
-		$("#logout").show(length);
-		$("#console").show(length);
-		$("#settings").show(length);
-		$("#cpuGraph").show(length);
+		$(".leftBar").show(length);
+		$(".rightBar").show(length);
 	}
 	
 	function showRestart(){

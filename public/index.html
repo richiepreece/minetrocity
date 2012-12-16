@@ -7,232 +7,234 @@
 			Test Text
 		</div>
 	
-		<div class="leftDiv">
-			<div class="leftDivContent" id="logout">
-				<input type="button" id="logout" value="Logout" />
+		<div id="body" class="body colorTwo">
+			<div id="leftBar" class="leftBar colorThree">
+				<div class="leftDivContent" id="logout">
+					<input type="button" id="logout" value="Logout" />
+				</div>
+				
+				<div class="leftDivContent" id="console">
+					<input type="button" id="console" value="Console" />
+				</div>
+				
+				<div class="leftDivContent" id="settings">
+					<input type="button" id="settings" value="Settings" />
+				</div>
+				
+				<div class="leftDivContent" id="cpuGraph">
+					<input type="button" id="cpustats" value="CPU Stats" />
+				</div>
+				
+				<div class="leftDivContent" id="startStop">
+					Start and stop the server here:
+					<br />
+					<input type="button" id="startServer" value="Start" />
+				</div>
+				
+				<div class="leftDivContent" id="restart">
+					Server must restart for changes to take effect:
+					<br />
+					<input type="button" id="restartButton" value="Restart" />
+				</div>
+				
+				<div class="leftDivContent" id="upgrade">
+					Minecraft Server is out of date:
+					<br />
+					<input type="button" id="upgradeButton" value="Upgrade" />
+				</div>
+				
+				<div class="leftDivContent" id="upgrading">
+					Upgrading...
+					<br />
+					<img src="img/spin.gif" />
+				</div>
 			</div>
 			
-			<div class="leftDivContent" id="console">
-				<input type="button" id="console" value="Console" />
+			<div id="login" class="login mainSection colorThree">
+				<input type="button" id="loginButton" value="Login" />
 			</div>
 			
-			<div class="leftDivContent" id="settings">
-				<input type="button" id="settings" value="Settings" />
+			<div id="minecraftConsole" class="console mainSection colorThree" >
+				<div class="output" >
+					<!-- output to go here -->
+				</div>
+				<div class="input" >
+					<input type="text" id="command" />
+					<input type="button" id="submitCommand" value="Submit" />
+				</div>
 			</div>
 			
-			<div class="leftDivContent" id="cpuGraph">
-				<input type="button" id="cpustats" value="CPU Stats" />
+			<div id="settingsSection" class="settings mainSection colorThree">
+				<div class="setting">
+					Allow flight:
+					<select id="allow-flight">
+						<option id="allow-flighttrue" value="true">True</option>
+						<option id="allow-flightfalse" value="false">False</option>
+					</select>
+				</div>
+				
+				<div class="setting">
+					Allow Nether:
+					<select id="allow-nether">
+						<option id="allow-nethertrue" value="true">True</option>
+						<option id="allow-netherfalse" value="false">False</option>
+					</select>
+				</div>
+				
+				<div class="setting">
+					Difficulty:
+					<select id="difficulty">
+						<option id="difficulty0" value="0">Peacefull</option>
+						<option id="difficulty1" value="1">Easy</option>
+						<option id="difficulty2" value="2">Normal</option>
+						<option id="difficulty3" value="3">Hard</option>
+					</select>
+				</div>
+				
+				<div class="setting">
+					Game Mode:
+					<select id="gamemode">
+						<option id="gamemode0" value="0">Survival</option>
+						<option id="gamemode1" value="1">Creative</option>
+						<option id="gamemode2" value="2">Adventure</option>
+					</select>
+				</div>
+				
+				<div class="setting">
+					Generate Structures:
+					<select id="generate-structures">
+						<option id="generate-structurestrue" value="true">True</option>
+						<option id="generate-structuresfalse" value="false">False</option>
+					</select>
+				</div>
+				
+				<div class="setting">
+					Hardcore Mode:
+					<select id="hardcore">
+						<option id="hardcoretrue" value="true">True</option>
+						<option id="hardcorefalse" value="false">False</option>
+					</select>
+				</div>
+				
+				<div class="setting">
+					Level Name:
+					<input type="text" id="level-name" />
+				</div>
+				
+				<div class="setting">
+					Level Seed:
+					<input type="text" id="level-seed" />
+				</div>
+				
+				<div class="setting">
+					Level Type:
+					<select id="level-type">
+						<option id="level-typeDEFAULT" value="DEFAULT">Default</option>
+						<option id="level-typeFLAT" value="FLAT">Flat</option>
+						<option id="level-typeLARGEBIOMES" value="LARGEBIOMES">Large Biomes</option>
+					</select>
+				</div>
+				
+				<div class="setting">
+					Max Build height:
+					<input type="number" id="max-build-height" min="0" max="256" value="256" />
+				</div>
+				
+				<div class="setting">
+					Max Number of Players:
+					<input type="number" id="max-players" min="1" max="2147483647" value="20" />
+				</div>
+				
+				<div class="setting">
+					MOTD:
+					<input type="text" id="motd" maxlength="59" value="20" />
+				</div>
+				
+				<div class="setting">
+					Player vs Player:
+					<select id="pvp">
+						<option id="pvptrue" value="true">True</option>
+						<option id="pvpfalse" value="false">False</option>
+					</select>
+				</div>
+				
+				<div class="setting">
+					Server Port:
+					<input type="number" id="server-port" min="1" max="65534" value="25565" />
+				</div>
+				
+				<div class="setting">
+					Snooper Enabled:
+					<select id="snooper-enabled">
+						<option id="snooper-enabledtrue" value="true">True</option>
+						<option id="snooper-enabledfalse" value="false">False</option>
+					</select>
+				</div>
+				
+				<div class="setting">
+					Spawn Animals:
+					<select id="spawn-animals">
+						<option id="spawn-animalstrue" value="true">True</option>
+						<option id="spawn-animalsfalse" value="false">False</option>
+					</select>
+				</div>
+				
+				<div class="setting">
+					Spawn Monsters:
+					<select id="spawn-monsters">
+						<option id="spawn-monsterstrue" value="true">True</option>
+						<option id="spawn-monstersfalse" value="false">False</option>
+					</select>
+				</div>
+				
+				<div class="setting">
+					Spawn Non-Player Characters:
+					<select id="spawn-npcs">
+						<option id="spawn-npcstrue" value="true">True</option>
+						<option id="spawn-npcsfalse" value="false">False</option>
+					</select>
+				</div>
+				
+				<div class="setting">
+					Spawn Protection:
+					<input type="number" id="spawn-protection" min="0" value="16" />
+				</div>
+				
+				<div class="setting">
+					View Distance:
+					<input type="number" id="view-distance" min="3" max="15" value="10" />
+				</div>
+				
+				<div class="setting">
+					White List:
+					<select id="white-list">
+						<option id="white-listtrue" value="true">True</option>
+						<option id="white-listfalse" value="false">False</option>
+					</select>
+				</div>
+				
+				<div class="setting">
+					Admin Slot:
+					<select id="admin-slot">
+						<option id="admin-slottrue" value="true">True</option>
+						<option id="admin-slotfalse" value="false">False</option>
+					</select>
+				</div>
+				
+				<div class="setting">
+					<input type="button" id="submitSettings" value="Save" />
+				</div>
 			</div>
 			
-			<div class="leftDivContent" id="startStop">
-				Start and stop the server here:
+			<div id="cpuGraphSection" class="graph mainSection colorThree">
+				<canvas id="cpu" width="700" height="350">[No canvas support]</canvas>
+			</div>
+			
+			<div id="rightBar" class="rightBar colorThree">
+				<canvas id="mem" width="100%" height="100">[No canvas support]</canvas>
 				<br />
-				<input type="button" id="startServer" value="Start" />
+				<canvas id="avgCpu" width="100%" height="100">[No canvas support]</canvas>
 			</div>
-			
-			<div class="leftDivContent" id="restart">
-				Server must restart for changes to take effect:
-				<br />
-				<input type="button" id="restartButton" value="Restart" />
-			</div>
-			
-			<div class="leftDivContent" id="upgrade">
-				Minecraft Server is out of date:
-				<br />
-				<input type="button" id="upgradeButton" value="Upgrade" />
-			</div>
-			
-			<div class="leftDivContent" id="upgrading">
-				Upgrading...
-				<br />
-				<img src="img/spin.gif" />
-			</div>
-		</div>
-		
-		<div class="rightDiv">
-			<canvas id="mem" width="200" height="100">[No canvas support]</canvas>
-			<br />
-			<canvas id="avgCpu" width="200" height="100">[No canvas support]</canvas>
-		</div>
-		
-		<div id="minecraftConsole" class="console mainSection" >
-			<div class="output" >
-				<!-- output to go here -->
-			</div>
-			<div class="input" >
-				<input type="text" id="command" />
-				<input type="button" id="submitCommand" value="Submit" />
-			</div>
-		</div>
-		
-		<div id="login" class="login mainSection">
-			<input type="button" id="loginButton" value="Login" />
-		</div>
-		
-		<div id="settingsSection" class="settings mainSection">
-			<div class="setting">
-				Allow flight:
-				<select id="allow-flight">
-					<option id="allow-flighttrue" value="true">True</option>
-					<option id="allow-flightfalse" value="false">False</option>
-				</select>
-			</div>
-			
-			<div class="setting">
-				Allow Nether:
-				<select id="allow-nether">
-					<option id="allow-nethertrue" value="true">True</option>
-					<option id="allow-netherfalse" value="false">False</option>
-				</select>
-			</div>
-			
-			<div class="setting">
-				Difficulty:
-				<select id="difficulty">
-					<option id="difficulty0" value="0">Peacefull</option>
-					<option id="difficulty1" value="1">Easy</option>
-					<option id="difficulty2" value="2">Normal</option>
-					<option id="difficulty3" value="3">Hard</option>
-				</select>
-			</div>
-			
-			<div class="setting">
-				Game Mode:
-				<select id="gamemode">
-					<option id="gamemode0" value="0">Survival</option>
-					<option id="gamemode1" value="1">Creative</option>
-					<option id="gamemode2" value="2">Adventure</option>
-				</select>
-			</div>
-			
-			<div class="setting">
-				Generate Structures:
-				<select id="generate-structures">
-					<option id="generate-structurestrue" value="true">True</option>
-					<option id="generate-structuresfalse" value="false">False</option>
-				</select>
-			</div>
-			
-			<div class="setting">
-				Hardcore Mode:
-				<select id="hardcore">
-					<option id="hardcoretrue" value="true">True</option>
-					<option id="hardcorefalse" value="false">False</option>
-				</select>
-			</div>
-			
-			<div class="setting">
-				Level Name:
-				<input type="text" id="level-name" />
-			</div>
-			
-			<div class="setting">
-				Level Seed:
-				<input type="text" id="level-seed" />
-			</div>
-			
-			<div class="setting">
-				Level Type:
-				<select id="level-type">
-					<option id="level-typeDEFAULT" value="DEFAULT">Default</option>
-					<option id="level-typeFLAT" value="FLAT">Flat</option>
-					<option id="level-typeLARGEBIOMES" value="LARGEBIOMES">Large Biomes</option>
-				</select>
-			</div>
-			
-			<div class="setting">
-				Max Build height:
-				<input type="number" id="max-build-height" min="0" max="256" value="256" />
-			</div>
-			
-			<div class="setting">
-				Max Number of Players:
-				<input type="number" id="max-players" min="1" max="2147483647" value="20" />
-			</div>
-			
-			<div class="setting">
-				MOTD:
-				<input type="text" id="motd" maxlength="59" value="20" />
-			</div>
-			
-			<div class="setting">
-				Player vs Player:
-				<select id="pvp">
-					<option id="pvptrue" value="true">True</option>
-					<option id="pvpfalse" value="false">False</option>
-				</select>
-			</div>
-			
-			<div class="setting">
-				Server Port:
-				<input type="number" id="server-port" min="1" max="65534" value="25565" />
-			</div>
-			
-			<div class="setting">
-				Snooper Enabled:
-				<select id="snooper-enabled">
-					<option id="snooper-enabledtrue" value="true">True</option>
-					<option id="snooper-enabledfalse" value="false">False</option>
-				</select>
-			</div>
-			
-			<div class="setting">
-				Spawn Animals:
-				<select id="spawn-animals">
-					<option id="spawn-animalstrue" value="true">True</option>
-					<option id="spawn-animalsfalse" value="false">False</option>
-				</select>
-			</div>
-			
-			<div class="setting">
-				Spawn Monsters:
-				<select id="spawn-monsters">
-					<option id="spawn-monsterstrue" value="true">True</option>
-					<option id="spawn-monstersfalse" value="false">False</option>
-				</select>
-			</div>
-			
-			<div class="setting">
-				Spawn Non-Player Characters:
-				<select id="spawn-npcs">
-					<option id="spawn-npcstrue" value="true">True</option>
-					<option id="spawn-npcsfalse" value="false">False</option>
-				</select>
-			</div>
-			
-			<div class="setting">
-				Spawn Protection:
-				<input type="number" id="spawn-protection" min="0" value="16" />
-			</div>
-			
-			<div class="setting">
-				View Distance:
-				<input type="number" id="view-distance" min="3" max="15" value="10" />
-			</div>
-			
-			<div class="setting">
-				White List:
-				<select id="white-list">
-					<option id="white-listtrue" value="true">True</option>
-					<option id="white-listfalse" value="false">False</option>
-				</select>
-			</div>
-			
-			<div class="setting">
-				Admin Slot:
-				<select id="admin-slot">
-					<option id="admin-slottrue" value="true">True</option>
-					<option id="admin-slotfalse" value="false">False</option>
-				</select>
-			</div>
-			
-			<div class="setting">
-				<input type="button" id="submitSettings" value="Save" />
-			</div>
-		</div>
-		
-		<div id="cpuGraphSection" class="graph mainSection">
-			<canvas id="cpu" width="700" height="350">[No canvas support]</canvas>
 		</div>
 		
 		<div id="footer" class="footer colorOne">
