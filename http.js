@@ -111,7 +111,7 @@ function startServer(){
 		console.log('We are in ' + currDir);
 		process.chdir('server');
 		//Change directory to 'server' to keep server files in their correct place
-		child = require('child_process').exec('java -jar minecraft_server.jar', function (err, stdout, stderr){
+		child = require('child_process').exec('java -Xmx1024M -Xms1024M -jar minecraft_server.jar', function (err, stdout, stderr){
 			console.log('Program closed');
 			//Set variables to null
 			child = null;

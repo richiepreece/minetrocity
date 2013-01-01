@@ -4,10 +4,7 @@
 	</head>
 	<body>
 		<div id="header" class="header colorOne">
-			<input type="button" id="startServer" value="Start" />
-			<input type="button" id="restartServer" value="Restart" style="display:none;"/>
-			<input type="button" id="upgradeServer" value="Upgrade" style="display:none;"/>
-			<img id="upgrading" src="img/spin.gif" style="display:none;"/>
+			
 		</div>
 		
 		<div id="menu" class="menu colorOne">
@@ -21,6 +18,14 @@
 			
 			<div id="users" class="menuItem colorOne">
 				<img src="img/users.png" width="75%" />
+			</div>
+			
+			<div id="whitelist" class="menuitem colorOne">
+				<img src="img/whitelist.png" width="75%" />
+			</div>
+			
+			<div id="blacklist" class="menuitem colorOne">
+				<img src="img/blacklistusers.png" width="75%" />
 			</div>
 			
 			<div id="settings" class="menuItem colorOne">
@@ -47,7 +52,11 @@
 				</div>
 			</div>
 			
-			<div id="usersDiv" class="mainSection colorOne">
+			<div id="whitelistDiv" class="mainSection colorOne">
+			
+			</div>
+			
+			<div id="blacklistDiv" class="mainSection colorOne">
 			
 			</div>
 			
@@ -214,12 +223,17 @@
 			</div>
 			
 			<div id="cpuDiv" class="mainSection colorOne">
-			
+				<canvas id="mem" width="100%" >[No canvas support]</canvas>
+				<br />
+				<canvas id="avgCpu" width="100%" >[No canvas support]</canvas>
 			</div>
 		</div>
 		
 		<div id="footer" class="footer colorOne">
-			
+			<input type="button" id="startServer" value="Start" style="display:none;"/>
+			<input type="button" id="restartServer" value="Restart" style="display:none;"/>
+			<input type="button" id="upgradeServer" value="Upgrade" style="display:none;"/>
+			<img id="upgrading" src="img/spin.gif" style="display:none;"/>
 		</div>
 		
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
