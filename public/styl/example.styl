@@ -1,15 +1,23 @@
+$blue = #0000ff
+text-size = 35px
 .section
-  background-color: white
+  background-color: $blue
 
   .myButton
     margin: 0 auto
+    clearFix()
 
     .aLink
       text-decoration: none
-
+      font-size: text-size
       &:hover
         text-decoration: underline
 
     &.selected
       background-color: #333
 
+
+clearFix()
+  padding: 0
+  margin: 0
+  clear: both
