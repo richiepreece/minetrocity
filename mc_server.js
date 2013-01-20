@@ -1,5 +1,6 @@
 var url = require('url')
   , fs   = require('fs')
+  , http = require('http')
   ;
 
 //Where the minecraft_server.jar file is found on the web
