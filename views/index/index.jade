@@ -1,0 +1,12 @@
+extends ../layout
+
+block content
+  h1 Welcome to myApp
+  .lists
+
+append scripts
+  script
+    $(function () {
+      var render = require('/client/requires/render');
+      $(".lists").append(render('list-test', { title: 'hi', items: [] }));
+    });
