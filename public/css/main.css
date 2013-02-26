@@ -1,51 +1,58 @@
-.colorOne {
+* {
+  padding: 0;
+  margin: 0;
+}
+body {
+  background: url("/img/bottom.png");
+}
+.old .colorOne {
   background-color: #0f1923;
   color: #d0d0d0;
 }
-.colorTwo {
+.old .colorTwo {
   background-color: #39414a;
 }
-.colorThree {
+.old .colorThree {
   background-color: #181c21;
   color: #fff;
 }
-.colorFour {
+.old .colorFour {
   background-color: #5db0e6;
   color: #fff;
 }
-body {
+.old body {
   padding: 0px;
   margin: 0px;
 }
-.header {
+.old .header {
   width: 100%;
   height: 5%;
 }
-.footer {
+.old .footer {
   width: 100%;
   height: 5%;
   clear: both;
   text-align: center;
 }
-.menu {
+.old .menu {
   float: left;
   width: 20%;
   height: 90%;
   overflow: auto;
   display: none;
 }
-.menuItem {
+.old .menuItem {
   width: 100%;
 }
-.content {
+.old .content {
   float: left;
   width: 100%;
   height: 90%;
 }
-.selected {
+.old .selected {
   background-color: #39414a;
 }
-.login {
+.old .login {
   position: relative;
   top: 5%;
   margin-left: auto;
@@ -54,7 +61,7 @@ body {
   height: 90%;
   display: none;
 }
-.mainSection {
+.old .mainSection {
   position: relative;
   top: 5%;
   margin-left: auto;
@@ -64,7 +71,7 @@ body {
   display: none;
   overflow: auto;
 }
-.output {
+.old .output {
   margin-left: auto;
   margin-right: auto;
   position: relative;
@@ -73,7 +80,7 @@ body {
   height: 92%;
   overflow: auto;
 }
-.input {
+.old .input {
   margin-left: auto;
   margin-right: auto;
   position: relative;
@@ -81,7 +88,7 @@ body {
   width: 98%;
   height: 5%;
 }
-.setting {
+.old .setting {
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 1%;
@@ -90,9 +97,52 @@ body {
   width: 98%;
   height: 5%;
 }
-input[type=button] {
+.old input[type=button] {
   width: 100px;
   color: #fff;
   background: none;
   border: 1px solid #fff;
+}
+.login-screen {
+  background: url("../img/top.png");
+  background-repeat: repeat-x;
+  text-align: center;
+  padding-top: 50px;
+}
+.login-screen .title {
+  padding: 30px 0;
+}
+.login-screen .login-box {
+  background-color: #fff;
+  width: 600px;
+  margin: 0 auto;
+  padding: 50px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px 2px rgba(0,0,0,0.5);
+}
+.login-screen .login-box .subtitle {
+  padding: 20px 0;
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+}
+.login-screen .login-box div input {
+  width: 300px;
+  height: 20px;
+  margin: 5px 0;
+}
+.login-screen .login-box input {
+  width: 80px;
+  margin: 10px 0;
+}
+.login-screen .login-box .message {
+  color: #008000;
+}
+.login-screen .login-box .message.error {
+  color: #f00;
+}
+.login-screen .login-box .message.fadeout {
+  transition: 1s all;
+  -webkit-transition: 1s all;
+  opacity: 0;
 }

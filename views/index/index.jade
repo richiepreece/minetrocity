@@ -1,12 +1,21 @@
 extends ../layout
 
 block content
-  h1 Welcome to myApp
-  .lists
+  .main
+    h1 Welcome to Minetrocity
+    p This page is protected by a login screen
+    p Try logging out and coming directly here, you can't
+    input(type="button", value="logout").logout
 
 append scripts
   script
     $(function () {
-      var render = require('/client/requires/render');
-      $(".lists").append(render('list-test', { title: 'hi', items: [] }));
+      $('.logout').click(function (e) {
+        $.post('/logout', {}, function (data) {
+          if (!data.success)
+            return console.log('strange things are afoot in minetrocity...');
+
+            window.location.reload();
+        });
+      });
     });
