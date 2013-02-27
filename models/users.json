@@ -1,0 +1,17 @@
+{
+  "richie": {
+    "name": "Richie",
+    "pass": "preece",
+    "type": "admin"
+  },
+  "scott": {
+    "name": "Scott",
+    "pass": "biery",
+    "type": "admin"
+  },
+  "dallin": {
+    "name": "Dallin",
+    "pass": "osmun",
+    "type": "admin"
+  }
+}

@@ -30,6 +30,9 @@ var sessOptions = {
   secret: "lyYw/^uWM rnZgEr6mt?v8]%|o,|%,|X9O<0K:nJt^wur^k2n&7j>df8zs7/xfsP"
 };
 
+app.models = {};
+app.models.users = JSON.parse(fs.readFileSync('models/users.json'));
+
 app.configure(function () {
   app.set('port', process.env.VCAP_APP_PORT || process.env.PORT || 3000);
   app.set('views', __dirname + '/views');
@@ -98,6 +101,9 @@ function attachUser(req, res, next) {
 server.listen(app.get('port'), function () {
   console.log("Express server listening on port " + app.get('port'));
 });
+
+
+
 
 
 

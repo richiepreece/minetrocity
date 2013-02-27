@@ -31,8 +31,7 @@ body {
   background-color: #ff0;
   height: 40px;
   width: 90%;
-  margin: 0 auto;
-  margin-top: 50px;
+  margin: 50px auto;
 }
 .main-nav .title {
   float: left;
@@ -106,26 +105,31 @@ body {
 .dropdown .dropdown-options .dropdown-item:hover {
   background-color: #ddd;
 }
-.toolbar {
-  background-color: #000;
-  padding: 10px;
+.sidebar {
+  width: 200px;
+  padding: 20px;
 }
-.toolbar .toolbar-item {
-  color: #fff;
+.sidebar .sidebar-title {
+  text-align: center;
+  font-size: 20px;
+  padding-bottom: 50px;
+}
+.sidebar .sidebar-item {
+  cursor: pointer;
+  display: block;
+  color: #000;
   text-decoration: none;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-  padding: 5px 10px;
-  margin: 5px 10px;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
 }
-.toolbar .toolbar-item.selected {
-  background-color: #ccc;
-  color: #000;
+.sidebar .sidebar-item:last-child {
+  border-bottom: none;
 }
-.toolbar .toolbar-item:hover {
-  background-color: #ccc;
-  color: #000;
+.sidebar .sidebar-item.selected {
+  background-color: #bbb;
+}
+.sidebar .sidebar-item:hover {
+  background-color: #ddd;
 }
 .login-screen {
   text-align: center;

@@ -1,5 +1,5 @@
 mixin dropdown(title)
-  .dropdown
+  .dropdown(attributes)
     .dropdown-title= title
     .dropdown-black-arrow
     .dropdown-options
@@ -7,4 +7,4 @@ mixin dropdown(title)
       block
 
 mixin dropdownitem(name, klass)
-  .dropdown-item(class=klass)= name
+  .dropdown-item(class=klass, attributes)= name
