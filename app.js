@@ -26,8 +26,8 @@ shared.set('output', null);
 shared.set('input', null);
 
 var sessOptions = {
-  key: 'myApp.sid',
-  secret: "secret-key-goes-here"
+  key: 'minetrocity.sid',
+  secret: "lyYw/^uWM rnZgEr6mt?v8]%|o,|%,|X9O<0K:nJt^wur^k2n&7j>df8zs7/xfsP"
 };
 
 app.configure(function () {
@@ -40,6 +40,7 @@ app.configure(function () {
   app.use(express.methodOverride());
   app.use(express.cookieParser());
   app.use(express.session(sessOptions));
+  app.use(attachUser);
   app.use(app.router);
   app.use(require('stylus').middleware(__dirname + '/public'));
   app.use(express.static(path.join(__dirname, 'public')));
@@ -87,6 +88,12 @@ function initFile(file, type) {
 
 initMiddlewares();
 initControllers();
+
+function attachUser(req, res, next) {
+  if (req.session && req.session.user)
+    res.locals({ user: req.session.user });
+  next();
+};
 
 server.listen(app.get('port'), function () {
   console.log("Express server listening on port " + app.get('port'));

@@ -1,3 +1,29 @@
+///////////////////////////////////////
+///////// mixins
+///////////////////////////////////////
+
+border-radius(radius=10px)
+  -webkit-border-radius: radius
+  -moz-border-radius: radius
+  border-radius: radius
+
+box-shadow(x=0, y=0, blur=20px, spread=2px, kolor=rgba(0, 0, 0, .5))
+  -webkit-box-shadow: x y blur spread kolor
+  -moz-box-shadow: x y blur spread kolor
+  -ms-box-shadow: x y blur spread kolor
+  -o-box-shadow: x y blur spread kolor
+  box-shadow: x y blur spread kolor
+
+transition(el=all, seconds=1s)
+  -webkit-transition: el seconds
+  -moz-transition: el seconds
+  -o-transition: el seconds
+  transition: el seconds
+
+///////////////////////////////////////
+///////// common style
+///////////////////////////////////////
+
 *
   padding: 0
   margin: 0
@@ -5,13 +31,18 @@
 body
   background: url('/img/bottom.png')
 
+.wrapper
+  background: url('../img/top.png')
+  background-repeat: repeat-x
+  padding-top: 1px // this is to stop the child's margin from messing up the parent
 
-border-radius(r=10px)
-  border-radius: 10px
+.info
+  width: 800px
+  padding: 30px
+  margin-top: 80px
+  margin-left: 80px
 
-box-shadow(x=0, y=0, blur=20px, thickness=2px, kolor=rgba(0, 0, 0, .5))
-  box-shadow: x y blur thickness kolor
-
-transition(secs=2s, el=all)
-  transition: secs el
-  -webkit-transition: secs el
+.module
+  background-color: white // this should be the stone texture
+  border-radius()
+  box-shadow()

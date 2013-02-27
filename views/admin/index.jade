@@ -1,0 +1,13 @@
+extends ../layout
+include ../components/main-nav
+
+block content
+  .admin.wrapper
+    +main-nav()
+    .info-container
+      .info.module
+        h1 Admin Page
+        p Admins should be able to manage users and servers
+        p They can change user types (member, admin, etc), send password reset emails, or just view stats
+        p With servers they can create new ones, manage permissions, etc
+        p Also, they should have a setting here on whether or not to allow new user registration

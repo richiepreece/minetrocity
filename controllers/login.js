@@ -9,9 +9,21 @@ exports.init = function (app) {
 };
 
 var users = {
-  richie: 'preece',
-  scott:  'biery',
-  dallin: 'osmun'
+  richie: {
+    name: 'Richie',
+    pass: 'preece',
+    type: 'admin'
+  },
+  scott: {
+    name: 'Scott',
+    pass: 'biery',
+    type: 'admin'
+  },
+  dallin: {
+    name: 'Dallin',
+    pass: 'osmun',
+    type: 'admin'
+  }
 };
 
 function login(req, res, next) {
@@ -19,10 +31,8 @@ function login(req, res, next) {
     , pass = req.body.pass.toLowerCase()
     ;
 
-  if (users[user] && users[user] === pass) {
-    req.session.user = {
-      name: user
-    };
+  if (users[user] && users[user].pass === pass) {
+    req.session.user = users[user];
     return res.send({ success: true });
   }
 

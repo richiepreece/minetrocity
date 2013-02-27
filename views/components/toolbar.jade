@@ -1,0 +1,7 @@
+mixin toolbar()
+  .toolbar
+    block
+
+mixin toolbaritem(name, href, selected)
+  - var klass = selected ? 'selected' : ''
+  a(href=href, class=klass).toolbar-item= name

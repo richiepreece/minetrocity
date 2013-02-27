@@ -7,12 +7,12 @@ function isLoggedIn(req, res, next) {
   if (req.session && req.session.user) {
     return next();
   }
-  res.render('index/login');
+  res.redirect('/login');
 };
 
 function isNotLoggedIn(req, res, next) {
   if (req.session && req.session.user) {
-    return res.render('index/index');
+    return res.redirect('/');
   }
   next();
 };

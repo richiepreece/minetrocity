@@ -432,57 +432,51 @@ process.binding = function (name) {
 
 });
 
-require.define("list-test.jade",function(require,module,exports,__dirname,__filename,process,global){module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
-attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
-var buf = [];
-with (locals || {}) {
-var interp;
-buf.push('<div class="list">');
-if ( title)
-{
-buf.push('<div class="title">');
-var __val__ = title
-buf.push(escape(null == __val__ ? "" : __val__));
-buf.push('</div>');
-}
-if ( items)
-{
-// iterate items
-;(function(){
-  if ('number' == typeof items.length) {
+require.define("/client/requires/login.js",function(require,module,exports,__dirname,__filename,process,global){
+$('.user').focus();
+var t = null;
 
-    for (var $index = 0, $$l = items.length; $index < $$l; $index++) {
-      var item = items[$index];
+$('.login').click(function (e) {
+  login();
+});
 
-buf.push('<div class="item"><a');
-buf.push(attrs({ 'href':(item.href) }, {"href":true}));
-buf.push('>');
-var __val__ = item.name
-buf.push(escape(null == __val__ ? "" : __val__));
-buf.push('</a></div>');
-    }
+$('.user, .pass').keypress(function (e) {
+  if (e.keyCode === 13)
+    login();
+});
 
+function login() {
+  var user = $('.user').val()
+    , pass = $('.pass').val()
+    ;
+
+  if (user === '' || pass === '')
+    return showMessage('error', 'You must enter a username and password.');
+
+  showMessage('ok', 'Validating...');
+
+  $.post('/login', { user: user, pass: pass }, function (data) {
+    if (!data.success)
+      return showMessage('error', data.msg);
+
+    window.location.reload();
+  });
+};
+
+function showMessage(type, msg) {
+  $('.message').text(msg);
+  $('.message').removeClass('fadeout');
+  clearTimeout(t);
+  t = setTimeout(function () { $('.message').addClass('fadeout'); }, 2000)
+
+  if (type === 'error') {
+    $('.message').addClass('error');
+    $('.user').focus();
   } else {
-    var $$l = 0;
-    for (var $index in items) {
-      $$l++;      var item = items[$index];
-
-buf.push('<div class="item"><a');
-buf.push(attrs({ 'href':(item.href) }, {"href":true}));
-buf.push('>');
-var __val__ = item.name
-buf.push(escape(null == __val__ ? "" : __val__));
-buf.push('</a></div>');
-    }
-
+    $('.message').removeClass('error');
   }
-}).call(this);
+};
 
-}
-buf.push('</div>');
-}
-return buf.join("");
-}
 });
 
 require.define("/client/requires/render.js",function(require,module,exports,__dirname,__filename,process,global){var render = require('browserijade');
@@ -491,7 +485,6 @@ module.exports = function (view, locals) {
   return render(view, locals);
 };
 
-// test
 });
 
 require.define("/node_modules/browserijade/package.json",function(require,module,exports,__dirname,__filename,process,global){module.exports = {"main":"./lib/middleware","browserify":"./lib/browserijade"}
@@ -702,7 +695,50 @@ require.define("fs",function(require,module,exports,__dirname,__filename,process
 
 });
 
+require.define("/client/components.js",function(require,module,exports,__dirname,__filename,process,global){$(function () {
+  $('.dropdown-title').click(function (e) {
+    for (var i = 0; i < $('.dropdown-options').length; ++i)
+      if ($('.dropdown-options')[i] !== $(this).closest('.dropdown').find('.dropdown-options')[0])
+        $($('.dropdown-options')[i]).hide();
+
+    $(this).closest('.dropdown').find('.dropdown-options').slideToggle(100);
+
+    e.stopPropagation();
+    e.preventDefault();
+  });
+
+  $('html').click(function (e) {
+    $('.dropdown-options').hide();
+  });
+
+  $('.logout').click(function (e) {
+    $.post('/logout', {}, function () {
+      window.location = '/';
+    });
+  });
+
+  $('.show-settings').click(function (e) {
+    window.location = '/settings';
+  });
+
+  $('.show-servers').click(function (e) {
+    window.location = '/server';
+  });
+
+  $('.show-admin').click(function (e) {
+    window.location = '/admin';
+  });
+
+  $('.main-nav .title').click(function (e) {
+    window.location = '/';
+  });
+});
+
+});
+
 require.define("/client/main.js",function(require,module,exports,__dirname,__filename,process,global){window.require = require;
+
+require('./components');
 
 });
 require("/client/main.js");

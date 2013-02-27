@@ -1,0 +1,10 @@
+mixin dropdown(title)
+  .dropdown
+    .dropdown-title= title
+    .dropdown-black-arrow
+    .dropdown-options
+      .dropdown-arrow
+      block
+
+mixin dropdownitem(name, klass)
+  .dropdown-item(class=klass)= name

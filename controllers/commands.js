@@ -2,6 +2,7 @@ var shared = require('../shared');
 var mcServer = require('../mc_server');
 
 exports.init = function (app) {
+  return; // old controller
 
   app.post('/ban',
     banPlayer
