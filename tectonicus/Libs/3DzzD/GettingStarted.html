@@ -1,0 +1,142 @@
+<HTML>
+ <HEAD>
+ <TITLE>
+	Getting Started with 3DzzD Dev Kit 
+ </TITLE>
+ </HEAD>
+ <BODY STYLE="font-family:Verdana;font-size:12px;color:#000000">
+  <DIV STYLE="font-weight:800;font-family:Verdana;font-size:16px;color:#005500;text-align:center">
+    Getting Started with 3DzzD Dev Kit 
+  </DIV>
+  <BR>
+  <BR>  
+  <BR>
+  <BR>  
+  <DIV STYLE="font-weight:800;font-size:14px;color:#aa0000;">
+    1 - Setting up development environment 
+  </DIV>
+  <DIV>
+   <BR>
+  <BR>
+   <DIV STYLE="font-weight:800;font-size:12px;">
+     Step 1 - Install Java SDK 
+   </DIV>
+   <BR>
+    Before starting to work with 3DzzD you must ensure that you have a recent Java SDK properly installed on you work station. If requiered you can download latest Java SDK here 
+   <A href="http://download.java.net/jdk6/binaries/"
+      target=_blank>
+     http://download.java.net/jdk6/binaries/
+   </A>
+   <BR>
+   <BR>
+   <BR>
+  <BR>
+   <DIV STYLE="font-weight:800;font-size:12px;">
+     Step 2 - Create a dummy certificat 
+   </DIV>
+   <BR>
+    Once JDK installed you must create a dummy certificat, this certificat is requiered to build extension package and can be created using the provided script 
+   <A href="./build/utils/"
+      target=_blank>
+     ./build/utils/makeDummyCertificate 
+   </A>
+    , just run it and enter a password when prompted (choose a simple password as you will have to type it for each build) 
+   <BR>
+   <BR>
+   <BR>
+  <BR>
+   <DIV STYLE="font-weight:800;font-size:12px;">
+     Step 3 - Build the 3DzzD API JavaDoc (optional)
+   </DIV>
+   <BR>
+    To build the API JavaDoc use the provided script 
+   <A href="./"
+      target=_blank>
+     ./BuildAPIJavaDoc
+   </A>
+    (at any time after modifying the API source code you can refresh the doc by running this script) 
+  </DIV>
+  
+  <BR>
+  <BR>  
+  <BR>
+  <BR>  
+  <DIV STYLE="font-weight:800;font-size:14px;color:#aa0000;">
+    2 - Modifying the 3DzzD API 
+  </DIV>
+  <DIV>
+   <BR>
+  <BR>
+   <DIV STYLE="font-weight:800;font-size:12px;">
+     Step 1 - Modify source code 
+   </DIV>
+   <BR>
+    API source code is divided in three projects :<br>
+	 - 3DzzD => Main 3DzzD project<br>
+	 - 3DzzDExtensionJOGL =>  JOGL extension<br>
+	 - Extension => Extension Loader<br>
+	<br>
+	you can find projects sources code here =>
+   <A href="./sources/"
+      target=_blank>
+     ./sources/
+   </A>
+   <BR>
+   <BR>
+   <BR>
+  <BR>
+   <DIV STYLE="font-weight:800;font-size:12px;">
+     Step 2 - Compil source code 
+   </DIV>
+   <BR>
+    you can easily compil source code by using the provided script 
+   <A href="./sources/"
+      target=_blank>
+     ./sources/compil
+   </A>
+    it compil all project and output classes here   
+	 <A href="./build/debug/classes/"
+      target=_blank>
+     ./build/debug/classes/
+   </A>
+   <BR>
+   <BR>
+   <BR>
+  <BR>
+   <DIV STYLE="font-weight:800;font-size:12px;">
+     Step 3 - Build the 3DzzD API jar
+   </DIV>
+   <BR>
+    Once projects compiled you can either build debug or release Jar using the right script 
+   <A href="./build/"
+      target=_blank>
+     ./build/BuildDebug or ./build/BuildRelease
+   </A>
+    those scripts will create the three Jar : dzzd.jar, extension.jar, DzzDExtensionJOGL.jar in the corresponding sub directory (release or debug)
+  </DIV>  
+  
+  <BR>
+  <BR>  
+  <BR>
+  <BR>
+  <DIV STYLE="font-weight:800;font-size:14px;color:#aa0000;">
+    3 - Create 3D Applet using 3DzzD API 
+  </DIV>
+  <DIV>
+  <BR>
+  <BR>
+   the best way to start is to look at the 
+   <A href="./Samples/HelloWorld/classes/HelloWorld.htm"
+      target=_blank>
+     HelloWorld
+   </A> 
+   sample project located 
+   <A href="./Samples/HelloWorld/"
+      target=_blank>
+     here
+   </A>
+  </DIV>    
+  <BR>
+  <BR>
+ </BODY>
+</HTML>

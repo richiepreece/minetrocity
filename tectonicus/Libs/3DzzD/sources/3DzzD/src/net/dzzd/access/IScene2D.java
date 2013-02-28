@@ -1,0 +1,50 @@
+/*
+* This file is part of 3DzzD http://dzzd.net/.
+*
+* Released under LGPL
+*
+* 3DzzD is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* 3DzzD is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with 3DzzD.  If not, see <http://www.gnu.org/licenses/>.
+*
+* Copyright 2005 - 2009 Bruno Augier
+*/
+
+package net.dzzd.access;
+
+public interface IScene2D extends IScene
+{
+ //HACK: something wrong this method have nothing to do here
+ //public void render(IDrawer2D d);
+ 
+	public void setScene2DBufferSize(int maxShape2D);
+	
+    public int getNbScene2DObject();
+	
+    public int getNbShape2D();
+    
+	public void addShape2D(IShape2D shape2D);
+	
+	public void clearScene2D();
+	
+	public void addScene2DObject(IScene2DObject object);
+
+	public void addScene2DObjects(IScene2DObject objects[]);
+	
+	public void removeScene2DObject(IScene2DObject object);
+	
+	public void removeShape2DById(int id);
+	
+	public IShape2D getShape2DById(int id);
+	
+	public IShape2D getShape2DByName(String name);
+}

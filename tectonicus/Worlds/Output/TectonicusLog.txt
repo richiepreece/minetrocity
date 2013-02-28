@@ -1,0 +1,82 @@
+ + + + + + + + + + + + + + + + + + + + + + + +
+                  Tectonicus
+   Version: null
+   Build null
+   Constructed on null at null
+ + + + + + + + + + + + + + + + + + + + + + + +
+Started on Wed Feb 27 11:23:06 MST 2013
+System:
+	OS Name: Windows 7
+	OS Architecture: amd64
+	OS Version: 6.1
+	Java vendor: Oracle Corporation
+	Java version: 1.7.0_11
+	Awt toolkit: sun.awt.windows.WToolkit
+	Headless?: null
+Settings:
+	mode:Interactive
+	rasteriser:Lwjgl
+	outputDir:C:\github\minecraft_admin\tectonicus\Worlds\Output
+	useCache:true
+	cacheDir:C:\github\minecraft_admin\tectonicus\Worlds\Output\Cache
+	minecraftJar:C:\Users\Richie\AppData\Roaming\.minecraft\bin\minecraft.jar
+	texturePack:none
+	colourDepth:24
+	alphaBits:8
+	numSamples:4
+	tileSize:512
+	numZoomLevels:8
+	portalsInitiallyVisible:true
+	showSpawn:true
+	signsInitiallyVisible:true
+	playersInitiallyVisible:true
+	bedsInitiallyVisible:true
+	spawnInitiallyVisible:true
+	viewsInitiallyVisible:true
+	eraseOutputDir:false
+	extractLwjglNatives:true
+	isVerbose:false
+	forceLoadAwt:false
+	force32BitNatives:false
+	force64BitNatives:false
+	logFile:C:\github\minecraft_admin\tectonicus\Worlds\Output\TectonicusLog.txt
+	outputHtmlName:map.html
+	numDownsampleThreads:8
+	singlePlayerName:Player
+'Unnamed map' map
+	worldDir: C:\github\minecraft_admin\tectonicus\Worlds\BlockGallery
+	dimension: Terra
+	cameraAngle: 45
+	cameraElevation: 45
+	closestZoomSize: 12
+	worldSubset: FullWorldSubset
+	useBiomeColours: false
+	'Unnamed layer' layer
+		renderStyle: Regular
+		lightStyle: Day
+		imageFormat: Png
+	Drawable: org.lwjgl.opengl.Display$3@23d1f3f2
+	display created ok
+Using rasteriser: tectonicus.rasteriser.lwjgl.LwjglRasteriser@1d9a43d7
+ -- Lwjgl Rasteriser -- 
+	type: Window
+	width: 512
+	heigth: 512
+	pBuffer: null
+	OpenGL Vendor: ATI Technologies Inc.
+	OpenGL Renderer: ATI Mobility Radeon HD 6570 
+	OpenGL Version: 4.1.10516 Compatibility Profile Context
+Loading world from base dir Worlds\BlockGallery with dimension Terra
+	Full dimension dir: C:\github\minecraft_admin\tectonicus\Worlds\BlockGallery
+Loading level.dat
+Loading textures
+Creating block registry
+Loading players
+Loading players from C:\github\minecraft_admin\tectonicus\Worlds\BlockGallery\players
+Loading raw player from C:\github\minecraft_admin\tectonicus\Worlds\BlockGallery\players\OrangyTang.dat
+	loaded 1 players
+Loading ops from C:\github\minecraft_admin\tectonicus\Worlds\ops.txt
+No players file found at C:\github\minecraft_admin\tectonicus\Worlds\ops.txt
+	found 0 players
+Detected Anvil save format
+Finished
