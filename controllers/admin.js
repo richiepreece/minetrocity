@@ -1,3 +1,5 @@
+var LENGTH = 10;
+
 exports.init = function (app) {
   app.get('/admin',
     app.middleware.isLoggedIn,
@@ -15,8 +17,24 @@ exports.init = function (app) {
 
 function getUsers(app) {
   return function (req, res, next) {
+    var usersArr = [];
+    for (key in app.models.users)
+      usersArr.push(app.models.users[key])
+
+    var page = parseInt(req.query.page, 10) || 1
+      , max  = usersArr.length
+      ;
+
+    usersArr.splice(0, (page - 1) * LENGTH);
+
+    if (usersArr.length > LENGTH)
+      usersArr.length = LENGTH;
+
     res.locals({
-      users: app.models.users
+      users: usersArr,
+      page: page,
+      maxEntries: max,
+      numPerPage: LENGTH
     });
     next();
   };

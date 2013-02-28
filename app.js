@@ -33,6 +33,18 @@ var sessOptions = {
 app.models = {};
 app.models.users = JSON.parse(fs.readFileSync('models/users.json'));
 
+(function generateTestData() {
+  for (var i = 0; i < 100; ++i) {
+    var rand = Math.floor(Math.random() * 100000);
+    app.models.users["testUser" + rand] = {
+      "name":  "TestUser" + rand,
+      "pass":  "test",
+      "email": "test@minetrocity.com",
+      "type":  "member"
+    };
+  };
+}());
+
 app.configure(function () {
   app.set('port', process.env.VCAP_APP_PORT || process.env.PORT || 3000);
   app.set('views', __dirname + '/views');

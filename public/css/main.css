@@ -108,6 +108,7 @@ body {
 .sidebar {
   width: 200px;
   padding: 20px;
+  float: left;
 }
 .sidebar .sidebar-title {
   text-align: center;
@@ -173,4 +174,36 @@ body {
 }
 .dashboard {
   color: #000;
+}
+.admin .content {
+  width: 90%;
+  margin: 0 auto;
+}
+.admin .content .model-data {
+  margin-left: 260px;
+  padding: 30px;
+}
+.admin .content .model-data table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.admin .content .model-data table tr {
+  background-color: #ccc;
+}
+.admin .content .model-data table tr.odd {
+  background-color: #aaa;
+}
+.admin .content .model-data table tr:first-child {
+  background-color: #888;
+}
+.admin .content .model-data table td,
+.admin .content .model-data table th {
+  text-align: left;
+  padding: 10px;
+}
+.admin .content .model-data .navigation {
+  text-align: center;
+}
+.admin .content .model-data .navigation .nav-button {
+  padding: 0 5px;
 }
