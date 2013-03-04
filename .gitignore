@@ -1,4 +1,5 @@
 #Server Folder
 server/
 node_modules/
+binaries/
 .DS_Store
