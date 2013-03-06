@@ -1,9 +1,11 @@
 @echo off
 
-REM Written By: Richie Preece
-REM richie@minetrocity.com
-REM Copyright 2013 Minetrocity
-REM All Rights Reserved
+echo ********************************
+echo * Written By Richie Preece
+echo * richie@minetrocity.com
+echo * Copyright 2013 Minetrocity
+echo * All Rights Reserved
+echo ********************************
 
 REM All npm distros can be found at http://nodejs.org/dist/npm/
 REM All node distros can be found at http://nodejs.org/download/
