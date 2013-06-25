@@ -1,0 +1,13 @@
+include dropdown
+
+mixin main-nav()
+  .main-nav(attributes)
+    .title Minetrocity
+    ul
+      li
+        +dropdown("Welcome, " + user.name)
+          if user.type === 'admin'
+            +dropdownitem("Admin", "show-admin")
+          +dropdownitem("Servers", "show-servers")
+          +dropdownitem("Settings", "show-settings")
+          +dropdownitem("Logout", "logout")

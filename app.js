@@ -26,9 +26,24 @@ shared.set('output', null);
 shared.set('input', null);
 
 var sessOptions = {
-  key: 'myApp.sid',
-  secret: "secret-key-goes-here"
+  key: 'minetrocity.sid',
+  secret: "lyYw/^uWM rnZgEr6mt?v8]%|o,|%,|X9O<0K:nJt^wur^k2n&7j>df8zs7/xfsP"
 };
+
+app.models = {};
+app.models.users = JSON.parse(fs.readFileSync('models/users.json'));
+
+(function generateTestData() {
+  for (var i = 0; i < 100; ++i) {
+    var rand = Math.floor(Math.random() * 100000);
+    app.models.users["testUser" + rand] = {
+      "name":  "TestUser" + rand,
+      "pass":  "test",
+      "email": "test@minetrocity.com",
+      "type":  "member"
+    };
+  };
+}());
 
 app.configure(function () {
   app.set('port', process.env.VCAP_APP_PORT || process.env.PORT || 3000);
@@ -40,6 +55,7 @@ app.configure(function () {
   app.use(express.methodOverride());
   app.use(express.cookieParser());
   app.use(express.session(sessOptions));
+  app.use(attachUser);
   app.use(app.router);
   app.use(require('stylus').middleware(__dirname + '/public'));
   app.use(express.static(path.join(__dirname, 'public')));
@@ -88,9 +104,18 @@ function initFile(file, type) {
 initMiddlewares();
 initControllers();
 
+function attachUser(req, res, next) {
+  if (req.session && req.session.user)
+    res.locals({ user: req.session.user });
+  next();
+};
+
 server.listen(app.get('port'), function () {
   console.log("Express server listening on port " + app.get('port'));
 });
+
+
+
 
 
 

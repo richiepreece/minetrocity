@@ -1,0 +1,15 @@
+extends ../layout
+include ../components/main-nav
+
+block content
+  .dashboard.wrapper
+    +main-nav()
+    .info.module
+      h1 Welcome to Minetrocity
+      p This should probably be a dashboard or landing screen of some sort.
+      p We need to decide what types of users there are and what views they can see.
+      p I'm thinking something like this:
+      ul(style='margin-left: 40px;')
+        li Admin - all power
+        li Moderator - all power over a server
+        li Member - gets to see whatever admin and moderator have set to public

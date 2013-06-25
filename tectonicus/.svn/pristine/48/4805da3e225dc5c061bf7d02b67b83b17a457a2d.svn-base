@@ -1,0 +1,134 @@
+<HTML>
+<HEAD>
+<TITLE>3DzzD Sample - HelloWorld </TITLE>
+</HEAD>
+<BODY BGCOLOR="ffffff">
+<br>
+<DIV STYLE="font-weight:800;font-family:Verdana;font-size:16px;color:#aa0000;text-align:center">3DzzD Sample - HelloWorld</DIV>
+<br>
+<CENTER>
+<APPLET
+	archive = "dzzd.jar,timer.jar"
+	code	= "HelloWorld.class"
+	width	= "500"
+	height	= "300"
+	>
+</APPLET>
+</CENTER>
+<br>
+<br>
+<br>
+<DIV STYLE="font-weight:800;font-family:Verdana;font-size:12px;color:#0000aa;text-align:left;text-decoration:underline">Sample source code</DIV>
+<br>
+<pre>
+<FONT COLOR=GREEN><I>/*
+* This file is part of 3DzzD http://dzzd.net/.
+*
+* Released under LGPL
+*
+* 3DzzD is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* 3DzzD is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with 3DzzD.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+*
+* Copyright 2005 - 2009 Bruno Augier
+*/</I></FONT>
+ 
+<FONT COLOR=RED><B>import</B></FONT> java<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>awt<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT><FONT COLOR=BLUE SIZE=+1>*</FONT><FONT COLOR=BLUE SIZE=+1><B>;</B></FONT>
+<FONT COLOR=RED><B>import</B></FONT> java<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>applet<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT><FONT COLOR=BLUE SIZE=+1>*</FONT><FONT COLOR=BLUE SIZE=+1><B>;</B></FONT>
+
+<FONT COLOR=RED><B>import</B></FONT> net<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>dzzd<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>access<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT><FONT COLOR=BLUE SIZE=+1>*</FONT><FONT COLOR=BLUE SIZE=+1><B>;</B></FONT>
+<FONT COLOR=RED><B>import</B></FONT> net<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>dzzd<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT><FONT COLOR=BLUE SIZE=+1>*</FONT><FONT COLOR=BLUE SIZE=+1><B>;</B></FONT>
+
+
+<FONT COLOR=GREEN><I>/**
+ * HelloWorld
+ * 
+ * This sample show how to :
+ *  - setup a Scene3D
+ *  - load a 3DS file into the Scene3D
+ *  - setup a Render3D
+ *  - compute and draw the Scene3D onto the Render3D
+ */</I></FONT>
+<FONT COLOR=RED><B>public</B></FONT> <FONT COLOR=RED><B>class</B></FONT> HelloWorld <FONT COLOR=RED><B>extends</B></FONT> Applet
+<FONT COLOR=BLUE SIZE=+1><B>{</B></FONT>
+	IRender3D render<FONT COLOR=BLUE SIZE=+1><B>;</B></FONT>
+	IScene3D scene<FONT COLOR=BLUE SIZE=+1><B>;</B></FONT>
+	GraphicsDevice<FONT COLOR=BLUE SIZE=+1><B>[</B></FONT><FONT COLOR=BLUE SIZE=+1><B>]</B></FONT> devices<FONT COLOR=BLUE SIZE=+1><B>;</B></FONT>
+
+	<FONT COLOR=RED><B>public</B></FONT> <FONT COLOR=RED><B>void</B></FONT> start<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT>
+	<FONT COLOR=BLUE SIZE=+1><B>{</B></FONT>
+		<FONT COLOR=GREEN><I>//Ask 3DzzD factory for a fresh Scene3D
+</I></FONT>		<FONT COLOR=RED><B>this</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>scene<FONT COLOR=BLUE SIZE=+1>=</FONT>DzzD<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>newScene3D<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>;</B></FONT>	
+		
+		<FONT COLOR=GREEN><I>//Create a Scene3D loader and link it to a 3DS file
+</I></FONT>		IScene3DLoader loader<FONT COLOR=BLUE SIZE=+1>=</FONT>DzzD<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>newScene3DLoader<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>;</B></FONT>
+		loader<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>loadScene3D<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=RED><B>this</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>getCodeBase<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>toString<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1>+</FONT><FONT COLOR=PURPLE>"3D/"</FONT><FONT COLOR=BLUE SIZE=+1><B>,</B></FONT><FONT COLOR=PURPLE>"CUBE.3DS"</FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>;</B></FONT>
+		
+		<FONT COLOR=GREEN><I>//Add the loader to the scene
+</I></FONT>		<FONT COLOR=RED><B>this</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>scene<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>setScene3DLoader<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT>loader<FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>;</B></FONT>
+		
+		<FONT COLOR=GREEN><I>//Wait until all object &amp; texture are loaded
+</I></FONT>		<FONT COLOR=RED><B>while</B></FONT><FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=RED><B>this</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>scene<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>getNbMonitoredSceneObject<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1>!</FONT><FONT COLOR=BLUE SIZE=+1>=</FONT><FONT COLOR=BROWN>0</FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT>
+		<FONT COLOR=BLUE SIZE=+1><B>{</B></FONT>
+		 <FONT COLOR=RED><B>this</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>scene<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>updateMonitoredSceneObjects<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>;</B></FONT>	
+		 DzzD<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>sleep<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=BROWN>10</FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>;</B></FONT>
+		<FONT COLOR=BLUE SIZE=+1><B>}</B></FONT>
+		
+		<FONT COLOR=GREEN><I>/*
+		 * Set the active camera in the 3d scene
+		 * 
+		 * We use a camera that is inside the 3ds file
+		 *
+		 * 3DzzD always provide a default camera that you can set using :
+		 *  this.scene.setCurrentCamera3DById(0);
+		 */</I></FONT>
+		<FONT COLOR=RED><B>this</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>scene<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>setCurrentCamera3DByName<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=PURPLE>"Camera01"</FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>;</B></FONT>
+		
+		<FONT COLOR=GREEN><I>//Ask 3DzzD factory for a software 3D Render
+</I></FONT>		<FONT COLOR=RED><B>this</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>render<FONT COLOR=BLUE SIZE=+1>=</FONT>DzzD<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>newRender3D<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=RED><B>this</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>getClass<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>,</B></FONT><FONT COLOR=PURPLE>"SOFT"</FONT><FONT COLOR=BLUE SIZE=+1><B>,</B></FONT><FONT COLOR=RED><B>null</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>;</B></FONT>
+		
+		<FONT COLOR=GREEN><I>//Add the Render3D canvas to the Applet Panel
+</I></FONT>		<FONT COLOR=RED><B>this</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>setLayout<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=RED><B>null</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>;</B></FONT>
+		<FONT COLOR=RED><B>this</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>add<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=RED><B>this</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>render<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>getCanvas<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>;</B></FONT>
+		
+		<FONT COLOR=GREEN><I>//Set the Render3D size and enable maximum antialias
+</I></FONT>		<FONT COLOR=RED><B>this</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>render<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>setSize<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=RED><B>this</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>getSize<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>width<FONT COLOR=BLUE SIZE=+1><B>,</B></FONT><FONT COLOR=RED><B>this</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>getSize<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>height<FONT COLOR=BLUE SIZE=+1><B>,</B></FONT><FONT COLOR=BROWN>7</FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>;</B></FONT>
+		
+		<FONT COLOR=GREEN><I>//Set Camera Aspect ratio to 1:1
+</I></FONT>		<FONT COLOR=RED><B>this</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>scene<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>getCurrentCamera3D<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>setZoomY<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=RED><B>double</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=RED><B>this</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>render<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>getWidth<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1>/</FONT><FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=RED><B>double</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=RED><B>this</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>render<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>getHeight<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>;</B></FONT>	
+		
+		<FONT COLOR=GREEN><I>//Tell the Render3D wich camera it should use to render
+</I></FONT>		<FONT COLOR=RED><B>this</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>render<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>setCamera3D<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=RED><B>this</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>scene<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>getCurrentCamera3D<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>;</B></FONT>
+		
+		<FONT COLOR=GREEN><I>//Render the frame
+</I></FONT>		<FONT COLOR=RED><B>this</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>renderSingleFrame<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>;</B></FONT>	
+
+	<FONT COLOR=BLUE SIZE=+1><B>}</B></FONT>
+	
+	
+	<FONT COLOR=RED><B>public</B></FONT> <FONT COLOR=RED><B>void</B></FONT> renderSingleFrame<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT>
+	<FONT COLOR=BLUE SIZE=+1><B>{</B></FONT>
+		<FONT COLOR=GREEN><I>//Set the scene to world space
+</I></FONT>		<FONT COLOR=RED><B>this</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>scene<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>setScene3DObjectToWorld<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>;</B></FONT>
+		
+		<FONT COLOR=GREEN><I>//Set the scene to active camera space
+</I></FONT>		<FONT COLOR=RED><B>this</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>scene<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>setScene3DObjectToCamera<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>;</B></FONT>
+		
+		<FONT COLOR=GREEN><I>//Tell the 3D render to compute &amp; draw the frame
+</I></FONT>		<FONT COLOR=RED><B>this</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>render<FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>renderScene3D<FONT COLOR=BLUE SIZE=+1><B>(</B></FONT><FONT COLOR=RED><B>this</B></FONT><FONT COLOR=BLUE SIZE=+1><B>.</B></FONT>scene<FONT COLOR=BLUE SIZE=+1><B>)</B></FONT><FONT COLOR=BLUE SIZE=+1><B>;</B></FONT>
+	<FONT COLOR=BLUE SIZE=+1><B>}</B></FONT>
+<FONT COLOR=BLUE SIZE=+1><B>}</B></FONT>
+</pre>
+
+
+</BODY>
+</HTML>

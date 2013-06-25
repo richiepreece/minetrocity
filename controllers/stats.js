@@ -4,6 +4,7 @@ var fs       = require('fs')
   ;
 
 exports.init = function (app, io) {
+  return; // old controller
 
   app.get('/status',
     getStatus(io)

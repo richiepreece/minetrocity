@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Tectonicus" default="BuildCopy" basedir=".">
+	
+	<property file="user.properties"/>
+	
+	<property name="ProjectName" 		value="Tectonicus" />
+	
+	<property name="Version"			value="2.15" />
+	
+	<property name="Source"				location="Source" />
+	<property name="Data"				location="Data" />
+	<property name="Binary"				location="Binary" />
+	<property name="Dist"				location="Dist" />
+	<property name="Docs"				location="Docs" />
+	<property name="Exe"				location="${Dist}/Exe" />
+	<property name="Libs"				location="Libs" />
+	<property name="Jars"				location="${Libs}/Jars" />
+	<property name="FactoryFloor"		location="${Dist}/FactoryFloor"/>
+	
+	<!--
+	<taskdef name="jsmoothgen" classname="net.charabia.jsmoothgen.ant.JSmoothGen" />
+	-->
+	<taskdef name="gcupload"
+			 classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask"
+			 classpath="${Libs}/ant-googlecode-0.0.3/ant-googlecode-0.0.3.jar"
+	/>
+	
+	<!-- To build a test version, update the 'version' property above, then run this task -->
+	<target name="BuildCopy" depends="CleanBuild, CreateSingleJar, CreatePackage" />
+	
+	<!-- To upload a new version, update the 'version' property above, then run this task -->
+	<target name="BuildCopyUpload" depends="CleanBuild, CreateSingleJar, CreatePackage, Upload" />
+	
+	<target name="CleanBuild">
+		<delete failonerror="false" dir="${FactoryFloor}" />
+		<delete failonerror="false" file="TectonicusLog.txt" />
+	</target>
+	
+	<target name="Compile">
+		<mkdir dir="${FactoryFloor}"/>
+		<mkdir dir="${FactoryFloor}/Binary"/>
+		
+		<javac srcdir="${Source}"
+				destdir="${FactoryFloor}/Binary"
+				source="1.5"
+				target="1.5"
+				classpath="${Jars}/lwjgl.jar;${Jars}/lwjgl_util.jar;${Jars}/BiomeExtractor.jar;${Jars}/ProcessingCore.jar;${Jars}/jpct.jar;${Jars}/dzzd.jar;${Jars}/jnbt.jar"
+				debug="true"
+				debuglevel="lines,source"
+				verbose="false"
+				includeantruntime="false"
+		/>
+	</target>
+	
+	<!-- Create a single, unified jar for the whole project -->
+	<target name="CreateSingleJar" depends="CleanBuild, Compile, ExportBuildInfo" >
+			
+		<mkdir dir="${FactoryFloor}"/>
+		<mkdir dir="${FactoryFloor}/Temp"/>
+		
+		<!-- Copy compiled code from Temp -->
+		<copy toDir="${FactoryFloor}/Temp" >
+			<fileset dir="${FactoryFloor}/Binary"/>
+		</copy>
+		
+		<!-- Copy build info from Binary -->
+		<copy toDir="${FactoryFloor}/Temp" file="${Binary}/tectonicus.buildInfo" />
+		
+		<!-- Copy resources -->
+		<copy toDir="${FactoryFloor}/Temp">
+			<fileset dir="${Data}"/>
+		</copy>
+		
+		<!-- Unjar our libraries (lwjgl, jnbt) -->
+		<unjar src="${Jars}/lwjgl.jar" dest="${FactoryFloor}/Temp"/>
+		
+		<unjar src="${Jars}/lwjgl_util.jar" dest="${FactoryFloor}/Temp"/>
+		
+		<unjar src="${Jars}/ProcessingCore.jar" dest="${FactoryFloor}/Temp"/>
+		
+		<unjar src="${Jars}/json.jar" dest="${FactoryFloor}/Temp"/>
+		
+		<unjar src="${Jars}/jpct.jar" dest="${FactoryFloor}/Temp"/>
+		
+		<unjar src="${Jars}/dzzd.jar" dest="${FactoryFloor}/Temp"/>
+		
+		<unjar src="${Jars}/jnbt.jar" dest="${FactoryFloor}/Temp"/>
+		
+		<unjar src="${Jars}/BiomeExtractor.jar" dest="${FactoryFloor}/Temp"/>
+		
+		<!-- Create the unified jar -->
+		<jar destfile="${FactoryFloor}/Tectonicus_v${Version}.jar" basedir="${FactoryFloor}/Temp">
+			<manifest>
+				<attribute name="Main-Class" value="tectonicus.TectonicusApp"/>
+			</manifest>
+		</jar>
+		
+		<!-- Cleanup -->
+		<delete includeemptydirs="true" failonerror="true">
+			<fileset dir="${FactoryFloor}/Temp" includes="**/*" />
+		</delete>
+		<delete dir="${FactoryFloor}/Temp" includeemptydirs="true" />
+	</target>
+	
+	
+	<target name="CreatePackage">
+		
+		<!-- Remove any existing package -->
+		<delete failonerror="false" file="${FactoryFloor}/Tectonicus_v${Version}.zip" />
+		
+		<!-- Create the final package with the jar + example files -->
+		<zip destfile="${FactoryFloor}/Tectonicus_v${Version}.zip" >
+			<fileset file="${FactoryFloor}/Tectonicus_v${Version}.jar" />
+			<fileset file="${Docs}/release.txt" />
+			<fileset file="${Docs}/simpleConfig.xml" />
+			<fileset file="${Docs}/exampleConfig.xml" />
+			<fileset file="${Docs}/fullConfig.xml" />
+			<fileset file="${Data}/defaultBlockConfig.xml" />
+		</zip>
+		
+	</target>
+	
+	<target name="ExportBuildInfo" >
+		
+		<exec dir="." executable="svnversion" output="build.number" searchpath="true" failifexecutionfails="false">
+			<arg value="-n" />
+		</exec>
+		<loadfile property="BuildNumber" srcFile="build.number"/>
+		
+		<delete file="build.number" />
+		
+		<tstamp/>
+		
+		<propertyfile file="${Binary}/tectonicus.buildInfo" comment="Tectonicus build info">
+			<entry key="buildNumber" type="string" value="${BuildNumber}" />
+			<entry key="buildDate" type="string" value="${TODAY}" />
+			<entry key="buildTime" type="string" value="${TSTAMP}" />
+			<entry key="version" type="string" value="${Version}" />
+		</propertyfile>
+		
+		<echo message="Version: ${Version}" />
+		<echo message="Build number: ${BuildNumber}" />
+		<echo message="Build date: ${TODAY}" />
+		<echo message="Build time: ${TSTAMP}" />
+		
+	</target>
+	
+	<target name="Upload">
+		
+		<fail unless="googlecode.username">
+			Missing googlecode.username
+			You have not set your google code username.
+			Rename 'example.user.properties' to 'user.properties' and fill in your account details.
+		</fail>
+		<fail unless="googlecode.password">
+			Missing googlecode.password
+			You have not set your google code password.
+			Rename 'example.user.properties' to 'user.properties' and fill in your account details.
+		</fail>
+		
+		<gcupload	projectname="tectonicus"
+					username="${googlecode.username}"
+					password="${googlecode.password}"
+					filename="${FactoryFloor}/Tectonicus_v${Version}.zip"
+					targetfilename="Tectonicus_v${Version}.zip"
+					summary="Tectonicus v${Version}"
+					labels="Featured, Type-Executable, OpSys-All"
+					verbose="true"
+		/>
+	</target>
+	
+	<target name="MakeExe">
+		<jsmoothgen
+			project="${Exe}/tectonicus.jsmooth" 
+			skeletonroot="${Exe}/skeletons">
+		</jsmoothgen>
+	</target>
+	
+	<target name="CompileJsonLib">
+		<mkdir dir="${FactoryFloor}"/>
+		<mkdir dir="${FactoryFloor}/JsonBinary"/>
+		
+		<javac srcdir="${Libs}/Json/src"
+				destdir="${FactoryFloor}/JsonBinary"
+				source="1.5"
+				target="1.5"
+				includeantruntime="false"
+		/>
+		
+		<jar destfile="${FactoryFloor}/json.jar" basedir="${FactoryFloor}/JsonBinary">
+		</jar>
+	</target>
+	
+</project>
