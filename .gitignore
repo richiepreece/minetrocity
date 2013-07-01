@@ -1,5 +1,6 @@
 #Server Folder
 server/
 versions/
+version_info/
 node_modules/
 .DS_Store

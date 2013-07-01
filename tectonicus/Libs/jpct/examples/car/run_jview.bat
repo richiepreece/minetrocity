@@ -1,1 +1,0 @@
-jview -cp:a car.jar;..\..\lib\jpct\jpct.jar CarTest width=512 height=384
