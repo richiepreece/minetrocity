@@ -251,6 +251,65 @@ function checkUpdateStatus() {
 * New versioning stuff found here
 *********************************/
 
+var versions = null;
+
+fs.mkdirParent = function(dirPath, mode, callback) {
+  //Call the standard fs.mkdir
+  fs.mkdir(dirPath, mode, function(error) {
+    //When it fail in this way, do the custom steps
+    if (error && error.errno === 34) {
+      //Create all the parents recursively
+      fs.mkdirParent(path.dirname(dirPath), mode, callback);
+      //And then the directory
+      fs.mkdirParent(dirPath, mode, callback);
+    }
+    //Manually run the callback since we used our own callback to do all these
+    callback && callback(error);
+  });
+};
+
+function getServer(ver, rel){	
+	var serverUrl = "https://s3.amazonaws.com/Minecraft.Download/versions/" + ver + "/minecraft_server." + ver + ".jar";
+	
+	var options = {
+		host: url.parse(serverUrl).host,
+		port: 443,
+		path: url.parse(serverUrl).pathname
+	};
+	
+	var currDir = process.cwd();
+	
+	if(!fs.existsSync("versions")){
+		fs.mkdirSync("versions");
+	}
+	
+	process.chdir("versions");
+	
+	if(!fs.existsSync(rel)){
+		fs.mkdirSync(rel);
+	}
+	
+	process.chdir(rel);
+	
+	if(!fs.existsSync(ver)){
+		fs.mkdirSync(ver);
+	}
+	
+	process.chdir(ver);
+	
+	var file = fs.createWriteStream(process.cwd() + '/minecraft_server.jar');
+	
+	https.get(options, function(result){
+		result.on('data', function(data){
+			file.write(data);
+		}).on('end', function(){
+			file.end();
+		});
+	});
+	
+	process.chdir(currDir);
+}
+
 function getVersions(){
 	var mojangVersionUrl = "https://s3.amazonaws.com/Minecraft.Download/versions/versions.json";
 	
@@ -261,10 +320,22 @@ function getVersions(){
 	}
 	
 	var request = https.request(options, function(result){
-		console.log(result.statusCode);
-		result.on('data', function(data){
-			console.log(data);
-		});
+		if(result.statusCode == 200){		
+			result.on('data', function(data){
+				versions = JSON.parse(data);
+				
+				//For testing only...
+				var dir = "versions/";
+				
+				versionList = versions['versions'];
+				
+				for(curr in versionList){
+					getServer(versionList[curr]['id'], versionList[curr]['type']);
+				}
+				
+				//End testing only
+			});
+		}
 	});
 	
 	request.end();
@@ -273,3 +344,5 @@ function getVersions(){
 		console.error(error);
 	});
 }
+
+getVersions();
