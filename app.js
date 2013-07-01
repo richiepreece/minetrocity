@@ -1,5 +1,6 @@
 var express  = require('express')
   , http     = require('http')
+  , https	 = require('https')
   , path     = require('path')
   , fs       = require('fs')
   , io       = require('socket.io')
@@ -243,3 +244,32 @@ function checkUpdateStatus() {
     });
   }); 
 };
+
+
+
+/*********************************
+* New versioning stuff found here
+*********************************/
+
+function getVersions(){
+	var mojangVersionUrl = "https://s3.amazonaws.com/Minecraft.Download/versions/versions.json";
+	
+	var options = {
+		host: url.parse(mojangVersionUrl).host,
+		port: 443,
+		path: url.parse(mojangVersionUrl).path
+	}
+	
+	var request = https.request(options, function(result){
+		console.log(result.statusCode);
+		result.on('data', function(data){
+			console.log(data);
+		});
+	});
+	
+	request.end();
+	
+	request.on('error', function(error){
+		console.error(error);
+	});
+}
