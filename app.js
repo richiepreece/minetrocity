@@ -253,21 +253,6 @@ function checkUpdateStatus() {
 
 var versions = null;
 
-fs.mkdirParent = function(dirPath, mode, callback) {
-  //Call the standard fs.mkdir
-  fs.mkdir(dirPath, mode, function(error) {
-    //When it fail in this way, do the custom steps
-    if (error && error.errno === 34) {
-      //Create all the parents recursively
-      fs.mkdirParent(path.dirname(dirPath), mode, callback);
-      //And then the directory
-      fs.mkdirParent(dirPath, mode, callback);
-    }
-    //Manually run the callback since we used our own callback to do all these
-    callback && callback(error);
-  });
-};
-
 function getServer(ver, rel){	
 	var serverUrl = "https://s3.amazonaws.com/Minecraft.Download/versions/" + ver + "/minecraft_server." + ver + ".jar";
 	
@@ -297,15 +282,17 @@ function getServer(ver, rel){
 	
 	process.chdir(ver);
 	
-	var file = fs.createWriteStream(process.cwd() + '/minecraft_server.jar');
-	
-	https.get(options, function(result){
-		result.on('data', function(data){
-			file.write(data);
-		}).on('end', function(){
-			file.end();
+	if(!fs.existsSync('minecraft_server.jar')){	
+		var file = fs.createWriteStream(process.cwd() + '/minecraft_server.jar');
+		
+		https.get(options, function(result){
+			result.on('data', function(data){
+				file.write(data);
+			}).on('end', function(){
+				file.end();
+			});
 		});
-	});
+	}
 	
 	process.chdir(currDir);
 }
@@ -319,9 +306,26 @@ function getVersions(){
 		path: url.parse(mojangVersionUrl).path
 	}
 	
-	var request = https.request(options, function(result){
+	var request = https.request(options, function(result){		
 		if(result.statusCode == 200){		
 			result.on('data', function(data){
+				var currDir = process.cwd();
+			
+				if(!fs.existsSync("versions")){
+					fs.mkdirSync("versions");
+				}
+				
+				process.chdir("versions");
+				
+				var file = fs.createWriteStream(process.cwd() + '/versions.json');
+				
+				file.write(data);
+				
+				file.end();
+				
+				process.chdir(currDir);
+				
+				
 				versions = JSON.parse(data);
 				
 				//For testing only...
