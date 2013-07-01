@@ -1,0 +1,3 @@
+https://s3.amazonaws.com/Minecraft.Download/versions/versions.json
+
+https://s3.amazonaws.com/Minecraft.Download/versions/VERSION/minecraft_server.VERSION.jar
