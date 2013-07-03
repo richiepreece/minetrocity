@@ -68,33 +68,28 @@ app.post('/login', function(request, response, next){
 	console.log('Logging in...');
 	var data = '';
 	
-	request.on('data', function(d){
-		data += d;
-	})
-	.on('end', function(){
-		var userInfo = JSON.parse(data);
-		var responseData = {};
-		var user = app.models.users[userInfo['username']];
+	var userInfo = JSON.parse(request.body);
+	var responseData = {};
+	var user = app.models.users[userInfo['username']];
+	
+	if(user && user['username'] == userInfo['username'] &&
+			user['password'] == userInfo['password']){
+		console.log('Valid user');
 		
-		if(user && user['username'] == userInfo['username'] &&
-				user['password'] == userInfo['password']){
-			console.log('Valid user');
-			
-			responseData['username'] = user['username'];
-			responseData['success'] = true;
-			responseData['acl'] = user['acl'];
-			responseData['notifications'] = []; //TODO: get notifications
-			
-			request.session.user = user;
-		} else {
-			console.log('Invalid user');
-			
-			responseData['success'] = false;
-			responseData['err'] = 'Username or Password is invalid';
-		}
+		responseData['username'] = user['username'];
+		responseData['success'] = true;
+		responseData['acl'] = user['acl'];
+		responseData['notifications'] = []; //TODO: get notifications
 		
-		response.send(JSON.stringify(responseData));
-	});
+		request.session.user = user;
+	} else {
+		console.log('Invalid user');
+		
+		responseData['success'] = false;
+		responseData['err'] = 'Username or Password is invalid';
+	}
+	
+	response.send(JSON.stringify(responseData));
 });
 
 app.get('/logout', function(request, response, next){
@@ -107,6 +102,15 @@ app.get('/logout', function(request, response, next){
 });
 
 app.get('/users', function(request, response, next){
+	var responseData = {};
+	
+	if(request.session.user){
+		responseData['users'] = app.models.users;
+	} else {
+		responseData[err] = 'You are not logged in';
+	}
+	
+	response.send(JSON.stringify(responseData));
 });
 
 app.post('/add_user', function(request, response, next){
