@@ -1,6 +1,6 @@
 var express  = require('express')
   , http     = require('http')
-  , https		 = require('https')
+  , https    = require('https')
   , path     = require('path')
   , fs       = require('fs')
   , io       = require('socket.io')
@@ -9,6 +9,7 @@ var express  = require('express')
   , os       = require('os')
   , shared   = require('./shared')
   , mcServer = require('./mc_server')
+	, uuid     = require('node-uuid');
   ;
 
 var app    = express()
@@ -68,7 +69,7 @@ app.post('/login', function(request, response, next){
 	console.log('Logging in...');
 	var data = '';
 	
-	var userInfo = JSON.parse(request.body);
+	var userInfo = request.body;
 	var responseData = {};
 	var user = app.models.users[userInfo['username']];
 	
@@ -107,19 +108,92 @@ app.get('/users', function(request, response, next){
 	if(request.session.user){
 		responseData['users'] = app.models.users;
 	} else {
-		responseData[err] = 'You are not logged in';
+		responseData['success'] = false;
+		responseData['err'] = 'You are not logged in';
 	}
 	
 	response.send(responseData);
 });
 
 app.post('/add_user', function(request, response, next){
+	var responseData = {};
+	
+	if(request.session.user){
+		var newUser = request.body;
+		newUser['id'] = uuid.v4();
+		app.models.users[newUser['username']] = newUser;
+		
+		fs.writeFileSync('models/users.json', JSON.stringify(app.models.users));
+		
+		responseData['id'] = newUser['id'];
+		responseData['success'] = true;
+	} else {
+		responseData['success'] = false;
+		responseData['err'] = 'You are not logged in';
+	}
+	
+	response.send(responseData);
 });
 
 app.put('/update_user', function(request, response, next){
+	var responseData = {};
+	
+	if(request.session.user){
+		var updatedUser = request.body;
+		var oldUser;
+		
+		for(index in app.models.users){
+			if(app.models.users[index]['id'] == updatedUser['id']){
+				oldUser = app.models.users[index];
+			}
+		}
+		
+		if(oldUser){
+			for(index in updatedUser){
+				oldUser[index] = updatedUser[index];
+			}
+			
+			fs.writeFileSnc('models/users.json', JSON.stringify(app.models.users));
+			
+			responseData['id'] = newUser['id'];
+			responseData['success'] = true;
+		} else {
+			responseData['success'] = false;
+			responseData['err'] = 'User does not exist';
+		}
+	} else {
+		responseData['success'] = false;
+		responseData['err'] = 'You are not logged in';
+	}
+	
+	response.send(responseData);
 });
 
 app.post('/delete_user', function(request, response, next){
+	var responseData = {};
+	
+	if(request.session.user){
+		var deleteUser = request.body;
+		var existingUser = app.models.users[deleteUser['username']];
+		
+		if(existingUser && existingUser['id'] == deleteUser['id'] &&
+				existingUser['username'] == deleteUser['username']){
+			delete app.models.users[deleteUser['username']];
+
+			fs.writeFileSnc('models/users.json', JSON.stringify(app.models.users));
+			
+			responseData['id'] = deleteUser['id'];
+			responseData['success'] = true;
+		} else {
+			responseData['success'] = false;
+			responseData['err'] = 'User does not exist';
+		}
+	} else {
+		responseData['success'] = false;
+		responseData['err'] = 'You are not logged in';
+	}
+	
+	response.send(responseData);
 });
 
 app.get('/servers', function(request, response, next){
