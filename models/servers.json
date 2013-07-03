@@ -1,0 +1,23 @@
+{
+	"test1": {
+			"id": "82aa1d77-f826-4fde-b8bf-ed0c76761d9b",
+			"server_name": "test1",
+			"port": 1,
+			"version": "1.6.1",
+			"version_type": "release"
+	},
+	"test2": {
+			"id": "c4da694a-5dfe-45e0-8275-5025e06c1767",
+			"server_name": "test2",
+			"port": 2,
+			"version": "1.5.1",
+			"version_type": "release"
+	},
+	"test3": {
+			"id": "8177795f-0454-4130-9174-b4e38040e0fa",
+			"server_name": "test3",
+			"port": 3,
+			"version": "1.5.2",
+			"version_type": "release"
+	}
+}

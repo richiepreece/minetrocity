@@ -1,110 +1,32 @@
 {
-  "richie": {
-    "name": "Richie",
-    "pass": "preece",
-    "email": "richie@minetrocity.com",
-    "type": "admin"
-  },
-  "scott": {
-    "name": "Scott",
-    "pass": "biery",
-    "email": "scott@minetrocity.com",
-    "type": "admin"
-  },
-  "dallin": {
-    "name": "Dallin",
-    "pass": "osmun",
-    "email": "dallin@minetrocity.com",
-    "type": "admin"
-  },
-  "testModerator1": {
-    "name": "TestModerator1",
-    "pass": "test",
-    "email": "test@minetrocity.com",
-    "type": "moderator"
-  },
-  "testModerator2": {
-    "name": "TestModerator2",
-    "pass": "test",
-    "email": "test@minetrocity.com",
-    "type": "moderator"
-  },
-  "testModerator3": {
-    "name": "TestModerator3",
-    "pass": "test",
-    "email": "test@minetrocity.com",
-    "type": "moderator"
-  },
-  "testModerator4": {
-    "name": "TestModerator4",
-    "pass": "test",
-    "email": "test@minetrocity.com",
-    "type": "moderator"
-  },
-  "testModerator5": {
-    "name": "TestModerator5",
-    "pass": "test",
-    "email": "test@minetrocity.com",
-    "type": "moderator"
-  },
-  "testUser1": {
-    "name": "TestUser1",
-    "pass": "test",
-    "email": "test@minetrocity.com",
-    "type": "member"
-  },
-  "testUser2": {
-    "name": "TestUser2",
-    "pass": "test",
-    "email": "test@minetrocity.com",
-    "type": "member"
-  },
-  "testUser3": {
-    "name": "TestUser3",
-    "pass": "test",
-    "email": "test@minetrocity.com",
-    "type": "member"
-  },
-  "testUser4": {
-    "name": "TestUser4",
-    "pass": "test",
-    "email": "test@minetrocity.com",
-    "type": "member"
-  },
-  "testUser5": {
-    "name": "TestUser5",
-    "pass": "test",
-    "email": "test@minetrocity.com",
-    "type": "member"
-  },
-  "testUser6": {
-    "name": "TestUser6",
-    "pass": "test",
-    "email": "test@minetrocity.com",
-    "type": "member"
-  },
-  "testUser7": {
-    "name": "TestUser7",
-    "pass": "test",
-    "email": "test@minetrocity.com",
-    "type": "member"
-  },
-  "testUser8": {
-    "name": "TestUser8",
-    "pass": "test",
-    "email": "test@minetrocity.com",
-    "type": "member"
-  },
-  "testUser9": {
-    "name": "TestUser9",
-    "pass": "test",
-    "email": "test@minetrocity.com",
-    "type": "member"
-  },
-  "testUser10": {
-    "name": "TestUser10",
-    "pass": "test",
-    "email": "test@minetrocity.com",
-    "type": "member"
-  }
+	"richiepreece": {
+			"id": "b1f66d2a-a3b5-4673-9c3a-d85b2b5356bf",
+			"user_name": "richiepreece",
+			"password": "preece",
+			"email": "richie@minetrocity.com",
+			"acl": [
+					"test1",
+					"test2",
+					"test3"
+			]
+	},
+	"dallinosmun": {
+			"id": "ef2d09bb-c9f7-4a9b-bd67-9c7f4935c0a5",
+			"user_name": "dallinosmun",
+			"password": "osmun",
+			"email": "dallin@minetrocity.com",
+			"acl": [
+					"test1",
+					"test2"
+			]
+	},
+	"scottbiery": {
+			"id": "9109c851-220a-4527-972b-17313a2f96ec",
+			"user_name": "scottbiery",
+			"password": "biery",
+			"email": "scott@minetrocity.com",
+			"acl": [
+					"test1"
+			]
+	}
 }
