@@ -1,6 +1,6 @@
 var express  = require('express')
   , http     = require('http')
-  , https	 = require('https')
+  , https		 = require('https')
   , path     = require('path')
   , fs       = require('fs')
   , io       = require('socket.io')
@@ -118,8 +118,8 @@ server.listen(app.get('port'), function () {
 setupTimers();
 
 function setupTimers() {
-  timers.setInterval(calculateCPUStats, 1000);
-  timers.setInterval(downloadVersion, 1000 * 60);// * 60 * 60);
+  //timers.setInterval(calculateCPUStats, 1000);
+  timers.setInterval(getVersions, 1000 * 60);// * 60 * 60);
 };
 
 function calculateCPUStats() {
@@ -149,103 +149,6 @@ function calculateCPUStats() {
   //console.log(toSend);
   io.sockets.emit('cpustats', toSend);
 };
-
-function downloadVersion(file) {
-  console.log('Getting server version for file ' + file);
-  
-  if (!file)
-    file = 'server';
-
-  var options = {
-    host: url.parse('http://richiepreece.com/version').host,
-    port: 80,
-    path: url.parse('http://richiepreece.com/version').pathname
-  };
-
-  var file_name = file;
-  var currDir = process.cwd();
-  console.log('We are in ' + currDir);
-  process.chdir('version_info');
-  var file = fs.createWriteStream(process.cwd() + '/' + file_name);
-  process.chdir(currDir);
-  // canReadVersion = false; // What is this?
-
-  http.get(options, function (res) {
-    res.on('data', function (data) {
-        file.write(data);
-    }).on('end', function () {
-        file.end();
-        
-        if (shared.get('upgrading')) {
-          io.sockets.emit('upgraded');
-          shared.set('upgrading', false);
-        } else {
-          checkUpdateStatus();
-        }
-    });
-  });
-};
-
-function checkUpdateStatus() {
-  console.log('Checking for update');
-  
-  var version;
-  var server_version;
-  
-  fs.readFile('version_info/version', 'utf-8', function (err, data) {
-    if (err) return;
-
-    version = data.split('\n');
-  
-    for (var i = 0; i < version.length; i++) {
-      if (version[i] !== '') {
-        version[i] = version[i].split('=');
-        for (var j = 0; j < version[i].length; j++) {
-          version[i][j] = version[i][j].replace('\r', '');
-          version[i][j] = version[i][j].split('.');
-        }
-      } else {
-        version.splice(i--, 1);
-      }
-    }
-
-    fs.readFile('version_info/server', 'utf-8', function (err, data) {
-      if (err) return;
-
-      server_version = data.split('\n');
-
-      for (var i = 0; i < server_version.length; i++) {
-        if (server_version[i] !== '') {
-          server_version[i] = server_version[i].split('=');
-          for (var j = 0; j < server_version[i].length; j++) {
-            server_version[i][j] = server_version[i][j].replace('\r', '');
-            server_version[i][j] = server_version[i][j].split('.');
-          }
-        } else {
-          server_version.splice(i--, 1);
-        }
-      }
-
-      for (var i = 0; i < version.length; i++) {
-        if (version[i][0] == 'mc') {
-          for (var j = 0; j < version[i][1].length; j++) {
-            if (version[i][1][j] < server_version[i][1][j]) {
-              console.log('Time to upgrade');
-              io.sockets.emit('upgrade', true);
-              shared.set('needToUpgrade', true);
-              return;
-            }
-          }
-        }
-      }
-
-      console.log('No upgrade needed');
-      shared.set('needToUpgrade', false);
-    });
-  }); 
-};
-
-
 
 /*********************************
 * New versioning stuff found here
@@ -317,18 +220,15 @@ function getVersions(){
 				
 				process.chdir("versions");
 				
-				var file = fs.createWriteStream(process.cwd() + '/versions.json');
-				
-				file.write(data);
-				
+				var file = fs.createWriteStream(process.cwd() + '/versions.json');				
+				file.write(data);				
 				file.end();
 				
-				process.chdir(currDir);
-				
+				process.chdir(currDir);				
 				
 				versions = JSON.parse(data);
 				
-				//For testing only...
+				/*For testing only...
 				var dir = "versions/";
 				
 				versionList = versions['versions'];
@@ -337,7 +237,7 @@ function getVersions(){
 					getServer(versionList[curr]['id'], versionList[curr]['type']);
 				}
 				
-				//End testing only
+				//End testing only*/
 			});
 		}
 	});
