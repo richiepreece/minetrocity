@@ -1,0 +1,86 @@
+<html>
+	<head>
+	</head>
+	<body>
+		REQ: <input type="text" id="req" />
+		<br />
+		MSG: <input type="text" id="msg" />
+		<br />
+		<input type="button" id="get" value="GET" /><input type="button" id="post" value="POST" /><input type="button" id="put" value="PUT" />
+		<br />
+		<div id="resp"></div>
+		
+		<script type="text/javascript" src="/js/lib/jquery.js"></script>
+		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+		<script type="text/javascript">
+			$(function(){
+				function _ajax_request(url, data, callback, type, method) {
+					if (jQuery.isFunction(data)) {
+						callback = data;
+						data = {};
+					}
+					return jQuery.ajax({
+						type: method,
+						url: url,
+						data: data,
+						success: callback,
+						dataType: type
+					});
+				}
+
+				jQuery.extend({
+					put: function(url, data, callback, type) {
+						return _ajax_request(url, data, callback, type, 'PUT');
+					},
+					delete_: function(url, data, callback, type) {
+						return _ajax_request(url, data, callback, type, 'DELETE');
+					}
+				});
+				
+				var socket = io.connect();
+				
+				$('#get').click(function(){
+					console.log('GET clicked');
+					
+					var req = document.getElementById('req').value;
+					var msg = document.getElementById('msg').value;
+					
+					console.log(req + ' -- ' + msg);
+					
+					$.get(req, function(data){
+						console.log(data);
+						$('#resp').html(data);
+					});
+				});
+				
+				$('#post').click(function(){
+					console.log('POST clicked');
+					
+					var req = document.getElementById('req').value;
+					var msg = document.getElementById('msg').value;
+					
+					console.log(req + ' -- ' + msg);
+					
+					$.post(req, JSON.parse(msg), function(data){
+						console.log(data);
+						$('#resp').html(data);
+					});
+				});
+				
+				$('#put').click(function(){
+					console.log('PUT clicked');
+					
+					var req = document.getElementById('req').value;
+					var msg = document.getElementById('msg').value;
+					
+					console.log(req + ' -- ' + msg);
+					
+					$.put(req, JSON.parse(msg), function(data){
+						console.log(data);
+						$('#resp').html(data);
+					});
+				});
+			});
+		</script>
+	</body>
+</html>

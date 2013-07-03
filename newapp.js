@@ -149,13 +149,17 @@ app.put('/update_user', function(request, response, next){
 		}
 		
 		if(oldUser){
+			delete app.models.users[oldUser['username']];
+			
 			for(index in updatedUser){
 				oldUser[index] = updatedUser[index];
 			}
 			
-			fs.writeFileSnc('models/users.json', JSON.stringify(app.models.users));
+			app.models.users[oldUser['username']] = oldUser;
 			
-			responseData['id'] = newUser['id'];
+			fs.writeFileSync('models/users.json', JSON.stringify(app.models.users));
+			
+			responseData['id'] = updatedUser['id'];
 			responseData['success'] = true;
 		} else {
 			responseData['success'] = false;
@@ -180,7 +184,7 @@ app.post('/delete_user', function(request, response, next){
 				existingUser['username'] == deleteUser['username']){
 			delete app.models.users[deleteUser['username']];
 
-			fs.writeFileSnc('models/users.json', JSON.stringify(app.models.users));
+			fs.writeFileSync('models/users.json', JSON.stringify(app.models.users));
 			
 			responseData['id'] = deleteUser['id'];
 			responseData['success'] = true;
@@ -197,6 +201,16 @@ app.post('/delete_user', function(request, response, next){
 });
 
 app.get('/servers', function(request, response, next){
+	responseData = {};
+	
+	if(request.session.user){
+		responseData['servers'] = app.models.servers;
+	} else {
+		responseData['success'] = false;
+		responseData['err'] = 'You are not logged in';
+	}
+	
+	response.send(responseData);
 });
 
 app.post('/start_server', function(request, response, next){
