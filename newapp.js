@@ -89,7 +89,7 @@ app.post('/login', function(request, response, next){
 		responseData['err'] = 'Username or Password is invalid';
 	}
 	
-	response.send(JSON.stringify(responseData));
+	response.send(responseData);
 });
 
 app.get('/logout', function(request, response, next){
@@ -97,7 +97,7 @@ app.get('/logout', function(request, response, next){
 		var responseData = {};
 		responseData['success'] = true;
 		
-		response.send(JSON.stringify(responseData));
+		response.send(responseData);
 	});
 });
 
@@ -110,7 +110,7 @@ app.get('/users', function(request, response, next){
 		responseData[err] = 'You are not logged in';
 	}
 	
-	response.send(JSON.stringify(responseData));
+	response.send(responseData);
 });
 
 app.post('/add_user', function(request, response, next){
