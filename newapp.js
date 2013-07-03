@@ -9,7 +9,8 @@ var express  = require('express')
   , os       = require('os')
   , shared   = require('./shared')
   , mcServer = require('./mc_server')
-	, uuid     = require('node-uuid');
+  , uuid     = require('node-uuid')
+	, hash     = require('password-hash')
   ;
 
 var app    = express()
@@ -74,7 +75,7 @@ app.post('/login', function(request, response, next){
 	var user = app.models.users[userInfo['username']];
 	
 	if(user && user['username'] == userInfo['username'] &&
-			user['password'] == userInfo['password']){
+			hash.verify(userInfo['password'], user['password'])){
 		console.log('Valid user');
 		
 		responseData['username'] = user['username'];
@@ -127,6 +128,7 @@ app.post('/add_user', function(request, response, next){
 		if(true){ //TODO: check permissions
 			var newUser = request.body;
 			newUser['id'] = uuid.v4();
+			newUser['password'] = hash.generate(newUser['password']);
 			app.models.users[newUser['username']] = newUser;
 			
 			fs.writeFileSync('models/users.json', JSON.stringify(app.models.users));
@@ -163,7 +165,11 @@ app.put('/update_user', function(request, response, next){
 				delete app.models.users[oldUser['username']];
 				
 				for(index in updatedUser){
-					oldUser[index] = updatedUser[index];
+					if(index == 'password'){
+						oldUser[index] = hash.generate(updatedUser[index]);
+					} else {
+						oldUser[index] = updatedUser[index];
+					}
 				}
 				
 				app.models.users[oldUser['username']] = oldUser;

@@ -1,26 +1,27 @@
 var fs = require('fs');
 var uuid = require('node-uuid');
+var hash = require('password-hash');
 
 var users = {};
 
 var currUser = users['richiepreece'] = {};
 currUser['id'] = uuid.v4();
-currUser['user_name'] = 'richiepreece';
-currUser['password'] = 'preece';
+currUser['username'] = 'richiepreece';
+currUser['password'] = hash.generate('preece');
 currUser['email'] = 'richie@minetrocity.com';
 currUser['acl'] = ["test1", "test2", "test3"];
 
 var currUser = users['dallinosmun'] = {};
 currUser['id'] = uuid.v4();
-currUser['user_name'] = 'dallinosmun';
-currUser['password'] = 'osmun';
+currUser['username'] = 'dallinosmun';
+currUser['password'] = hash.generate('osmun');
 currUser['email'] = 'dallin@minetrocity.com';
 currUser['acl'] = ["test1", "test2"];
 
 var currUser = users['scottbiery'] = {};
 currUser['id'] = uuid.v4();
-currUser['user_name'] = 'scottbiery';
-currUser['password'] = 'biery';
+currUser['username'] = 'scottbiery';
+currUser['password'] = hash.generate('biery');
 currUser['email'] = 'scott@minetrocity.com';
 currUser['acl'] = ["test1"];
 
