@@ -108,7 +108,15 @@ app.get('/users', function(request, response, next){
 	var responseData = {};
 	
 	if(request.session.user){
-		if(true){ //TODO: check permissions
+		var isAllowed = false;
+		
+		for(index in request.session.user['acl']){
+			if(request.session.user['acl'][index] == 'VIEW_USERS'){
+				isAllowed = true;
+			}
+		}
+	
+		if(isAllowed){
 			responseData['users'] = app.models.users;
 		} else {
 			responseData['sucess'] = false;
@@ -126,7 +134,15 @@ app.post('/add_user', function(request, response, next){
 	var responseData = {};
 	
 	if(request.session.user){
-		if(true){ //TODO: check permissions
+		var isAllowed = false;
+		
+		for(index in request.session.user['acl']){
+			if(request.session.user['acl'][index] == 'ADD_USERS'){
+				isAllowed = true;
+			}
+		}
+	
+		if(isAllowed){
 			var newUser = request.body;
 			
 			if(!app.models.users[newUser['username']]){
@@ -158,7 +174,15 @@ app.put('/update_user', function(request, response, next){
 	var responseData = {};
 	
 	if(request.session.user){
-		if(true){ //TODO: check permissions
+		var isAllowed = false;
+		
+		for(index in request.session.user['acl']){
+			if(request.session.user['acl'][index] == 'UPDATE_USERS'){
+				isAllowed = true;
+			}
+		}
+	
+		if(isAllowed){
 			var updatedUser = request.body;
 			var oldUser;
 			
@@ -205,7 +229,15 @@ app.delete('/delete_user', function(request, response, next){
 	var responseData = {};
 	
 	if(request.session.user){
-		if(true){ //TODO: check permissions
+		var isAllowed = false;
+		
+		for(index in request.session.user['acl']){
+			if(request.session.user['acl'][index] == 'DELETE_USERS'){
+				isAllowed = true;
+			}
+		}
+	
+		if(isAllowed){
 			var deleteUser = request.body;
 			var existingUser;
 			
@@ -242,7 +274,15 @@ app.get('/servers', function(request, response, next){
 	var responseData = {};
 	
 	if(request.session.user){
-		if(true){ //TODO: check permissions
+		var isAllowed = false;
+		
+		for(index in request.session.user['acl']){
+			if(request.session.user['acl'][index] == 'VIEW_SERVERS'){
+				isAllowed = true;
+			}
+		}
+	
+		if(isAllowed){
 			responseData['servers'] = app.models.servers;
 		} else {
 			responseData['sucess'] = false;
@@ -266,7 +306,15 @@ app.post('/add_server', function(request, response, next){
 	var responseData = {};
 	
 	if(request.session.user){
-		if(true){ //TODO: check permissions
+		var isAllowed = false;
+		
+		for(index in request.session.user['acl']){
+			if(request.session.user['acl'][index] == 'ADD_SERVERS'){
+				isAllowed = true;
+			}
+		}
+	
+		if(isAllowed){
 			var newServer = request.body;
 			
 			if(!app.models.servers[newServer['server_name']]){
@@ -297,7 +345,15 @@ app.put('/update_server', function(request, response, next){
 	var responseData = {};
 	
 	if(request.session.user){
-		if(true){ //TODO: check permissions
+		var isAllowed = false;
+		
+		for(index in request.session.user['acl']){
+			if(request.session.user['acl'][index] == 'UPDATE_SERVERS'){
+				isAllowed = true;
+			}
+		}
+	
+		if(isAllowed){
 			var updatedServer = request.body;
 			var oldServer;
 			
@@ -340,7 +396,15 @@ app.delete('/delete_server', function(request, response, next){
 	var responseData = {};
 	
 	if(request.session.user){
-		if(true){ //TODO: check permissions
+		var isAllowed = false;
+		
+		for(index in request.session.user['acl']){
+			if(request.session.user['acl'][index] == 'DELETE_SERVERS'){
+				isAllowed = true;
+			}
+		}
+	
+		if(isAllowed){
 			var deleteServer = request.body;
 			var oldServer;
 			
