@@ -67,6 +67,89 @@ server.listen(app.get('port'), function () {
 * Everything below it is the new stuff.
 *************************************************/
 
+function getServer(ver, rel){	
+	var serverUrl = "https://s3.amazonaws.com/Minecraft.Download/versions/" + ver + "/minecraft_server." + ver + ".jar";
+	
+	var options = {
+		host: url.parse(serverUrl).host,
+		port: 443,
+		path: url.parse(serverUrl).pathname
+	};
+	
+	var currDir = process.cwd();
+	
+	if(!fs.existsSync("versions")){
+		fs.mkdirSync("versions");
+	}
+	
+	process.chdir("versions");
+	
+	if(!fs.existsSync(rel)){
+		fs.mkdirSync(rel);
+	}
+	
+	process.chdir(rel);
+	
+	if(!fs.existsSync(ver)){
+		fs.mkdirSync(ver);
+	}
+	
+	process.chdir(ver);
+	
+	if(!fs.existsSync('minecraft_server.jar')){	
+		var file = fs.createWriteStream(process.cwd() + '/minecraft_server.jar');
+		
+		https.get(options, function(result){
+			result.on('data', function(data){
+				file.write(data);
+			}).on('end', function(){
+				file.end();
+			});
+		});
+	}
+	
+	process.chdir(currDir);
+}
+
+function getVersions(){
+	var mojangVersionUrl = "https://s3.amazonaws.com/Minecraft.Download/versions/versions.json";
+	
+	var options = {
+		host: url.parse(mojangVersionUrl).host,
+		port: 443,
+		path: url.parse(mojangVersionUrl).path
+	}
+	
+	var request = https.request(options, function(result){		
+		if(result.statusCode == 200){		
+			result.on('data', function(data){
+				var currDir = process.cwd();
+			
+				if(!fs.existsSync("versions")){
+					fs.mkdirSync("versions");
+				}
+				
+				process.chdir("versions");
+				
+				var file = fs.createWriteStream(process.cwd() + '/versions.json');				
+				file.write(data);				
+				file.end();
+				
+				process.chdir(currDir);				
+				
+				app.models.versions = JSON.parse(data);
+			});
+		}
+	});
+	
+	request.end();
+	
+	request.on('error', function(error){
+		console.error(error);
+	});
+}
+getVersions();
+
 app.post('/login', function(request, response, next){
 	console.log('Logging in...');
 	var data = '';
@@ -323,6 +406,8 @@ app.post('/add_server', function(request, response, next){
 				
 				fs.writeFileSync('models/servers.json', JSON.stringify(app.models.servers));
 				
+				getServer(newServer['version'], newServer['version_type']);
+				
 				responseData['id'] = newServer['id'];
 				responseData['success'] = true;
 			} else {
@@ -441,6 +526,29 @@ app.post('/restart_server', function(request, response, next){
 });
 
 app.get('/versions', function(request, response, next){
+	var responseData = {};
+	
+	if(request.session.user){
+		var isAllowed = false;
+		
+		for(index in request.session.user['acl']){
+			if(request.session.user['acl'][index] == 'GET_VERSIONS'){
+				isAllowed = true;
+			}
+		}
+	
+		if(isAllowed){
+			responseData['versions'] = app.models.versions;
+		} else {
+			responseData['sucess'] = false;
+			responseData['err'] = 'You do not have the necessary permissions';
+		}
+	} else {
+		responseData['success'] = false;
+		responseData['err'] = 'You are not logged in';
+	}
+	
+	response.send(responseData);
 });
 
 app.post('/change_port', function(request, response, next){
