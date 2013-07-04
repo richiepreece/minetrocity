@@ -30,6 +30,7 @@ var sessOptions = {
 app.models = {};
 app.models.users = JSON.parse(fs.readFileSync('models/users.json'));
 app.models.servers = JSON.parse(fs.readFileSync('models/servers.json'));
+app.models.permissions = JSON.parse(fs.readFileSync('models/permissions.json'));
 
 app.configure(function () {
   app.set('port', process.env.VCAP_APP_PORT || process.env.PORT || 3000);
@@ -127,14 +128,20 @@ app.post('/add_user', function(request, response, next){
 	if(request.session.user){
 		if(true){ //TODO: check permissions
 			var newUser = request.body;
-			newUser['id'] = uuid.v4();
-			newUser['password'] = hash.generate(newUser['password']);
-			app.models.users[newUser['username']] = newUser;
 			
-			fs.writeFileSync('models/users.json', JSON.stringify(app.models.users));
-			
-			responseData['id'] = newUser['id'];
-			responseData['success'] = true;
+			if(!app.models.users[newUser['username']]){
+				newUser['id'] = uuid.v4();
+				newUser['password'] = hash.generate(newUser['password']);
+				app.models.users[newUser['username']] = newUser;
+				
+				fs.writeFileSync('models/users.json', JSON.stringify(app.models.users));
+				
+				responseData['id'] = newUser['id'];
+				responseData['success'] = true;
+			} else {
+				responseData['success'] = false;
+				responseData['err'] = 'A user exists with that name';
+			}
 		} else {
 			responseData['sucess'] = false;
 			responseData['err'] = 'You do not have the necessary permissions';
@@ -194,17 +201,22 @@ app.put('/update_user', function(request, response, next){
 	response.send(responseData);
 });
 
-app.post('/delete_user', function(request, response, next){
+app.delete('/delete_user', function(request, response, next){
 	var responseData = {};
 	
 	if(request.session.user){
 		if(true){ //TODO: check permissions
 			var deleteUser = request.body;
-			var existingUser = app.models.users[deleteUser['username']];
+			var existingUser;
 			
-			if(existingUser && existingUser['id'] == deleteUser['id'] &&
-					existingUser['username'] == deleteUser['username']){
-				delete app.models.users[deleteUser['username']];
+			for(index in app.models.users){
+				if(app.models.users[index]['id'] == deleteUser['id']){
+					existingUser = app.models.users[index];
+				}
+			}
+			
+			if(existingUser && existingUser['id'] == deleteUser['id']){
+				delete app.models.users[existingUser['username']];
 
 				fs.writeFileSync('models/users.json', JSON.stringify(app.models.users));
 				
@@ -227,7 +239,7 @@ app.post('/delete_user', function(request, response, next){
 });
 
 app.get('/servers', function(request, response, next){
-	responseData = {};
+	var responseData = {};
 	
 	if(request.session.user){
 		if(true){ //TODO: check permissions
@@ -251,12 +263,114 @@ app.post('/stop_server', function(request, response, next){
 });
 
 app.post('/add_server', function(request, response, next){
+	var responseData = {};
+	
+	if(request.session.user){
+		if(true){ //TODO: check permissions
+			var newServer = request.body;
+			
+			if(!app.models.servers[newServer['server_name']]){
+				newServer['id'] = uuid.v4();
+				app.models.servers[newServer['server_name']] = newServer;
+				
+				fs.writeFileSync('models/servers.json', JSON.stringify(app.models.servers));
+				
+				responseData['id'] = newServer['id'];
+				responseData['success'] = true;
+			} else {
+				responseData['success'] = false;
+				responseData['err'] = 'A server exists with that name';
+			}
+		} else {
+			responseData['success'] = false;
+			responseData['err'] = 'You do not have the necessary permissions';
+		}
+	} else {
+		responseData['success'] = false;
+		responseData['err'] = 'You are not logged in';
+	}
+	
+	response.send(responseData);
 });
 
 app.put('/update_server', function(request, response, next){
+	var responseData = {};
+	
+	if(request.session.user){
+		if(true){ //TODO: check permissions
+			var updatedServer = request.body;
+			var oldServer;
+			
+			for(index in app.models.servers){
+				if(app.models.servers[index]['id'] == updatedServer['id']){
+					oldServer = app.models.servers[index];
+				}
+			}
+			
+			if(oldServer){
+				delete app.models.servers[oldServer['server_name']];
+				
+				for(index in updatedServer){
+					oldServer[index] = updatedServer[index];
+				}
+				
+				app.models.servers[oldServer['server_name']] = oldServer;
+				
+				fs.writeFileSync('models/servers.json', JSON.stringify(app.models.servers));
+				
+				responseData['id'] = updatedServer['id'];
+				responseData['success'] = true;
+			} else {
+				responseData['success'] = false;
+				responseData['err'] = 'User does not exist';
+			}
+		} else {
+			responseData['success'] = false;
+			responseData['err'] = 'You do not have the necessary permissions';
+		}
+	} else {
+		responseData['success'] = false;
+		responseData['err'] = 'You are not logged in';
+	}
+	
+	response.send(responseData);
 });
 
-app.post('/delete_server', function(request, response, next){
+app.delete('/delete_server', function(request, response, next){
+	var responseData = {};
+	
+	if(request.session.user){
+		if(true){ //TODO: check permissions
+			var deleteServer = request.body;
+			var oldServer;
+			
+			for(index in app.models.servers){
+				if(app.models.servers[index]['id'] == deleteServer['id']){
+					oldServer = app.models.servers[index];
+				}
+			}
+			
+			if(oldServer && oldServer['id'] == deleteServer['id']){
+				delete app.models.servers[oldServer['server_name']];
+
+				fs.writeFileSync('models/servers.json', JSON.stringify(app.models.servers));
+				
+				responseData['id'] = deleteServer['id'];
+				responseData['success'] = true;
+			} else {
+				responseData['success'] = false;
+				responseData['err'] = 'Server does not exist';
+			}
+		} else {
+			responseData['success'] = false;
+			responseData['err'] = 'You do not have the necessary permissions';
+		}
+	} else {
+		responseData['success'] = false;
+		responseData['err'] = 'You are not logged in';
+	}
+	
+	response.send(responseData);
 });
 
 app.post('/restart_server', function(request, response, next){

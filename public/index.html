@@ -6,7 +6,7 @@
 		<br />
 		MSG: <input type="text" id="msg" />
 		<br />
-		<input type="button" id="get" value="GET" /><input type="button" id="post" value="POST" /><input type="button" id="put" value="PUT" />
+		<input type="button" id="get" value="GET" /><input type="button" id="post" value="POST" /><input type="button" id="put" value="PUT" /><input type="button" id="delete" value="DELETE" />
 		<br />
 		<div id="resp"></div>
 		
@@ -76,6 +76,20 @@
 					console.log(req + ' -- ' + msg);
 					
 					$.put(req, JSON.parse(msg), function(data){
+						console.log(data);
+						$('#resp').html(data);
+					});
+				});
+				
+				$('#delete').click(function(){
+					console.log('DELETE clicked');
+					
+					var req = document.getElementById('req').value;
+					var msg = document.getElementById('msg').value;
+					
+					console.log(req + ' -- ' + msg);
+					
+					$.delete_(req, JSON.parse(msg), function(data){
 						console.log(data);
 						$('#resp').html(data);
 					});
