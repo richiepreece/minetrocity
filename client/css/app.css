@@ -1,0 +1,28 @@
+#header .nav {
+  background-color: #333;
+  color: #fff;
+}
+#header .title {
+  display: inline-block;
+  padding-left: 20px;
+  color: #90ee90;
+  font-size: 30px;
+}
+#header .item {
+  display: inline-block;
+  padding: 14px 20px;
+  cursor: pointer;
+}
+#header .item:hover {
+  color: #ccc;
+}
+#footer {
+  text-align: center;
+}
+* {
+  padding: 0;
+  margin: 0;
+}
+#view {
+  min-height: 630px;
+}

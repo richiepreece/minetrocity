@@ -1,5 +1,5 @@
 angular.module('minetrocity').controller('mainCtrl',
   function ($scope) {
-    $scope.test = 'test';
+    $scope.test = 'yay it works';
   }
 );

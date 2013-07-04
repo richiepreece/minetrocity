@@ -6,9 +6,9 @@
 </head>
 <body>
 
-  <div>HEADER GOES HERE</div>
-  <div ng-view></div>
-  <div>FOOTER GOES HERE</div>
+  <div header id="header"></div>
+  <div ng-view id="view"></div>
+  <div footer id="footer"></div>
 
 <!-- Libraries -->
 <script src="js/lib/d3/d3.v3.min.js"></script>
@@ -19,11 +19,21 @@
 
 <!-- Module -->
 <script src="js/module.js"></script>
+
 <!-- Controllers -->
 <script src="js/app/ctrl/main.js"></script>
+<script src="js/app/ctrl/login.js"></script>
+<script src="js/app/ctrl/servers.js"></script>
+<script src="js/app/ctrl/header.js"></script>
+<script src="js/app/ctrl/footer.js"></script>
+
 <!-- Directives -->
+<script src="js/app/directive/header.js"></script>
+<script src="js/app/directive/footer.js"></script>
+
 <!-- Services -->
 <!-- Filters -->
+
 <!-- Main -->
 <script src="js/main.js"></script>
 
