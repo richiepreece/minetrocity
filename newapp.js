@@ -601,6 +601,7 @@ app.put('/update_server', function(request, response, next){
 			if(oldServer){
 				var oldFsSafeName = oldServer['server_name'].replace(/\W/g, '');	
 				var oldName = oldServer['server_name'];
+				var oldPort = oldServer['port'];
 				
 				delete app.models.servers[oldFsSafeName];
 				
@@ -610,6 +611,7 @@ app.put('/update_server', function(request, response, next){
 				
 				var newFsSafeName = oldServer['server_name'].replace(/\W/g, '');
 				var newName = oldServer['server_name'];
+				var newPort = oldServer['port'];
 				
 				app.models.servers[newFsSafeName] = oldServer;
 				
@@ -631,6 +633,8 @@ app.put('/update_server', function(request, response, next){
 							var serverProps = fs.readFileSync('server.properties', { encoding : 'utf8' });
 							var serverProps = serverProps.replace(oldFsSafeName, newFsSafeName);
 							var serverProps = serverProps.replace(oldName, newName);
+							var serverProps = serverProps.replace('server-port=' + oldPort, 'server-port=' + newPort);
+							var serverProps = serverProps.replace
 							fs.writeFileSync('server.properties', serverProps);
 						}
 					}
@@ -690,7 +694,7 @@ app.delete('/delete_server', function(request, response, next){
 					process.chdir('worlds');
 					
 					if(fs.existsSync(fsSafeName)){
-						fs.rmdirSync(fsSafeName);
+						//fs.rmdirSync(fsSafeName);
 						//TODO: Recursive delete
 					}
 				}
