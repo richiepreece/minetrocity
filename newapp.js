@@ -595,6 +595,7 @@ app.put('/update_server', function(request, response, next){
 			
 			if(oldServer){
 				delete app.models.servers[oldServer['server_name']];
+				var oldName = oldServer['server_name'];
 				
 				for(index in updatedServer){
 					oldServer[index] = updatedServer[index];
@@ -603,6 +604,19 @@ app.put('/update_server', function(request, response, next){
 				app.models.servers[oldServer['server_name']] = oldServer;
 				
 				fs.writeFileSync('models/servers.json', JSON.stringify(app.models.servers));
+				
+				var currDir = process.cwd();
+				
+				if(fs.existsSync('worlds')){
+					process.chdir('worlds');
+					
+					if(fs.existsSync(oldName)){
+						fs.rename(oldName, oldServer['server_name']);
+						//TODO: Change world data (server.properties & world folder)
+					}
+				}
+				
+				process.chdir(currDir);
 				
 				responseData['id'] = updatedServer['id'];
 				responseData['success'] = true;
@@ -648,6 +662,19 @@ app.delete('/delete_server', function(request, response, next){
 				delete app.models.servers[oldServer['server_name']];
 
 				fs.writeFileSync('models/servers.json', JSON.stringify(app.models.servers));
+				
+				var currDir = process.cwd();
+				
+				if(fs.existsSync('worlds')){
+					process.chdir('worlds');
+					
+					if(fs.existsSync(oldServer['server_name'])){
+						fs.rmdirSync(oldServer['server_name']);
+						//TODO: Recursive delete
+					}
+				}
+				
+				process.chdir(currDir);
 				
 				responseData['id'] = deleteServer['id'];
 				responseData['success'] = true;
