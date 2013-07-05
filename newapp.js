@@ -17,10 +17,6 @@ var app    = express()
   , server = http.createServer(app)
   , io     = io.listen(server)
   ;
-	
-shared.set('child', null);
-shared.set('output', null);
-shared.set('input', null);
 
 var sessOptions = {
   key: 'minetrocity.sid',
@@ -449,12 +445,19 @@ app.post('/start_server', function(request, response, next){
 										shared.set('child' + server['id'], null);
 										shared.set('output' + server['id'], null);
 										shared.set('input' + server['id'], null);
+										shared.set('history' + server['id'], null);
 										
 										//TODO: alert users of closed server
 									}));
 							
 							shared.set('output' + server['id'], shared.get('child' + server['id']).stderr);
 							shared.set('input' + server['id'], shared.get('child' + server['id']).stdin);
+							shared.set('history' + server['id'], []);
+							
+							shared.get('output' + server['id']).on('data', function(data){
+								shared.get('history' + server['id']).push(data);
+								//TODO: share with users
+							});
 							
 							responseData['id'] = server['id'];
 							responseData['success'] = true;
@@ -462,6 +465,7 @@ app.post('/start_server', function(request, response, next){
 						} else {
 							responseData['success'] = false;
 							responseData['err'] = 'The server is already running';
+							responseData['history'] = shared.get('history' + server['id']);
 						}
 					} else {
 						responseData['success'] = false;
@@ -696,6 +700,38 @@ app.post('/change_port', function(request, response, next){
 });
 
 app.post('/server_history', function(request, response, next){
+	var responseData = {};
+	
+	if(request.session.user){
+		var isAllowed = false;
+		
+		for(index in request.session.user['acl']){
+			if(request.session.user['acl'][index] == 'VIEW_HISTORIES'){
+				isAllowed = true;
+			}
+		}
+	
+		if(isAllowed){
+			var server = request.body;
+			
+			if(shared.get('history' + server['id'])){				
+				responseData['id'] = server['id'];
+				responseData['success'] = true;
+				responseData['history'] = shared.get('history' + server['id']);
+			} else {
+				responseData['success'] = false;
+				responseData['err'] = 'Server is not running';
+			}	
+		} else {
+			responseData['sucess'] = false;
+			responseData['err'] = 'You do not have the necessary permissions';
+		}
+	} else {
+		responseData['success'] = false;
+		responseData['err'] = 'You are not logged in';
+	}
+	
+	response.send(responseData);
 });
 
 app.post('/clear_notification', function(request, response, next){
