@@ -64,13 +64,16 @@ server.listen(app.get('port'), function () {
 *************************************************/
 
 function createWorld(serverName, portNum){
-	var defaultFile = "generator-settings=\nallow-nether=true\nlevel-name=%%SERVER_NAME%%\n" + 
+	var defaultFile = "generator-settings=\nallow-nether=true\nlevel-name=%%FS_SAFE_NAME%%\n" + 
 		"enable-query=false\nallow-flight=false\nserver-port=%%PORT_NUM%%\nlevel-type=DEFAULT\n" +
 		"enable-rcon=false\nforce-gamemode=false\nlevel-seed=\nserver-ip=\nmax-build-height=256\n" +
 		"spawn-npcs=true\nwhite-list=false\nspawn-animals=true\nhardcore=false\ntexture-pack=\n" +
 		"online-mode=true\npvp=true\ndifficulty=1\ngamemode=0\nmax-players=20\nspawn-monsters=true\n" + 
 		"generate-structures=true\nview-distance=10\nmotd=%%SERVER_NAME%%";
+		
+	var fsSafeName = serverName.replace(/\W/g, '');
 	
+	defaultFile = defaultFile.replace(/%%FS_SAFE_NAME%%/g, fsSafeName);
 	defaultFile = defaultFile.replace(/%%SERVER_NAME%%/g, serverName);
 	defaultFile = defaultFile.replace(/%%PORT_NUM%%/g, portNum);
 	
@@ -82,11 +85,11 @@ function createWorld(serverName, portNum){
 	
 	process.chdir("worlds");
 	
-	if(!fs.existsSync(serverName)){
-		fs.mkdirSync(serverName);
+	if(!fs.existsSync(fsSafeName)){
+		fs.mkdirSync(fsSafeName);
 	}
 	
-	process.chdir(serverName);
+	process.chdir(fsSafeName);
 	
 	fs.writeFileSync('server.properties', defaultFile);
 	
@@ -430,12 +433,13 @@ app.post('/start_server', function(request, response, next){
 			
 			if(server){
 				var currDir = process.cwd();
+				var fsSafeName = server['server_name'].replace(/\W/g, '');
 				
 				if(fs.existsSync('worlds')){
 					process.chdir('worlds');
 					
-					if(fs.existsSync(server['server_name'])){
-						process.chdir(server['server_name']);
+					if(fs.existsSync(fsSafeName)){
+						process.chdir(fsSafeName);
 						
 						if(!shared.get('child' + server['id'])){
 							shared.set('child' + server['id'],
@@ -543,10 +547,11 @@ app.post('/add_server', function(request, response, next){
 	
 		if(isAllowed){
 			var newServer = request.body;
+			var fsSafeName = newServer['server_name'].replace(/\W/g, '');
 			
-			if(!app.models.servers[newServer['server_name']]){
+			if(!app.models.servers[fsSafeName]){
 				newServer['id'] = uuid.v4();
-				app.models.servers[newServer['server_name']] = newServer;
+				app.models.servers[fsSafeName] = newServer;
 				
 				fs.writeFileSync('models/servers.json', JSON.stringify(app.models.servers));
 				
@@ -594,14 +599,19 @@ app.put('/update_server', function(request, response, next){
 			}
 			
 			if(oldServer){
-				delete app.models.servers[oldServer['server_name']];
+				var oldFsSafeName = oldServer['server_name'].replace(/\W/g, '');	
 				var oldName = oldServer['server_name'];
+				
+				delete app.models.servers[oldFsSafeName];
 				
 				for(index in updatedServer){
 					oldServer[index] = updatedServer[index];
 				}
 				
-				app.models.servers[oldServer['server_name']] = oldServer;
+				var newFsSafeName = oldServer['server_name'].replace(/\W/g, '');
+				var newName = oldServer['server_name'];
+				
+				app.models.servers[newFsSafeName] = oldServer;
 				
 				fs.writeFileSync('models/servers.json', JSON.stringify(app.models.servers));
 				
@@ -610,9 +620,19 @@ app.put('/update_server', function(request, response, next){
 				if(fs.existsSync('worlds')){
 					process.chdir('worlds');
 					
-					if(fs.existsSync(oldName)){
-						fs.rename(oldName, oldServer['server_name']);
-						//TODO: Change world data (server.properties & world folder)
+					if(fs.existsSync(oldFsSafeName)){
+						fs.renameSync(oldFsSafeName, newFsSafeName);
+						
+						process.chdir(newFsSafeName);
+						
+						if(fs.existsSync(oldFsSafeName)){
+							fs.renameSync(oldFsSafeName, newFsSafeName);
+							
+							var serverProps = fs.readFileSync('server.properties', { encoding : 'utf8' });
+							var serverProps = serverProps.replace(oldFsSafeName, newFsSafeName);
+							var serverProps = serverProps.replace(oldName, newName);
+							fs.writeFileSync('server.properties', serverProps);
+						}
 					}
 				}
 				
@@ -659,6 +679,7 @@ app.delete('/delete_server', function(request, response, next){
 			}
 			
 			if(oldServer && oldServer['id'] == deleteServer['id']){
+				var fsSafeName = oldServer['server_name'].replace(/\W/g, '');
 				delete app.models.servers[oldServer['server_name']];
 
 				fs.writeFileSync('models/servers.json', JSON.stringify(app.models.servers));
@@ -668,8 +689,8 @@ app.delete('/delete_server', function(request, response, next){
 				if(fs.existsSync('worlds')){
 					process.chdir('worlds');
 					
-					if(fs.existsSync(oldServer['server_name'])){
-						fs.rmdirSync(oldServer['server_name']);
+					if(fs.existsSync(fsSafeName)){
+						fs.rmdirSync(fsSafeName);
 						//TODO: Recursive delete
 					}
 				}
