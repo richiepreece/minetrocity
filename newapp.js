@@ -67,8 +67,39 @@ server.listen(app.get('port'), function () {
 * Everything below it is the new stuff.
 *************************************************/
 
+function createWorld(serverName, portNum){
+	var defaultFile = "generator-settings=\nallow-nether=true\nlevel-name=%%SERVER_NAME%%\n" + 
+		"enable-query=false\nallow-flight=false\nserver-port=%%PORT_NUM%%\nlevel-type=DEFAULT\n" +
+		"enable-rcon=false\nforce-gamemode=false\nlevel-seed=\nserver-ip=\nmax-build-height=256\n" +
+		"spawn-npcs=true\nwhite-list=false\nspawn-animals=true\nhardcore=false\ntexture-pack=\n" +
+		"online-mode=true\npvp=true\ndifficulty=1\ngamemode=0\nmax-players=20\nspawn-monsters=true\n" + 
+		"generate-structures=true\nview-distance=10\nmotd=%%SERVER_NAME%%";
+	
+	defaultFile = defaultFile.replace(/%%SERVER_NAME%%/g, serverName);
+	defaultFile = defaultFile.replace(/%%PORT_NUM%%/g, portNum);
+	
+	var currDir = process.cwd();
+	
+	if(!fs.existsSync("worlds")){
+		fs.mkdirSync("worlds");
+	}
+	
+	process.chdir("worlds");
+	
+	if(!fs.existsSync(serverName)){
+		fs.mkdirSync(serverName);
+	}
+	
+	process.chdir(serverName);
+	
+	fs.writeFileSync('server.properties', defaultFile);
+	
+	process.chdir(currDir);	
+}
+
 function getServer(ver, rel){	
-	var serverUrl = "https://s3.amazonaws.com/Minecraft.Download/versions/" + ver + "/minecraft_server." + ver + ".jar";
+	var serverUrl = "https://s3.amazonaws.com/Minecraft.Download/versions/" + 
+		ver + "/minecraft_server." + ver + ".jar";
 	
 	var options = {
 		host: url.parse(serverUrl).host,
@@ -380,9 +411,118 @@ app.get('/servers', function(request, response, next){
 });
 
 app.post('/start_server', function(request, response, next){
+	var responseData = {};
+	
+	if(request.session.user){
+		var isAllowed = false;
+		
+		for(index in request.session.user['acl']){
+			if(request.session.user['acl'][index] == 'START_SERVERS'){
+				isAllowed = true;
+			}
+		}
+	
+		if(isAllowed){
+			var serverToStart = request.body;			
+			var server;
+			
+			for(index in app.models.servers){
+				if(app.models.servers[index]['id'] == serverToStart['id']){
+					server = app.models.servers[index];
+				}
+			}
+			
+			if(server){
+				var currDir = process.cwd();
+				
+				if(fs.existsSync('worlds')){
+					process.chdir('worlds');
+					
+					if(fs.existsSync(server['server_name'])){
+						process.chdir(server['server_name']);
+						
+						if(!shared.get('child' + server['id'])){
+							shared.set('child' + server['id'],
+								require('child_process').exec('java -Xmx1024M -Xms1024M -jar ../../versions/' +
+									server['version_type'] + '/' + server['version'] + '/minecraft_server.jar',
+									function(err, stdout, stderr){
+										shared.set('child' + server['id'], null);
+										shared.set('output' + server['id'], null);
+										shared.set('input' + server['id'], null);
+										
+										//TODO: alert users of closed server
+									}));
+							
+							shared.set('output' + server['id'], shared.get('child' + server['id']).stderr);
+							shared.set('input' + server['id'], shared.get('child' + server['id']).stdin);
+							
+							responseData['id'] = server['id'];
+							responseData['success'] = true;
+							responseData['history'] = []; //TODO: set history
+						} else {
+							responseData['success'] = false;
+							responseData['err'] = 'The server is already running';
+						}
+					} else {
+						responseData['success'] = false;
+						responseData['err'] = 'The server files could not be found';
+					}
+				} else {
+					responseData['success'] = false;
+					responseData['err'] = 'The server files could not be found';
+				}
+				
+				process.chdir(currDir);
+			} else {
+				responseData['success'] = false;
+				responseData['err'] = 'The server could not be found';
+			}
+		} else {
+			responseData['success'] = false;
+			responseData['err'] = 'You do not have the necessary permissions';
+		}
+	} else {
+		responseData['success'] = false;
+		responseData['err'] = 'You are not logged in';
+	}
+	
+	response.send(responseData);
 });
 
 app.post('/stop_server', function(request, response, next){
+	var responseData = {};
+	
+	if(request.session.user){
+		var isAllowed = false;
+		
+		for(index in request.session.user['acl']){
+			if(request.session.user['acl'][index] == 'START_SERVERS'){
+				isAllowed = true;
+			}
+		}
+	
+		if(isAllowed){
+			var server = request.body;
+			
+			if(shared.get('input' + server['id'])){
+				shared.get('input' + server['id']).write("/stop\n");
+				
+				responseData['id'] = server['id'];
+				responseData['success'] = true;
+			} else {
+				responseData['success'] = false;
+				responseData['err'] = 'Server is not running';
+			}
+		} else {
+			responseData['success'] = false;
+			responseData['err'] = 'You do not have the necessary permissions';
+		}
+	} else {
+		responseData['success'] = false;
+		responseData['err'] = 'You are not logged in';
+	}
+	
+	response.send(responseData);
 });
 
 app.post('/add_server', function(request, response, next){
@@ -407,6 +547,7 @@ app.post('/add_server', function(request, response, next){
 				fs.writeFileSync('models/servers.json', JSON.stringify(app.models.servers));
 				
 				getServer(newServer['version'], newServer['version_type']);
+				createWorld(newServer['server_name'], newServer['port']);
 				
 				responseData['id'] = newServer['id'];
 				responseData['success'] = true;
