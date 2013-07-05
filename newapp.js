@@ -63,7 +63,7 @@ server.listen(app.get('port'), function () {
 * Everything below it is the new stuff.
 *************************************************/
 
-function createWorld(serverName, portNum){
+function createWorld(newServer){
 	var defaultFile = "generator-settings=\nallow-nether=true\nlevel-name=%%FS_SAFE_NAME%%\n" + 
 		"enable-query=false\nallow-flight=false\nserver-port=%%PORT_NUM%%\nlevel-type=DEFAULT\n" +
 		"enable-rcon=false\nforce-gamemode=false\nlevel-seed=\nserver-ip=\nmax-build-height=256\n" +
@@ -71,11 +71,11 @@ function createWorld(serverName, portNum){
 		"online-mode=true\npvp=true\ndifficulty=1\ngamemode=0\nmax-players=20\nspawn-monsters=true\n" + 
 		"generate-structures=true\nview-distance=10\nmotd=%%SERVER_NAME%%";
 		
-	var fsSafeName = serverName.replace(/\W/g, '');
+	var fsSafeName = newServer['server_name'].replace(/\W/g, '');
 	
 	defaultFile = defaultFile.replace(/%%FS_SAFE_NAME%%/g, fsSafeName);
-	defaultFile = defaultFile.replace(/%%SERVER_NAME%%/g, serverName);
-	defaultFile = defaultFile.replace(/%%PORT_NUM%%/g, portNum);
+	defaultFile = defaultFile.replace(/%%SERVER_NAME%%/g, newServer['server_name']);
+	defaultFile = defaultFile.replace(/%%PORT_NUM%%/g, newServer['port']);
 	
 	var currDir = process.cwd();
 	
@@ -85,20 +85,20 @@ function createWorld(serverName, portNum){
 	
 	process.chdir("worlds");
 	
-	if(!fs.existsSync(fsSafeName)){
-		fs.mkdirSync(fsSafeName);
+	if(!fs.existsSync(newServer['id'])){
+		fs.mkdirSync(newServer['id']);
 	}
 	
-	process.chdir(fsSafeName);
+	process.chdir(newServer['id']);
 	
 	fs.writeFileSync('server.properties', defaultFile);
 	
 	process.chdir(currDir);	
 }
 
-function getServer(ver, rel){	
+function getServer(newServer){	
 	var serverUrl = "https://s3.amazonaws.com/Minecraft.Download/versions/" + 
-		ver + "/minecraft_server." + ver + ".jar";
+		newServer['version'] + "/minecraft_server." + newServer['version'] + ".jar";
 	
 	var options = {
 		host: url.parse(serverUrl).host,
@@ -114,17 +114,17 @@ function getServer(ver, rel){
 	
 	process.chdir("versions");
 	
-	if(!fs.existsSync(rel)){
-		fs.mkdirSync(rel);
+	if(!fs.existsSync(newServer['version_type'])){
+		fs.mkdirSync(newServer['version_type']);
 	}
 	
-	process.chdir(rel);
+	process.chdir(newServer['version_type']);
 	
-	if(!fs.existsSync(ver)){
-		fs.mkdirSync(ver);
+	if(!fs.existsSync(newServer['version'])){
+		fs.mkdirSync(newServer['version']);
 	}
 	
-	process.chdir(ver);
+	process.chdir(newServer['version']);
 	
 	if(!fs.existsSync('minecraft_server.jar')){	
 		var file = fs.createWriteStream(process.cwd() + '/minecraft_server.jar');
@@ -433,13 +433,12 @@ app.post('/start_server', function(request, response, next){
 			
 			if(server){
 				var currDir = process.cwd();
-				var fsSafeName = server['server_name'].replace(/\W/g, '');
 				
 				if(fs.existsSync('worlds')){
 					process.chdir('worlds');
 					
-					if(fs.existsSync(fsSafeName)){
-						process.chdir(fsSafeName);
+					if(fs.existsSync(serverToStart['id'])){
+						process.chdir(serverToStart['id']);
 						
 						if(!shared.get('child' + server['id'])){
 							shared.set('child' + server['id'],
@@ -548,21 +547,21 @@ app.post('/add_server', function(request, response, next){
 		if(isAllowed){
 			var newServer = request.body;
 			var fsSafeName = newServer['server_name'].replace(/\W/g, '');
+			newServer['id'] = uuid.v4();
 			
-			if(!app.models.servers[fsSafeName]){
-				newServer['id'] = uuid.v4();
-				app.models.servers[fsSafeName] = newServer;
+			if(!app.models.servers[newServer['id']]){
+				app.models.servers[newServer['id']] = newServer;
 				
 				fs.writeFileSync('models/servers.json', JSON.stringify(app.models.servers));
 				
-				getServer(newServer['version'], newServer['version_type']);
-				createWorld(newServer['server_name'], newServer['port']);
+				getServer(newServer);
+				createWorld(newServer);
 				
 				responseData['id'] = newServer['id'];
 				responseData['success'] = true;
 			} else {
 				responseData['success'] = false;
-				responseData['err'] = 'A server exists with that name';
+				responseData['err'] = 'The server already exists';
 			}
 		} else {
 			responseData['success'] = false;
@@ -590,60 +589,55 @@ app.put('/update_server', function(request, response, next){
 	
 		if(isAllowed){
 			var updatedServer = request.body;
-			var oldServer;
-			
-			for(index in app.models.servers){
-				if(app.models.servers[index]['id'] == updatedServer['id']){
-					oldServer = app.models.servers[index];
-				}
-			}
+			var oldServer = app.models.servers[updatedServer['id']];
 			
 			if(oldServer){
-				var oldFsSafeName = oldServer['server_name'].replace(/\W/g, '');	
-				var oldName = oldServer['server_name'];
-				var oldPort = oldServer['port'];
-				
-				delete app.models.servers[oldFsSafeName];
-				
-				for(index in updatedServer){
-					oldServer[index] = updatedServer[index];
-				}
-				
-				var newFsSafeName = oldServer['server_name'].replace(/\W/g, '');
-				var newName = oldServer['server_name'];
-				var newPort = oldServer['port'];
-				
-				app.models.servers[newFsSafeName] = oldServer;
-				
-				fs.writeFileSync('models/servers.json', JSON.stringify(app.models.servers));
-				
-				var currDir = process.cwd();
-				
-				if(fs.existsSync('worlds')){
-					process.chdir('worlds');
+				if(!shared.get('child' + oldServer['id'])){
+					var oldFsSafeName = oldServer['server_name'].replace(/\W/g, '');	
+					var oldName = oldServer['server_name'];
+					var oldPort = oldServer['port'];
 					
-					if(fs.existsSync(oldFsSafeName)){
-						fs.renameSync(oldFsSafeName, newFsSafeName);
+					for(index in updatedServer){
+						oldServer[index] = updatedServer[index];
+					}
+					
+					var newFsSafeName = oldServer['server_name'].replace(/\W/g, '');
+					var newName = oldServer['server_name'];
+					var newPort = oldServer['port'];
+					
+					fs.writeFileSync('models/servers.json', JSON.stringify(app.models.servers));
+					
+					var currDir = process.cwd();
+					
+					if(fs.existsSync('worlds')){
+						process.chdir('worlds');
 						
-						process.chdir(newFsSafeName);
-						
-						if(fs.existsSync(oldFsSafeName)){
-							fs.renameSync(oldFsSafeName, newFsSafeName);
+						if(fs.existsSync(oldServer['id'])){
+							process.chdir(oldServer['id']);
+							
+							if(fs.existsSync(oldFsSafeName)){
+								fs.renameSync(oldFsSafeName, newFsSafeName);
+							}
 							
 							var serverProps = fs.readFileSync('server.properties', { encoding : 'utf8' });
 							var serverProps = serverProps.replace(oldFsSafeName, newFsSafeName);
 							var serverProps = serverProps.replace(oldName, newName);
 							var serverProps = serverProps.replace('server-port=' + oldPort, 'server-port=' + newPort);
-							var serverProps = serverProps.replace
+							
+							getServer(oldServer);
+							
 							fs.writeFileSync('server.properties', serverProps);
 						}
 					}
+					
+					process.chdir(currDir);
+					
+					responseData['id'] = updatedServer['id'];
+					responseData['success'] = true;					
+				} else {
+					responseData['success'] = false;
+					responseData['err'] = "Server is running. Can't update.";
 				}
-				
-				process.chdir(currDir);
-				
-				responseData['id'] = updatedServer['id'];
-				responseData['success'] = true;
 			} else {
 				responseData['success'] = false;
 				responseData['err'] = 'User does not exist';
@@ -674,17 +668,10 @@ app.delete('/delete_server', function(request, response, next){
 	
 		if(isAllowed){
 			var deleteServer = request.body;
-			var oldServer;
+			var oldServer = app.models.servers[deleteServer['id']];
 			
-			for(index in app.models.servers){
-				if(app.models.servers[index]['id'] == deleteServer['id']){
-					oldServer = app.models.servers[index];
-				}
-			}
-			
-			if(oldServer && oldServer['id'] == deleteServer['id']){
-				var fsSafeName = oldServer['server_name'].replace(/\W/g, '');
-				delete app.models.servers[oldServer['server_name']];
+			if(oldServer){
+				delete app.models.servers[oldServer['id']];
 
 				fs.writeFileSync('models/servers.json', JSON.stringify(app.models.servers));
 				
@@ -693,7 +680,7 @@ app.delete('/delete_server', function(request, response, next){
 				if(fs.existsSync('worlds')){
 					process.chdir('worlds');
 					
-					if(fs.existsSync(fsSafeName)){
+					if(fs.existsSync(oldServer['id'])){
 						//fs.rmdirSync(fsSafeName);
 						//TODO: Recursive delete
 					}
