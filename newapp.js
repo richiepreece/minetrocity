@@ -496,7 +496,7 @@ app.post('/stop_server', function(request, response, next){
 		var isAllowed = false;
 		
 		for(index in request.session.user['acl']){
-			if(request.session.user['acl'][index] == 'START_SERVERS'){
+			if(request.session.user['acl'][index] == 'STOP_SERVERS'){
 				isAllowed = true;
 			}
 		}

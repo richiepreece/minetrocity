@@ -3,4 +3,5 @@ server/
 versions/
 version_info/
 node_modules/
+worlds/
 .DS_Store
