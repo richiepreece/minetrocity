@@ -8,7 +8,7 @@ var express  = require('express')
   , timers   = require('timers')
   , os       = require('os')
   , shared   = require('./shared')
-  , mcServer = require('./mc_server')
+  //, mcServer = require('./mc_server')
   , uuid     = require('node-uuid')
 	, hash     = require('password-hash')
   ;
@@ -607,8 +607,7 @@ app.post('/stop_server', function(request, response, next){
 			
 			//Make sure the server is running before you try to stop it
 			if(shared.get('input' + server['id'])){
-				//Stop the server using the /stop command
-				shared.get('input' + server['id']).write("/stop\n");
+				shared.get('input' + server['id']).write('/stop\n');	
 				
 				responseData['id'] = server['id'];
 				responseData['success'] = true;
