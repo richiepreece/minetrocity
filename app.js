@@ -8,11 +8,9 @@ var express  = require('express')
   , os       = require('os')
   , shared   = require('./shared')
   , uuid     = require('node-uuid')
-  ;
-
-var app    = express()
-  , server = http.createServer(app)
-  , io     = io.listen(server)
+  , app      = express()
+  , server   = http.createServer(app)
+  , io       = io.listen(server)
   ;
 
 var sessOptions = {
@@ -20,14 +18,8 @@ var sessOptions = {
 	secret: uuid.v4() + uuid.v4()
 };
 
-app.models = {};
-app.models.users = JSON.parse(fs.readFileSync('models/users.json'));
-app.models.servers = JSON.parse(fs.readFileSync('models/servers.json'));
-app.models.permissions = JSON.parse(fs.readFileSync('models/permissions.json'));
-
 app.configure(function () {
   app.set('port', process.env.VCAP_APP_PORT || process.env.PORT || 3000);
-	app.set('sslPort', 443);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.use(express.favicon());
