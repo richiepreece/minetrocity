@@ -83,7 +83,9 @@ var tools = require('./tools/tools');
 tools.getVersions();
 
 setInterval(tools.getVersions, 1000 * 60 * 60 * 12);
+
 app.get('/versions', tools.versions);
+app.post('/clear_notification', tools.clearNotification);
 
 /**
  * USER METHODS
@@ -109,18 +111,7 @@ app.post('/start_server', servers.startServer);
 app.post('/stop_server', servers.stopServer);
 app.post('/add_server', servers.addServer);
 app.put('/update_server', servers.updateServer);
+app.post('/change_port', servers.changePort);
 app.delete('/delete_server', servers.deleteServer);
 app.post('/restart_server', servers.restartServer);
 app.post('/server_history', servers.serverHistory);
-
-/**
- * This method changes the port of a server
- */
-app.post('/change_port', function(request, response, next){
-});
-
-/**
- * This method will clear a notification
- */
-app.post('/clear_notification', function(request, response, next){
-});

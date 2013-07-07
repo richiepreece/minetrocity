@@ -13,6 +13,7 @@ exports.updateServer = updateServer;
 exports.deleteServer = deleteServer;
 exports.restartServer = restartServer;
 exports.serverHistory = serverHistory;
+exports.changePort = changePort;
 
 /**
  * This method returns the list of servers
@@ -385,6 +386,12 @@ function deleteServer(request, response, next){
 	}
 	
 	response.send(responseData);
+}
+
+/**
+ * This method changes the port of a server
+ */
+function changePort(request, response, next){
 }
 
 /**

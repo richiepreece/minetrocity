@@ -6,6 +6,7 @@ var shared   = require('../shared.js')
 
 exports.getVersions = getVersions;
 exports.versions = versions;
+exports.clearNotification = clearNotification;
 
 /**
  * This method gets the versions.json file from the mojang servers
@@ -79,4 +80,10 @@ function versions(request, response, next){
 	}
 	
 	response.send(responseData);
+}
+
+/**
+ * This method will clear a notification
+ */
+function clearNotification(request, response, next){
 }
