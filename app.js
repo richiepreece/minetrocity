@@ -1,6 +1,5 @@
 var express  = require('express')
   , http     = require('http')
-  , https    = require('https')
   , path     = require('path')
   , fs       = require('fs')
   , io       = require('socket.io')
@@ -8,19 +7,11 @@ var express  = require('express')
   , timers   = require('timers')
   , os       = require('os')
   , shared   = require('./shared')
-  //, mcServer = require('./mc_server')
   , uuid     = require('node-uuid')
-	, hash     = require('password-hash')
   ;
-	
-var sslOptions = {
-	key: fs.readFileSync('ssl/key.pem'),//, { encoding: 'utf8' }),
-	cert: fs.readFileSync('ssl/cert.pem')//, { encoding: 'utf8' })
-}
 
 var app    = express()
   , server = http.createServer(app)
-	//, sslserver = https.createServer(sslOptions, app)
   , io     = io.listen(server)
   ;
 
@@ -28,8 +19,6 @@ var sessOptions = {
   key: 'minetrocity.sid',
 	secret: uuid.v4() + uuid.v4()
 };
-
-shared.set('notifications', []);
 
 app.models = {};
 app.models.users = JSON.parse(fs.readFileSync('models/users.json'));
@@ -66,22 +55,14 @@ function attachUser(req, res, next) {
 server.listen(app.get('port'), function () {
   console.log("Express server listening on port " + app.get('port'));
 });
-/*
-sslServer.listen(app.get('sslPort'), function(){
-	console.log("Express server listening on port " + app.get('sslPort'));
-});*/
-
-/*************************************************
-* Everything above this line can be changed.
-* Everything below it is the new stuff.
-*************************************************/
 
 /**
  * TOOLS
  */
+shared.set('notifications', []);
 var tools = require('./tools/tools');
-tools.getVersions();
 
+tools.getVersions();
 setInterval(tools.getVersions, 1000 * 60 * 60 * 12);
 
 app.get('/versions', tools.versions);
