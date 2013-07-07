@@ -1,4 +1,4 @@
-var shared   = require('../shared.js')
+var shared   = require('./shared.js')
   , hash     = require('password-hash')
 	, uuid     = require('node-uuid')
 	, fs       = require('fs')

@@ -6,7 +6,7 @@ var express  = require('express')
   , url      = require('url')
   , timers   = require('timers')
   , os       = require('os')
-  , shared   = require('./shared')
+  , shared   = require('./tools/shared')
   , uuid     = require('node-uuid')
   , app      = express()
   , server   = http.createServer(app)
@@ -51,6 +51,7 @@ server.listen(app.get('port'), function () {
 /**
  * TOOLS
  */
+shared.set('permissions', JSON.parse(fs.readFileSync('models/permissions.json')));
 shared.set('notifications', []);
 var tools = require('./tools/tools');
 

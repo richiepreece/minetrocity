@@ -4,4 +4,5 @@ versions/
 version_info/
 node_modules/
 worlds/
+old/
 .DS_Store

@@ -1,4 +1,4 @@
-var shared   = require('../shared.js')
+var shared   = require('./shared.js')
 	, fs       = require('fs')
 	, url      = require('url')
 	, https    = require('https')
