@@ -1,8 +1,0 @@
-mixin sidebar(title)
-  .sidebar.module(attributes)
-    .sidebar-title= title
-    block
-
-mixin sidebaritem(name, href, selected)
-  - var klass = selected ? 'selected' : ''
-  a(href=href, class=klass, attributes).sidebar-item= name
