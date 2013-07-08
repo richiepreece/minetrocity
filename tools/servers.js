@@ -422,9 +422,10 @@ function restartServer(request, response, next){
 			var server = request.body;
 			
 			stopServer(request, { send : function(rsp){
-				setTimeout(function(){
+				/*setTimeout(function(){
 					startServer(request, response, next);
-				}, 1000 * 5);
+				}, 1000 * 5);*/
+				recursiveStart(request, response, next);
 			} }, next);
 		} else {
 			responseData['sucess'] = false;
@@ -437,6 +438,20 @@ function restartServer(request, response, next){
 		responseData['err'] = 'You are not logged in';
 	
 		response.send(responseData);
+	}
+}
+
+function recursiveStart(request, response, next){
+	var server = request.body;
+	
+	if(!shared.get('child' + server['id']) &&
+			!shared.get('output' + server['id']) &&
+			!shared.get('input' + server['id'])){
+		startServer(request, response, next);
+	} else {
+		setTimeout(function(){
+			recursiveStart(request, response, next)
+			}, 100);
 	}
 }
 
