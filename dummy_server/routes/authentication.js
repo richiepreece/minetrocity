@@ -7,7 +7,7 @@ function login(req, res) {
   var user = req.body.username;
   var pass = req.body.password;
 
-  if (user !== 'scott' || user !== 'dallin' || user !== 'richie') {
+  if (user !== 'scott' && user !== 'dallin' && user !== 'richie') {
     var obj = {
       success: false,
       err: 'Invalid Credentials'

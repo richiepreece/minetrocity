@@ -1,5 +1,5 @@
 module.exports = function (app) {
-  app.get('/servers', servers);
+  app.get('/servers', serverss);
   app.post('/add_server', addServer);
   app.put('/update_server', updateServer);
   app.delete('/delete_server', deleteServer);
@@ -11,7 +11,7 @@ module.exports = function (app) {
 
 var servers = [];
 
-function servers(req, res) {
+function serverss(req, res) {
   res.send(servers);
 }
 

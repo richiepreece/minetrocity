@@ -16,8 +16,41 @@
 #header .item:hover {
   color: #ccc;
 }
+#header .security {
+  float: right;
+  cursor: pointer;
+  padding: 14px 15px;
+  color: #000;
+  background-color: #90ee90;
+}
+#header .security:hover {
+  background-color: #008000;
+}
 #footer {
   text-align: center;
+}
+#login {
+  text-align: center;
+  padding-top: 100px;
+}
+#login .label {
+  display: inline-block;
+  width: 100px;
+  margin: 10px 0;
+}
+#login .btn {
+  padding: 10px 20px;
+}
+#login .msg {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 4px;
+}
+#login .error-msg {
+  background-color: #ffa5a5;
+}
+#login .info-msg {
+  background-color: #a5e6ff;
 }
 * {
   padding: 0;

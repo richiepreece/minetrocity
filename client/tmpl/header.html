@@ -1,4 +1,6 @@
 <div class="nav">
   <div class="title">Minetrocity</div>
-  <div class="item" ng-repeat="item in nav" ng-click="getItem(item)">{{item.label}}</div>
+    <div class="item" ng-repeat="item in nav" ng-show="!item.hidden && user.isLoggedIn" ng-click="getItem(item.url)">{{item.label}}</div>
+
+  <div class="security" ng-show="user.isLoggedIn" ng-click="logout()">Welcome, {{user.name}}</div>
 </div>
