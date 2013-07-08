@@ -1,3 +1,10 @@
+/*
+ * Author: Richie Preece
+ * Email:  richie@minetrocity.com
+ * Copyright 2013 - Minetrocity
+ * ALL RIGHTS RESERVED
+ */
+
 var express  = require('express')
   , http     = require('http')
   , path     = require('path')
@@ -8,6 +15,7 @@ var express  = require('express')
   , os       = require('os')
   , shared   = require('./tools/shared')
   , uuid     = require('node-uuid')
+	
   , app      = express()
   , server   = http.createServer(app)
   , io       = io.listen(server)

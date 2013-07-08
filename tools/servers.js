@@ -1,3 +1,10 @@
+/*
+ * Author: Richie Preece
+ * Email:  richie@minetrocity.com
+ * Copyright 2013 - Minetrocity
+ * ALL RIGHTS RESERVED
+ */
+
 var shared   = require('./shared.js')
 	, uuid     = require('node-uuid')
 	, fs       = require('fs')
@@ -398,6 +405,39 @@ function changePort(request, response, next){
  * This method restarts a server
  */
 function restartServer(request, response, next){
+	var responseData = {};
+	
+	//Check for a logged in user
+	if(request.session.user){
+		var isAllowed = false;
+		
+		//Check permissions
+		for(index in request.session.user['acl']){
+			if(request.session.user['acl'][index] == 'RESTART_SERVERS'){
+				isAllowed = true;
+			}
+		}
+	
+		if(isAllowed){
+			var server = request.body;
+			
+			stopServer(request, { send : function(rsp){
+				setTimeout(function(){
+					startServer(request, response, next);
+				}, 1000 * 5);
+			} }, next);
+		} else {
+			responseData['sucess'] = false;
+			responseData['err'] = 'You do not have the necessary permissions';
+	
+			response.send(responseData);
+		}
+	} else {
+		responseData['success'] = false;
+		responseData['err'] = 'You are not logged in';
+	
+		response.send(responseData);
+	}
 }
 
 /**

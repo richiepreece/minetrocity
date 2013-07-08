@@ -1,3 +1,10 @@
+/*
+ * Author: Richie Preece
+ * Email:  richie@minetrocity.com
+ * Copyright 2013 - Minetrocity
+ * ALL RIGHTS RESERVED
+ */
+
 var shared   = require('./shared.js')
 	, fs       = require('fs')
 	, url      = require('url')
