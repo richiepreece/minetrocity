@@ -1,3 +1,10 @@
+/*
+ * Author: Richie Preece
+ * Email:  richie@minetrocity.com
+ * Copyright 2013 - Minetrocity
+ * ALL RIGHTS RESERVED
+ */
+
 var express  = require('express')
   , http     = require('http')
   , path     = require('path')
@@ -6,44 +13,21 @@ var express  = require('express')
   , url      = require('url')
   , timers   = require('timers')
   , os       = require('os')
-  , shared   = require('./shared')
-  , mcServer = require('./mc_server')
+  , shared   = require('./tools/shared')
+  , uuid     = require('node-uuid')
+	, hash     = require('password-hash')
+	
+  , app      = express()
+  , server   = http.createServer(app)
+  , io       = io.listen(server)
   ;
-
-var app    = express()
-  , server = http.createServer(app)
-  , io     = io.listen(server)
-  ;
-
-shared.set('needToUpgrade', false);
-shared.set('upgrading', false);
-shared.set('restarting', false);
-mcServer.setVersionFunction(downloadVersion);
-mcServer.downloadServer();
-
-shared.set('child', null);
-shared.set('output', null);
-shared.set('input', null);
+	
+shared.set('io', io);
 
 var sessOptions = {
   key: 'minetrocity.sid',
-  secret: "lyYw/^uWM rnZgEr6mt?v8]%|o,|%,|X9O<0K:nJt^wur^k2n&7j>df8zs7/xfsP"
+	secret: 'lyYw/^uWM rnZgEr6mt?v8]%|o,|%,|X9O<0K:nJt^wur^k2n&7j>df8zs7/xfsP'
 };
-
-app.models = {};
-app.models.users = JSON.parse(fs.readFileSync('models/users.json'));
-
-(function generateTestData() {
-  for (var i = 0; i < 100; ++i) {
-    var rand = Math.floor(Math.random() * 100000);
-    app.models.users["testUser" + rand] = {
-      "name":  "TestUser" + rand,
-      "pass":  "test",
-      "email": "test@minetrocity.com",
-      "type":  "member"
-    };
-  };
-}());
 
 app.configure(function () {
   app.set('port', process.env.VCAP_APP_PORT || process.env.PORT || 3000);
@@ -65,45 +49,6 @@ app.configure('development', function () {
   app.use(express.errorHandler());
 });
 
-function initMiddlewares(path) {
-  app.middleware = {};
-  initFiles(path, 'middlewares');
-};
-
-function initControllers(path) {
-  initFiles(path, 'controllers');
-};
-
-function initFiles(path, type) {
-  path = path || __dirname + '/' + type;
-  var files = fs.readdirSync(path);
-  console.info('Loading ' + type + ' for path ' + path);
-
-  files.forEach(function(file) {
-    var fullPath = path + '/' + file;
-    var stats = fs.statSync(fullPath);
-
-    if (stats.isFile()) {
-      initFile(fullPath, type);
-    } else if (stats.isDirectory()) {
-      initFiles(fullPath, type);
-    }
-  });
-};
-
-function initFile(file, type) {
-  var match = /^(.*?\/([A-Za-z_]*))\.js$/.exec(file);
-  if (!match) return;
-  var asset = require(file);
-  if (asset && typeof asset.init === 'function') {
-    console.info('    Loading ' + type + ' ' + match[2] + ' (' + file + ')');
-    asset.init(app, io);
-  }
-};
-
-initMiddlewares();
-initControllers();
-
 function attachUser(req, res, next) {
   if (req.session && req.session.user)
     res.locals({ user: req.session.user });
@@ -114,137 +59,81 @@ server.listen(app.get('port'), function () {
   console.log("Express server listening on port " + app.get('port'));
 });
 
+/**
+ * Socket stuff.... maybe
+ */
+shared.set('sockets', {});
+io.sockets.on('connection', function(socket){
+	shared.get('sockets')[socket.id] = socket;
+	
+	socket.on('disconnect', function(){
+		delete shared.get('sockets')[socket.id];
+	});
+});
 
+if(!fs.existsSync('models')){
+	fs.mkdirSync('models');
+}
 
+/**
+ * TOOLS
+ */
+if(fs.existsSync('models/permissions.json')){
+	shared.set('permissions', JSON.parse(fs.readFileSync('models/permissions.json')));
+} else {
+	shared.set('permissions', JSON.parse('{"permissions":["VIEW_USERS","ADD_USERS",' + 
+		'"UPDATE_USERS","DELETE_USERS","VIEW_SERVERS","START_SERVERS","STOP_SERVERS",' +
+		'"ADD_SERVERS","UPDATE_SERVERS","DELETE_SERVERS","RESTART_SERVERS","GET_VERSIONS",' +
+		'"CHANGE_PORTS","VIEW_HISTORIES","CLEAR_NOTIFICATIONS","COMMAND_SERVERS"],' + 
+		'"deprecated_permissions":[]}'));
+	fs.writeFileSync('models/permissions.json', JSON.stringify(shared.get('permissions')));
+}
 
+shared.set('notifications', []);
+var tools = require('./tools/tools');
 
+tools.getVersions();
+setInterval(tools.getVersions, 1000 * 60 * 60 * 12);
 
-setupTimers();
+app.get('/versions', tools.versions);
+app.post('/clear_notification', tools.clearNotification);
 
-function setupTimers() {
-  timers.setInterval(calculateCPUStats, 1000);
-  timers.setInterval(downloadVersion, 1000 * 60);// * 60 * 60);
-};
+/**
+ * USER METHODS
+ */
+if(fs.existsSync('models/users.json')){
+	shared.set('users', JSON.parse(fs.readFileSync('models/users.json')));
+} else {
+	shared.set('users', { username : 'admin', password : hash.generate('admin') });
+	fs.writeFileSync('models/users.json', JSON.stringify(shared.get('users')));
+}
+var users = require('./tools/users.js');
 
-function calculateCPUStats() {
-  var toSend = {
-    totalMem: os.totalmem(),
-    freeMem: os.freemem(),
-    cpu: {}
-  };
+app.post('/login', users.login);
+app.get('/logout', users.logout);
+app.get('/users', users.users);
+app.post('/add_user', users.addUser);
+app.put('/update_user', users.updateUser);
+app.delete('/delete_user', users.deleteUser);
 
-  var cpus = os.cpus();
-  
-  for(var i = 0; i < cpus.length; i++){
-    var cpu = cpus[i];
-    var total = 0;
-    
-    for (type in cpu.times) {
-      //console.log("CPU" + (i + 1) + " " + type + " " + cpu.times[type]);
-      total += cpu.times[type];
-    }
-    
-    var times = cpu.times;
-    var idle = times.idle;
-    //console.log("CPU " + (i + 1) + " is " + (100 - Math.round(100 * (idle / total))) + "% used");
-    toSend.cpu['cpu' + (i + 1)] = 100 - Math.round(100 * (idle / total));
-  }
-  
-  //console.log(toSend);
-  io.sockets.emit('cpustats', toSend);
-};
-
-function downloadVersion(file) {
-  console.log('Getting server version for file ' + file);
-  
-  if (!file)
-    file = 'server';
-
-  var options = {
-    host: url.parse('http://richiepreece.com/version').host,
-    port: 80,
-    path: url.parse('http://richiepreece.com/version').pathname
-  };
-
-  var file_name = file;
-  var currDir = process.cwd();
-  console.log('We are in ' + currDir);
-  process.chdir('version_info');
-  var file = fs.createWriteStream(process.cwd() + '/' + file_name);
-  process.chdir(currDir);
-  // canReadVersion = false; // What is this?
-
-  http.get(options, function (res) {
-    res.on('data', function (data) {
-        file.write(data);
-    }).on('end', function () {
-        file.end();
-        
-        if (shared.get('upgrading')) {
-          io.sockets.emit('upgraded');
-          shared.set('upgrading', false);
-        } else {
-          checkUpdateStatus();
-        }
-    });
-  });
-};
-
-function checkUpdateStatus() {
-  console.log('Checking for update');
-  
-  var version;
-  var server_version;
-  
-  fs.readFile('version_info/version', 'utf-8', function (err, data) {
-    if (err) return;
-
-    version = data.split('\n');
-  
-    for (var i = 0; i < version.length; i++) {
-      if (version[i] !== '') {
-        version[i] = version[i].split('=');
-        for (var j = 0; j < version[i].length; j++) {
-          version[i][j] = version[i][j].replace('\r', '');
-          version[i][j] = version[i][j].split('.');
-        }
-      } else {
-        version.splice(i--, 1);
-      }
-    }
-
-    fs.readFile('version_info/server', 'utf-8', function (err, data) {
-      if (err) return;
-
-      server_version = data.split('\n');
-
-      for (var i = 0; i < server_version.length; i++) {
-        if (server_version[i] !== '') {
-          server_version[i] = server_version[i].split('=');
-          for (var j = 0; j < server_version[i].length; j++) {
-            server_version[i][j] = server_version[i][j].replace('\r', '');
-            server_version[i][j] = server_version[i][j].split('.');
-          }
-        } else {
-          server_version.splice(i--, 1);
-        }
-      }
-
-      for (var i = 0; i < version.length; i++) {
-        if (version[i][0] == 'mc') {
-          for (var j = 0; j < version[i][1].length; j++) {
-            if (version[i][1][j] < server_version[i][1][j]) {
-              console.log('Time to upgrade');
-              io.sockets.emit('upgrade', true);
-              shared.set('needToUpgrade', true);
-              return;
-            }
-          }
-        }
-      }
-
-      console.log('No upgrade needed');
-      shared.set('needToUpgrade', false);
-    });
-  }); 
-};
+/**
+ * SERVER METHODS
+ */
+if(fs.existsSync('models/server.json')){
+	shared.set('servers', JSON.parse(fs.readFileSync('models/servers.json')));
+} else {
+	shared.set('servers', {});
+	fs.writeFileSync('models/servers.json', JSON.stringify(shared.get('servers')));
+}
+var servers = require('./tools/servers.js');
+ 
+app.get('/servers', servers.servers);
+app.post('/start_server', servers.startServer);
+app.post('/stop_server', servers.stopServer);
+app.post('/add_server', servers.addServer);
+app.put('/update_server', servers.updateServer);
+app.post('/change_port', servers.changePort);
+app.delete('/delete_server', servers.deleteServer);
+app.post('/restart_server', servers.restartServer);
+app.post('/server_history', servers.serverHistory);
+app.post('/command_server', servers.commandServer);
