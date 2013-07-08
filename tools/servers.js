@@ -422,9 +422,6 @@ function restartServer(request, response, next){
 			var server = request.body;
 			
 			stopServer(request, { send : function(rsp){
-				/*setTimeout(function(){
-					startServer(request, response, next);
-				}, 1000 * 5);*/
 				recursiveStart(request, response, next);
 			} }, next);
 		} else {
@@ -438,20 +435,6 @@ function restartServer(request, response, next){
 		responseData['err'] = 'You are not logged in';
 	
 		response.send(responseData);
-	}
-}
-
-function recursiveStart(request, response, next){
-	var server = request.body;
-	
-	if(!shared.get('child' + server['id']) &&
-			!shared.get('output' + server['id']) &&
-			!shared.get('input' + server['id'])){
-		startServer(request, response, next);
-	} else {
-		setTimeout(function(){
-			recursiveStart(request, response, next)
-			}, 100);
 	}
 }
 
@@ -506,6 +489,26 @@ function serverHistory(request, response, next){
 /***************************
 * HELPER METHODS
 ***************************/
+
+/**
+ * This method helps with starting the server AFTER it has
+ * closed and is available for a restart
+ */
+function recursiveStart(request, response, next){
+	var server = request.body;
+	
+	//If closed, start it again.
+	if(!shared.get('child' + server['id']) &&
+			!shared.get('output' + server['id']) &&
+			!shared.get('input' + server['id'])){
+		startServer(request, response, next);
+	} else {
+		//If not closed, check again in 100 msec
+		setTimeout(function(){
+			recursiveStart(request, response, next)
+			}, 100);
+	}
+}
 
 /**
  * This method removes a directory recursively 
