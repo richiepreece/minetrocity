@@ -94,6 +94,18 @@
 						$('#resp').html(data);
 					});
 				});
+				
+				socket.on('download_update', function(data){
+					console.log(data);
+				});
+				
+				socket.on('msg', function(data){
+					console.log(data);
+				});
+				
+				socket.on('notification', function(data){
+					console.log(data);
+				});
 			});
 		</script>
 	</body>

@@ -15,6 +15,7 @@ var express  = require('express')
   , os       = require('os')
   , shared   = require('./tools/shared')
   , uuid     = require('node-uuid')
+	, hash     = require('password-hash')
 	
   , app      = express()
   , server   = http.createServer(app)
@@ -25,7 +26,7 @@ shared.set('io', io);
 
 var sessOptions = {
   key: 'minetrocity.sid',
-	secret: uuid.v4() + uuid.v4()
+	secret: 'lyYw/^uWM rnZgEr6mt?v8]%|o,|%,|X9O<0K:nJt^wur^k2n&7j>df8zs7/xfsP'
 };
 
 app.configure(function () {
@@ -59,9 +60,35 @@ server.listen(app.get('port'), function () {
 });
 
 /**
+ * Socket stuff.... maybe
+ */
+shared.set('sockets', {});
+io.sockets.on('connection', function(socket){
+	shared.get('sockets')[socket.id] = socket;
+	
+	socket.on('disconnect', function(){
+		delete shared.get('sockets')[socket.id];
+	});
+});
+
+if(!fs.existsSync('models')){
+	fs.mkdirSync('models');
+}
+
+/**
  * TOOLS
  */
-shared.set('permissions', JSON.parse(fs.readFileSync('models/permissions.json')));
+if(fs.existsSync('models/permissions.json')){
+	shared.set('permissions', JSON.parse(fs.readFileSync('models/permissions.json')));
+} else {
+	shared.set('permissions', JSON.parse('{"permissions":["VIEW_USERS","ADD_USERS",' + 
+		'"UPDATE_USERS","DELETE_USERS","VIEW_SERVERS","START_SERVERS","STOP_SERVERS",' +
+		'"ADD_SERVERS","UPDATE_SERVERS","DELETE_SERVERS","RESTART_SERVERS","GET_VERSIONS",' +
+		'"CHANGE_PORTS","VIEW_HISTORIES","CLEAR_NOTIFICATIONS","COMMAND_SERVERS"],' + 
+		'"deprecated_permissions":[]}'));
+	fs.writeFileSync('models/permissions.json', JSON.stringify(shared.get('permissions')));
+}
+
 shared.set('notifications', []);
 var tools = require('./tools/tools');
 
@@ -74,7 +101,12 @@ app.post('/clear_notification', tools.clearNotification);
 /**
  * USER METHODS
  */
-shared.set('users', JSON.parse(fs.readFileSync('models/users.json')));
+if(fs.existsSync('models/users.json')){
+	shared.set('users', JSON.parse(fs.readFileSync('models/users.json')));
+} else {
+	shared.set('users', { username : 'admin', password : hash.generate('admin') });
+	fs.writeFileSync('models/users.json', JSON.stringify(shared.get('users')));
+}
 var users = require('./tools/users.js');
 
 app.post('/login', users.login);
@@ -87,7 +119,12 @@ app.delete('/delete_user', users.deleteUser);
 /**
  * SERVER METHODS
  */
-shared.set('servers', JSON.parse(fs.readFileSync('models/servers.json')));
+if(fs.existsSync('models/server.json')){
+	shared.set('servers', JSON.parse(fs.readFileSync('models/servers.json')));
+} else {
+	shared.set('servers', {});
+	fs.writeFileSync('models/servers.json', JSON.stringify(shared.get('servers')));
+}
 var servers = require('./tools/servers.js');
  
 app.get('/servers', servers.servers);
@@ -99,3 +136,4 @@ app.post('/change_port', servers.changePort);
 app.delete('/delete_server', servers.deleteServer);
 app.post('/restart_server', servers.restartServer);
 app.post('/server_history', servers.serverHistory);
+app.post('/command_server', servers.commandServer);

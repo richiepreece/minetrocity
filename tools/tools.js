@@ -113,7 +113,7 @@ function clearNotification(request, response, next){
 			if(shared.get('notifications')[notification['id']]){
 				delete shared.get('notifications')[notification['id']];
 				
-				//TODO: Alert of cleared notification
+				shared.get('io').sockets.emit({ notification_id : notification['id'] });
 				
 				responseData['id'] = notification['id'];
 				responseData['success'] = true;

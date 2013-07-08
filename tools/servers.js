@@ -21,6 +21,7 @@ exports.deleteServer = deleteServer;
 exports.restartServer = restartServer;
 exports.serverHistory = serverHistory;
 exports.changePort = changePort;
+exports.commandServer = commandServer;
 
 /**
  * This method returns the list of servers
@@ -108,7 +109,9 @@ function startServer(request, response, next){
 							//Watch for data coming through the console. Add it to the history and broadcast
 							shared.get('output' + server['id']).on('data', function(data){
 								shared.get('history' + server['id']).push(data);
-								//TODO: share with users
+								
+								shared.get('io').sockets.emit('msg', 
+									{ id : server.id, msg : data });
 							});
 							
 							responseData['id'] = server['id'];
@@ -165,15 +168,20 @@ function stopServer(request, response, next){
 		if(isAllowed){
 			var server = request.body;
 			
-			//Make sure the server is running before you try to stop it
-			if(shared.get('input' + server['id'])){
-				shared.get('input' + server['id']).write('/stop\n');	
-				
-				responseData['id'] = server['id'];
-				responseData['success'] = true;
+			if(shared.get('servers')[server['id']]){
+				//Make sure the server is running before you try to stop it
+				if(shared.get('input' + server['id'])){
+					shared.get('input' + server['id']).write('/stop\n');	
+					
+					responseData['id'] = server['id'];
+					responseData['success'] = true;
+				} else {
+					responseData['success'] = false;
+					responseData['err'] = 'Server is not running';
+				}
 			} else {
-				responseData['success'] = false;
-				responseData['err'] = 'Server is not running';
+				responseData['sucess'] = false;
+				responseData['err'] = 'The server does not exist';
 			}
 		} else {
 			responseData['success'] = false;
@@ -358,30 +366,35 @@ function deleteServer(request, response, next){
 			var deleteServer = request.body;
 			var oldServer = shared.get('servers')[deleteServer['id']];
 			
-			if(oldServer){
-				//Delete the server from the list and output to file
-				delete shared.get('servers')[oldServer['id']];
-				fs.writeFileSync('models/servers.json', JSON.stringify(shared.get('servers')));
-				
-				var currDir = process.cwd();
-				
-				//Navigate to the worlds folder
-				if(fs.existsSync('worlds')){
-					process.chdir('worlds');
+			if(!shared.get('child' + deleteServer['id'])){
+				if(oldServer){
+					//Delete the server from the list and output to file
+					delete shared.get('servers')[oldServer['id']];
+					fs.writeFileSync('models/servers.json', JSON.stringify(shared.get('servers')));
 					
-					//Recursively delete the server-specific folder
-					if(fs.existsSync(oldServer['id'])){
-						fs.rmdirSyncRec(oldServer['id']);
+					var currDir = process.cwd();
+					
+					//Navigate to the worlds folder
+					if(fs.existsSync('worlds')){
+						process.chdir('worlds');
+						
+						//Recursively delete the server-specific folder
+						if(fs.existsSync(oldServer['id'])){
+							fs.rmdirSyncRec(oldServer['id']);
+						}
 					}
+					
+					process.chdir(currDir);
+					
+					responseData['id'] = deleteServer['id'];
+					responseData['success'] = true;
+				} else {
+					responseData['success'] = false;
+					responseData['err'] = 'Server does not exist';
 				}
-				
-				process.chdir(currDir);
-				
-				responseData['id'] = deleteServer['id'];
-				responseData['success'] = true;
 			} else {
 				responseData['success'] = false;
-				responseData['err'] = 'Server does not exist';
+				responseData['err'] = 'The server is running';
 			}
 		} else {
 			responseData['success'] = false;
@@ -471,6 +484,54 @@ function serverHistory(request, response, next){
 			} else {
 				responseData['sucess'] = false;
 				responseData['err'] = 'The server does not exist';
+			}
+		} else {
+			responseData['sucess'] = false;
+			responseData['err'] = 'You do not have the necessary permissions';
+		}
+	} else {
+		responseData['success'] = false;
+		responseData['err'] = 'You are not logged in';
+	}
+	
+	response.send(responseData);
+}
+
+function commandServer(request, response, next){
+	var responseData = {};
+	
+	//Check for a logged in user
+	if(request.session.user){
+		var isAllowed = false;
+		
+		//Check permissions
+		for(index in request.session.user['acl']){
+			if(request.session.user['acl'][index] == 'COMMAND_SERVERS'){
+				isAllowed = true;
+			}
+		}
+	
+		if(isAllowed){
+			var serverInfo = request.body;
+			
+			if(serverInfo['id'] && serverInfo['cmd']){			
+				if(shared.get('servers')[serverInfo['id']]){
+					if(shared.get('child' + serverInfo['id'])){
+						shared.get('input' + serverInfo['id']).write(serverInfo['cmd'] + '\n');	
+						
+						responseData['id'] = serverInfo['id'];
+						responseData['success'] = true;
+					} else {
+						responseData['sucess'] = false;
+						responseData['err'] = 'The server is not running';
+					}
+				} else {
+					responseData['sucess'] = false;
+					responseData['err'] = 'The server does not exist';
+				}
+			} else {
+				responseData['sucess'] = false;
+				responseData['err'] = 'Not enough information';
 			}
 		} else {
 			responseData['sucess'] = false;
@@ -612,9 +673,19 @@ function getServer(newServer){
 		var file = fs.createWriteStream(process.cwd() + '/minecraft_server.jar');
 		
 		https.get(options, function(result){
+			var size = parseInt(result.headers['content-length'], 10);
+			var downloaded = 0;
+			
 			result.on('data', function(data){
+				downloaded += data.length;				
+				shared.get('io').sockets.emit('download_update', 
+					{ id : newServer.id, finished : false, percentage : (downloaded / size) * 100 });
+				
 				file.write(data);
 			}).on('end', function(){
+				shared.get('io').sockets.emit('download_update', 
+					{ id : newServer.id, finished : true, percentage : 100 });
+					
 				file.end();
 			});
 		});
