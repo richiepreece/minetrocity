@@ -20,6 +20,8 @@ var express  = require('express')
   , server   = http.createServer(app)
   , io       = io.listen(server)
   ;
+	
+shared.set('io', io);
 
 var sessOptions = {
   key: 'minetrocity.sid',

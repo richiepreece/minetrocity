@@ -419,8 +419,6 @@ function restartServer(request, response, next){
 		}
 	
 		if(isAllowed){
-			var server = request.body;
-			
 			stopServer(request, { send : function(rsp){
 				recursiveStart(request, response, next);
 			} }, next);
