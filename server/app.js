@@ -99,6 +99,7 @@ if(fs.existsSync('models/users.json')){
 	shared.set('users', JSON.parse(fs.readFileSync('models/users.json')));
 } else {
   var admin = {
+		id: uuid.v4();
     username: 'admin',
     password: hash.generate('admin'),
     email: 'no_reply@minetrocity.com',
