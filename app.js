@@ -103,8 +103,12 @@ app.post('/clear_notification', tools.clearNotification);
  */
 if(fs.existsSync('models/users.json')){
 	shared.set('users', JSON.parse(fs.readFileSync('models/users.json')));
-} else {
-	shared.set('users', { username : 'admin', password : hash.generate('admin') });
+} else {	
+	admin['username'] = 'admin';
+	admin['password'] = hash.generate('admin');
+	admin['email'] = 'no_reply@minetrocity.com';
+	admin['acl'] = shared.get('permissions')['permissions'];
+	shared.set('users', { 'admin' : admin });
 	fs.writeFileSync('models/users.json', JSON.stringify(shared.get('users')));
 }
 var users = require('./tools/users.js');
