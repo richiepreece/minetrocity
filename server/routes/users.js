@@ -18,6 +18,7 @@ module.exports = function (app) {
   app.post('/add_user', addUser);
   app.put('/update_user', updateUser);
   app.delete('/delete_user', deleteUser);
+	app.get('/curr_user', currUser);
 };
 
 /**
@@ -256,4 +257,14 @@ function deleteUser(request, response, next){
 	}
 
 	response.send(responseData);
+}
+
+function currUser(request, response, next){
+	//Check for a logged in user
+	if(request.session.user){
+		response.send(request.session.user);
+	} else {
+		response.writeHead(403);
+		response.end();
+	}
 }
