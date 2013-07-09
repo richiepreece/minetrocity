@@ -72,22 +72,22 @@ io.sockets.on('connection', function(socket){
 	});
 });
 
-if(!fs.existsSync(__dirname + '/models')){
-	fs.mkdirSync(__dirname + '/models');
+if(!fs.existsSync('models')){
+	fs.mkdirSync('models');
 }
 
 /**
  * TOOLS
  */
-if(fs.existsSync(__dirname + '/models/permissions.json')){
-	shared.set('permissions', JSON.parse(fs.readFileSync(__dirname + '/models/permissions.json')));
+if(fs.existsSync('models/permissions.json')){
+	shared.set('permissions', JSON.parse(fs.readFileSync('models/permissions.json')));
 } else {
 	shared.set('permissions', JSON.parse('{"permissions":["VIEW_USERS","ADD_USERS",' +
 		'"UPDATE_USERS","DELETE_USERS","VIEW_SERVERS","START_SERVERS","STOP_SERVERS",' +
 		'"ADD_SERVERS","UPDATE_SERVERS","DELETE_SERVERS","RESTART_SERVERS","GET_VERSIONS",' +
 		'"CHANGE_PORTS","VIEW_HISTORIES","CLEAR_NOTIFICATIONS","COMMAND_SERVERS"],' +
 		'"deprecated_permissions":[]}'));
-	fs.writeFileSync(__dirname + '/models/permissions.json', JSON.stringify(shared.get('permissions')));
+	fs.writeFileSync('models/permissions.json', JSON.stringify(shared.get('permissions')));
 }
 
 shared.set('notifications', []);
@@ -95,19 +95,19 @@ shared.set('notifications', []);
 /**
  * USER METHODS
  */
-if(fs.existsSync(__dirname + '/models/users.json')){
-	shared.set('users', JSON.parse(fs.readFileSync(__dirname + '/models/users.json')));
+if(fs.existsSync('models/users.json')){
+	shared.set('users', JSON.parse(fs.readFileSync('models/users.json')));
 } else {
 	shared.set('users', { username : 'admin', password : hash.generate('admin') });
-	fs.writeFileSync(__dirname + '/models/users.json', JSON.stringify(shared.get('users')));
+	fs.writeFileSync('models/users.json', JSON.stringify(shared.get('users')));
 }
 
 /**
  * SERVER METHODS
  */
-if(fs.existsSync(__dirname + '/models/server.json')){
-	shared.set('servers', JSON.parse(fs.readFileSync(__dirname + '/models/servers.json')));
+if(fs.existsSync('models/server.json')){
+	shared.set('servers', JSON.parse(fs.readFileSync('models/servers.json')));
 } else {
 	shared.set('servers', {});
-	fs.writeFileSync(__dirname + '/models/servers.json', JSON.stringify(shared.get('servers')));
+	fs.writeFileSync('models/servers.json', JSON.stringify(shared.get('servers')));
 }

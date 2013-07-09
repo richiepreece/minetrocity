@@ -226,7 +226,7 @@ function addServer(request, response, next){
 
 				//Register new server, and write to file
 				shared.get('servers')[newServer['id']] = newServer;
-				fs.writeFileSync(__dirname + '/models/servers.json', JSON.stringify(shared.get('servers')));
+				fs.writeFileSync('models/servers.json', JSON.stringify(shared.get('servers')));
 
 				//Get minecraft_server.jar and create server.properties file
 				getServer(newServer);
@@ -292,7 +292,7 @@ function updateServer(request, response, next){
 					var newPort = oldServer['port'];
 
 					//Output all servers
-					fs.writeFileSync(__dirname + '/models/servers.json', JSON.stringify(shared.get('servers')));
+					fs.writeFileSync('models/servers.json', JSON.stringify(shared.get('servers')));
 
 					var currDir = process.cwd();
 
@@ -372,7 +372,7 @@ function deleteServer(request, response, next){
 				if(oldServer){
 					//Delete the server from the list and output to file
 					delete shared.get('servers')[oldServer['id']];
-					fs.writeFileSync(__dirname + '/models/servers.json', JSON.stringify(shared.get('servers')));
+					fs.writeFileSync('models/servers.json', JSON.stringify(shared.get('servers')));
 
 					var currDir = process.cwd();
 

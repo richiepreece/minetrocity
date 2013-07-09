@@ -40,17 +40,21 @@ function getVersions(){
 	var request = https.request(options, function(result){
 		if(result.statusCode == 200){
 			result.on('data', function(data){
+				var currDir = process.cwd();
 
 				//Ensure the versions folder exists
-				if(!fs.existsSync(__dirname + "/versions")){
-					fs.mkdirSync(__dirname + "/versions");
+				if(!fs.existsSync("versions")){
+					fs.mkdirSync("versions");
 				}
 
+				process.chdir("versions");
+
 				//Write out to a file for safe keeping
-				var file = fs.createWriteStream(__dirname + '/versions/versions.json');
+				var file = fs.createWriteStream(process.cwd() + '/versions.json');
 				file.write(data);
 				file.end();
 
+				process.chdir(currDir);
 
 				//Set the versions data for use (this way we have no IO when versions are requested)
 				shared.set('versions', JSON.parse(data));

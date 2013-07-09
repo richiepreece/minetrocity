@@ -123,7 +123,7 @@ function addUser(request, response, next){
 					shared.get('users')[newUser['username']] = newUser;
 
 					//Write user file
-					fs.writeFileSync(__dirname + '/models/users.json', JSON.stringify(shared.get('users')));
+					fs.writeFileSync('models/users.json', JSON.stringify(shared.get('users')));
 
 					responseData['id'] = newUser['id'];
 					responseData['success'] = true;
