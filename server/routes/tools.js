@@ -16,12 +16,14 @@ module.exports = function (app) {
 
   app.get('/versions', versions);
   app.post('/clear_notification', clearNotification);
+	app.get('/permissions', permissions);
 };
 
 
 exports.getVersions = getVersions;
 exports.versions = versions;
 exports.clearNotification = clearNotification;
+exports.permissions = permissions;
 
 /**
  * This method gets the versions.json file from the mojang servers
@@ -126,6 +128,35 @@ function clearNotification(request, response, next){
 				responseData['id'] = notification['id'];
 				responseData['success'] = true;
 			}
+		} else {
+			responseData['success'] = false;
+			responseData['err'] = 'You do not have the necessary permissions';
+		}
+	} else {
+		responseData['success'] = false;
+		responseData['err'] = 'You are not logged in';
+	}
+
+	response.send(responseData);
+}
+
+function permissions(request, response, next){
+	var responseData = {};
+
+	//Check for a logged in user
+	if(request.session.user){
+		var isAllowed = false;
+
+		//Check permissions
+		for(index in request.session.user['acl']){
+			if(request.session.user['acl'][index] == 'CLEAR_NOTIFICATIONS'){
+				isAllowed = true;
+			}
+		}
+
+		if(true){
+			responseData['permissions'] = shared.get('permissions');
+			responseData['success'] = true;
 		} else {
 			responseData['success'] = false;
 			responseData['err'] = 'You do not have the necessary permissions';
