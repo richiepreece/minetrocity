@@ -1,0 +1,19 @@
+<div id="login">
+  <div class="msg {{type}}-msg">
+    {{msg}}
+  </div>
+
+  <form>
+    <div>
+      <span class="label">Username:</span>
+      <input type="text" ng-model="user">
+    </div>
+    <div>
+      <span class="label">Password:</span>
+      <input type="password" ng-model="pass">
+    </div>
+    <div>
+      <button class="btn" ng-click="login()">Submit</button>
+    </div>
+  </form>
+</div>
