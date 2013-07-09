@@ -12,13 +12,13 @@ Make sure you have physical access to the machine long enough to accept firewall
 ==================
 
 ### To Install all dependencies:
-''''npm install''''
+```npm install```
 
 ### To Run the server:
-''''node server.js''''
+```node server.js```
 
 ### To Compile the stylus
-''''node bin/styl.js''''
+```node bin/styl.js```
 
 ### To Compile the Client Code
-''''node bin/browserify.js''''
+```node bin/browserify.js```
