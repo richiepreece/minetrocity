@@ -98,7 +98,13 @@ shared.set('notifications', []);
 if(fs.existsSync('models/users.json')){
 	shared.set('users', JSON.parse(fs.readFileSync('models/users.json')));
 } else {
-	shared.set('users', { 'admin': { username: 'admin', password: hash.generate('admin') } });
+  var admin = {
+    username: 'admin',
+    password: hash.generate('admin'),
+    email: 'no_reply@minetrocity.com',
+    acl: shared.get('permissions')['permissions']
+  };
+	shared.set('users', { 'admin' : admin });
 	fs.writeFileSync('models/users.json', JSON.stringify(shared.get('users')));
 }
 
