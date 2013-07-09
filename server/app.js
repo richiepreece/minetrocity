@@ -98,7 +98,7 @@ shared.set('notifications', []);
 if(fs.existsSync('models/users.json')){
 	shared.set('users', JSON.parse(fs.readFileSync('models/users.json')));
 } else {
-	shared.set('users', { username : 'admin', password : hash.generate('admin') });
+	shared.set('users', { 'admin': { username: 'admin', password: hash.generate('admin') } });
 	fs.writeFileSync('models/users.json', JSON.stringify(shared.get('users')));
 }
 

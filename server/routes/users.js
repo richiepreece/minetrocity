@@ -26,6 +26,8 @@ module.exports = function (app) {
 function login(request, response, next){
 	var responseData = {};
 
+	console.log(shared.get('users'));
+
 	var userInfo = request.body;
 	var user = shared.get('users')[userInfo['username']];
 
