@@ -1,7 +1,6 @@
 angular.module('minetrocity').directive('checkUser',
   function ($rootScope, $location, user) {
     function link() {
-
       $rootScope.$on('$routeChangeStart',
         function (e, next, curr) {
           var nextPage = (next || {}).name;

@@ -52,6 +52,9 @@
 #login .info-msg {
   background-color: #a5e6ff;
 }
+#users table th {
+  width: 200px;
+}
 #users .acl-option {
   display: inline-block;
   width: 200px;
