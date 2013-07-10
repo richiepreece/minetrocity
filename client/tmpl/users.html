@@ -8,6 +8,7 @@
         <th>password</th>
         <th>email</th>
         <th>acl</th>
+        <th>DELETE USER</th>
       </tr>
     </thead>
     <tbody>
@@ -20,7 +21,9 @@
             <input type="checkbox" ng-change="updateUser(user)" ng-model="perm.has"> {{perm.name}}
           </span>
         </td>
+        <td ng-click="deleteUser(user)" class="delete-btn">X</td>
       </tr>
     </tbody>
   </table>
+  <button ng-click="newUser()">Add New User</button>
 </div>

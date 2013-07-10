@@ -1,0 +1,23 @@
+<div id="new-user">
+  <h1>New User</h1>
+
+  <div>
+    <span>Username:</span>
+    <input ng-model="user" type="text"/>
+  </div>
+
+  <div>
+    <span>Password:</span>
+    <input ng-model="pass" type="password"/>
+  </div>
+
+  <div>
+    <span>Email:</span>
+    <input ng-model="email" type="text"/>
+  </div>
+
+  <button ng-click="saveUser(user, pass, email)">Save</button>
+  <button ng-click="back()">Back</button>
+
+  <div class="msg">{{msg}}</div>
+</div>
