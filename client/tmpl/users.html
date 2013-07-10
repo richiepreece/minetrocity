@@ -1,0 +1,29 @@
+<div id="users">
+  <h1>Users List:</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>username</th>
+        <th>password</th>
+        <th>email</th>
+        <th>acl</th>
+        <th>DELETE USER</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="user in users">
+        <td>{{user.username}}</td>
+        <td>*****</td>
+        <td>{{user.email}}</td>
+        <td>
+          <span class="acl-option" ng-repeat="perm in user.acl">
+            <input type="checkbox" ng-change="updateUser(user)" ng-model="perm.has"> {{perm.name}}
+          </span>
+        </td>
+        <td ng-click="deleteUser(user)" class="delete-btn">X</td>
+      </tr>
+    </tbody>
+  </table>
+  <button ng-click="newUser()">Add New User</button>
+</div>

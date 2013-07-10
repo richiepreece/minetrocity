@@ -17,7 +17,7 @@ module.exports = function (app) {
   app.get('/users', users);
   app.post('/add_user', addUser);
   app.put('/update_user', updateUser);
-  app.delete('/delete_user', deleteUser);
+  app.post('/delete_user', deleteUser);
   app.get('/curr_user', currUser);
 };
 

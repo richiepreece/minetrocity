@@ -1,12 +1,46 @@
 angular.module('minetrocity').controller('serversCtrl',
-  function ($scope, $http) {
-    $http.get('/servers').then(
-      function (resp) {
-        $scope.servers = resp.data;
+  function ($scope, $location, $http, serversData) {
+    serversData.getServers().then(
+      function (servers) {
+        $scope.servers = servers;
+        $scope.server = servers[0];
       },
       function (err) {
-        $scope.servers = "Couldn't get server list: " + err.data;
+        console.error(err);
       }
-    )
+    );
+
+    $scope.newServer = function () {
+      $location.path('/newServer');
+    };
+
+    $scope.bleh = function () {
+      alert('not set up yet');
+    };
+
+    $scope.deleteServer = function (server) {
+      var json = {
+        id: server.id
+      };
+
+      $http.post('/delete_server', json).then(
+        function (resp) {
+          var d = resp.data;
+          if (!d.success) {
+            return console.error(d.err);
+          }
+
+          for (var i = 0; i < $scope.servers.length; ++i) {
+            if ($scope.servers[i].id === server.id) {
+              $scope.servers.splice(i, 1);
+            }
+          }
+          $scope.server = $scope.servers[0];
+        },
+        function (err) {
+          console.error(err);
+        }
+      );
+    };
   }
 );

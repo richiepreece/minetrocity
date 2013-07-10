@@ -19,12 +19,6 @@ module.exports = function (app) {
   app.get('/permissions', permissions);
 };
 
-
-exports.getVersions = getVersions;
-exports.versions = versions;
-exports.clearNotification = clearNotification;
-exports.permissions = permissions;
-
 /**
  * This method gets the versions.json file from the mojang servers
  */

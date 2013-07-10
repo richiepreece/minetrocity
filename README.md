@@ -15,10 +15,10 @@ Make sure you have physical access to the machine long enough to accept firewall
 ```npm install```
 
 ### To Run the server:
-```node server.js```
+```npm start```
 
-### To Compile the stylus
-```node bin/styl.js```
+### To Build the project
+```grunt build```
 
-### To Compile the Client Code
-```node bin/browserify.js```
+### To Test the project
+```grunt test```

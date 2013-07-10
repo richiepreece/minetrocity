@@ -1,5 +1,20 @@
 angular.module('minetrocity').controller('loginCtrl',
   function ($scope, $http, $location, user) {
+    function checkForUser() {
+      $http.get('/curr_user').then(
+        function (resp) {
+          user.isLoggedIn = true;
+          user.name = resp.data.username;
+          user.acl = resp.data.acl;
+          $location.path('/');
+        },
+        function (err) {
+          console.log('ERR: Could Not Find Pre-Logged In User.');
+        }
+      );
+    }
+    checkForUser();
+
     $scope.login = function () {
       var json = {
         username: $scope.user,

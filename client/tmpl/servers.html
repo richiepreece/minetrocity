@@ -1,2 +1,16 @@
-<h1>Server List:</h1>
-{{servers}}
+<button ng-click="newServer()">Create New Server</button>
+
+<div ng-show="server">
+  <select ng-model="server" ng-options="server.server_name + ' (' + server.port + ')' for server in servers"></select>
+
+  <h1>{{server.server_name}}</h1>
+  <div>{{server.version_type}} - {{server.version}}</div>
+  <div>Running on port: {{server.port}}</div>
+
+  <button ng-click="bleh()">Start</button>
+  <button ng-click="bleh()">Stop</button>
+  <button ng-click="deleteServer(server)">Delete</button>
+</div>
+
+<div ng-show="!server">You have no servers. Create one above</div>
+
