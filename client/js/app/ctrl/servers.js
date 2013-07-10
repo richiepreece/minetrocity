@@ -1,5 +1,5 @@
 angular.module('minetrocity').controller('serversCtrl',
-  function ($scope, $location, serversData) {
+  function ($scope, $location, $http, serversData) {
     serversData.getServers().then(
       function (servers) {
         $scope.servers = servers;
@@ -12,6 +12,10 @@ angular.module('minetrocity').controller('serversCtrl',
 
     $scope.newServer = function () {
       $location.path('/newServer');
+    };
+
+    $scope.bleh = function () {
+      alert('not set up yet');
     };
 
     $scope.deleteServer = function (server) {
@@ -31,7 +35,7 @@ angular.module('minetrocity').controller('serversCtrl',
               $scope.servers.splice(i, 1);
             }
           }
-          $scope.server = servers[0];
+          $scope.server = $scope.servers[0];
         },
         function (err) {
           console.error(err);
