@@ -16,8 +16,8 @@
         <td>*****</td>
         <td>{{user.email}}</td>
         <td>
-          <span class="acl-option" ng-repeat="perm in user.acl" >
-            <input type="checkbox"> {{perm}}
+          <span class="acl-option" ng-repeat="perm in user.acl">
+            <input type="checkbox" ng-change="updateUser(user)" ng-model="perm.has"> {{perm.name}}
           </span>
         </td>
       </tr>
