@@ -112,7 +112,7 @@ if(fs.existsSync('models/users.json')){
 /**
  * SERVER METHODS
  */
-if(fs.existsSync('models/server.json')){
+if(fs.existsSync('models/servers.json')){
   shared.set('servers', JSON.parse(fs.readFileSync('models/servers.json')));
 } else {
   shared.set('servers', {});
