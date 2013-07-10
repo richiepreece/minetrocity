@@ -16,8 +16,8 @@
     <input ng-model="email" type="text"/>
   </div>
 
-  <button ng-click="saveUser(user, pass, email)">Save</button>
+  <button ng-disabled="!user || !pass || !email" ng-click="saveUser(user, pass, email)">Save</button>
   <button ng-click="back()">Back</button>
 
-  <div class="msg">{{msg}}</div>
+  <div>{{msg}}</div>
 </div>

@@ -19,7 +19,7 @@ module.exports = function (app) {
   app.post('/add_server', addServer);
   app.put('/update_server', updateServer);
   app.post('/change_port', changePort);
-  app.delete('/delete_server', deleteServer);
+  app.post('/delete_server', deleteServer);
   app.post('/restart_server', restartServer);
   app.post('/server_history', serverHistory);
   app.post('/command_server', commandServer);

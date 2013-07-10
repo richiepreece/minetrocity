@@ -1,0 +1,30 @@
+<h1>Create New Server</h1>
+
+<div>
+  <span>Name: </span>
+  <input type="text" ng-model="name"/>
+</div>
+
+<div>
+  <span>Port: </span>
+  <input type="text" ng-model="port"/>
+</div>
+
+<div>
+  <span>Version: </span>
+  <select ng-model="version" ng-options="version.type + ' ' + version.id for version in versions"></select>
+</div>
+
+<button ng-click="back()">Cancel</button>
+<button ng-disabled="!name || !port || !version" ng-click="saveServer(name, port, version)">Create</button>
+
+<div>{{msg}}</div>
+
+<!--
+{
+  "id":"13w16b",
+  "time":"2013-07-02T19:27:58+02:00",
+  "releaseTime":"2013-04-23T23:51:22+02:00",
+  "type":"snapshot"
+}
+-->

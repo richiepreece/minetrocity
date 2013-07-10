@@ -19,6 +19,13 @@ var mNav = [
     ctrl: 'serversCtrl'
   },
   {
+    label: 'NewServer',
+    url:  '/newServer',
+    tmpl: 'tmpl/new-server.html',
+    ctrl: 'newServerCtrl',
+    hidden: true
+  },
+  {
     label: 'Users',
     url:  '/users',
     tmpl: 'tmpl/users.html',
