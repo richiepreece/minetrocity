@@ -42,5 +42,20 @@ angular.module('minetrocity').controller('serversCtrl',
         }
       );
     };
+
+    $scope.startServer = function (server) {
+      var json = { id: server.id };
+      $http.post('/start_server', json).then(angular.noop, angular.noop);
+    };
+
+    $scope.stopServer = function (server) {
+      var json = { id: server.id };
+      $http.post('/stop_server', json).then(angular.noop, angular.noop);
+    };
+
+    $scope.restartServer = function (server) {
+      var json = { id: server.id };
+      $http.post('/restart_server', json).then(angular.noop, angular.noop);
+    };
   }
 );
