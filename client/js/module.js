@@ -1,4 +1,4 @@
-var app = angular.module('minetrocity', []).config(
+var app = angular.module('minetrocity', ['ui.bootstrap']).config(
   function ($routeProvider) {
     for (var i = 0; i < mNav.length; ++i) {
       $routeProvider.when(mNav[i].url, {

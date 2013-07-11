@@ -1,19 +1,15 @@
 <div id="login">
-  <div class="msg {{type}}-msg">
-    {{msg}}
-  </div>
-
   <form>
     <div>
-      <span class="label">Username:</span>
+      <label>Username:</label>
       <input type="text" ng-model="user">
     </div>
     <div>
-      <span class="label">Password:</span>
+      <label>Password:</label>
       <input type="password" ng-model="pass">
     </div>
     <div>
-      <button class="btn" ng-click="login()">Submit</button>
+      <button class="btn" ng-click="login(user, pass)">Submit</button>
     </div>
   </form>
 </div>
