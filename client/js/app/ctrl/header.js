@@ -1,7 +1,6 @@
 angular.module('minetrocity').controller('headerCtrl',
-  function ($scope, $location, $http, user) {
+  function ($scope, $location, $http, user, alerts) {
     $scope.nav = mNav;
-
     $scope.user = user;
 
     $scope.getItem = function (url) {
@@ -26,5 +25,8 @@ angular.module('minetrocity').controller('headerCtrl',
         }
       );
     };
+
+    $scope.alerts = alerts.alerts;
+    $scope.closeAlert = alerts.close;
   }
 );

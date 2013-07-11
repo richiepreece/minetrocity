@@ -1,11 +1,12 @@
 angular.module('minetrocity').controller('usersCtrl',
-  function ($scope, $http, $location, usersData) {
+  function ($scope, $http, $location, usersData, alerts) {
     usersData.getData().then(
       function (resp) {
         $scope.users = resp;
       },
       function (err) {
         console.error(err);
+        alerts.create('error', err);
       }
     );
 
@@ -23,12 +24,14 @@ angular.module('minetrocity').controller('usersCtrl',
         }
       }
 
+      alerts.create('info', 'Updating User...');
       $http.put('/update_user', newUser).then(
         function (resp) {
-          console.log('updated successfully!!');
+          alerts.create('success', 'Updated User!');
         },
         function (err) {
           console.error(err);
+          alerts.create('error', err);
         }
       );
     };
@@ -42,14 +45,16 @@ angular.module('minetrocity').controller('usersCtrl',
         id: user.id
       };
 
+      alerts.create('info', 'Deleting User...');
       $http.post('/delete_user', json).then(
         function (resp) {
           var d = resp.data;
           if (!d.success) {
-            return console.error(d.err);
+            console.error(d.err);
+            return alerts.create('error', d.err);
           }
 
-          console.log('deleted user: ' + user.id);
+          alerts.create('success', 'Deleted User!');
           for (var i = 0; i < $scope.users.length; ++i) {
             if ($scope.users[i].id === user.id) {
               $scope.users.splice(i, 1);
@@ -59,6 +64,7 @@ angular.module('minetrocity').controller('usersCtrl',
         },
         function (err) {
           console.error(err);
+          alerts.create('error', err);
         }
       );
     };

@@ -1,5 +1,5 @@
 angular.module('minetrocity').controller('loginCtrl',
-  function ($scope, $http, $location, user) {
+  function ($scope, $http, $location, user, alerts) {
     function checkForUser() {
       $http.get('/curr_user').then(
         function (resp) {
@@ -9,33 +9,28 @@ angular.module('minetrocity').controller('loginCtrl',
           $location.path('/');
         },
         function (err) {
-          console.log('ERR: Could Not Find Pre-Logged In User.');
+          console.error('Could Not Find Pre-Logged In User.');
+          console.error(err);
         }
       );
     }
     checkForUser();
 
-    $scope.login = function () {
+    $scope.login = function (user, pass) {
       var json = {
-        username: $scope.user,
-        password: $scope.pass
+        username: user,
+        password: pass
       };
 
       if (!json.username) {
-        $scope.type = 'error';
-        $scope.msg = 'You must enter a username.';
-        return;
+        return alerts.create('error', 'You must enter a username.');
       }
 
       if (!json.password) {
-        $scope.type = 'error';
-        $scope.msg = 'You must enter a password.';
-        return;
+        return alerts.create('error', 'You must enter a password.');
       }
 
-      $scope.type = 'info';
-      $scope.msg = 'Logging in';
-
+      alerts.create('info', 'Logging in');
       $http.post('/login', json).then(
         function (result) {
           var d = result.data;
@@ -43,16 +38,17 @@ angular.module('minetrocity').controller('loginCtrl',
             user.isLoggedIn = true;
             user.name = d.username;
             user.acl = d.acl;
+            alerts.create('success', 'Logged In!');
             $location.path('/');
           }
           else {
-            $scope.type = 'error';
-            $scope.msg = d.err;
+            console.error(d.err);
+            alerts.create('error', d.err);
           }
         },
         function (reason) {
-          $scope.type = 'error';
-          $scope.msg = reason;
+          console.error(reason);
+          alerts.create('error', reason);
         }
       );
     };
