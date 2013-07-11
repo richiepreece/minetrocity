@@ -45,6 +45,15 @@ function servers(request, response, next){
     if(isAllowed){
       //Set list of servers
       responseData['servers'] = shared.get('servers');
+
+      for(index in shared.get('servers')){
+        var curr = shared.get('servers')[index];
+        if(shared.get('child' + curr['id'])){
+          curr['running'] = true;
+        } else {
+          curr['running'] = false;
+        }
+      }
     } else {
       responseData['sucess'] = false;
       responseData['err'] = 'You do not have the necessary permissions';
@@ -55,6 +64,11 @@ function servers(request, response, next){
   }
 
   response.send(responseData);
+
+  for(index in shared.get('servers')){
+    delete shared.get('servers')[index]['running'];
+  }
+  console.log(shared.get('servers'));
 }
 
 /**
