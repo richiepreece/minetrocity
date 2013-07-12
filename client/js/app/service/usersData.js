@@ -6,6 +6,9 @@ angular.module('minetrocity').factory('usersData',
       var deferred = $q.defer();
       $http.get('/permissions').then(
         function (resp) {
+          if (!resp.data.success) {
+            return deferred.reject(resp.data.err);
+          }
           deferred.resolve(resp.data.permissions.permissions);
         },
         deferred.reject

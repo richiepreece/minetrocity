@@ -6,6 +6,7 @@ angular.module('minetrocity').directive('checkUser',
           var nextPage = (next || {}).name;
 
           if (!user.isLoggedIn && nextPage !== 'Login') {
+            user.path = next.url;
             $location.path('/login');
           }
 
