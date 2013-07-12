@@ -32,6 +32,7 @@
   height: 0;
   right: 10px;
   margin-top: 10px;
+  z-index: 1051;
 }
 #footer {
   text-align: center;
@@ -50,6 +51,35 @@
 }
 #users .delete-btn:hover {
   background-color: #f00;
+}
+#servers {
+  padding-top: 15px;
+}
+#servers .create-server {
+  float: right;
+  margin-right: 20px;
+}
+#servers .no-servers {
+  padding-left: 20px;
+}
+#servers .title {
+  display: inline-block;
+}
+#servers .status {
+  background-color: #008000;
+  display: inline-block;
+  padding: 10px 20px;
+  margin-left: 40px;
+  position: relative;
+  top: -8px;
+}
+#servers .status.stopped {
+  background-color: #f00;
+}
+#servers .lbl {
+  display: inline-block;
+  width: 100px;
+  font-weight: bold;
 }
 * {
   padding: 0;
