@@ -1,5 +1,8 @@
 angular.module('minetrocity').controller('footerCtrl',
-  function ($scope) {
+  function ($scope, alerts) {
     $scope.year = new Date().getFullYear();
+
+    $scope.alerts = alerts.alerts;
+    $scope.closeAlert = alerts.close;
   }
 );

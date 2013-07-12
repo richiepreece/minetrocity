@@ -4,7 +4,3 @@
 
   <div class="security" ng-show="user.isLoggedIn" ng-click="logout()">Welcome, {{user.name}}</div>
 </div>
-
-<div id="alerts">
-  <div alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index, alert)">{{alert.msg}}</div>
-</div>
