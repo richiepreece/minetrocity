@@ -4,7 +4,8 @@ var app = angular.module('minetrocity', ['ui.bootstrap']).config(
       $routeProvider.when(mNav[i].url, {
         templateUrl: mNav[i].tmpl,
         controller: mNav[i].ctrl,
-        name: mNav[i].label
+        name: mNav[i].label,
+        url: mNav[i].url
       });
     }
 

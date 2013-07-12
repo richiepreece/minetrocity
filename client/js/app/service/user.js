@@ -3,6 +3,7 @@ angular.module('minetrocity').factory('user',
     var user = {
       isLoggedIn: false,
       name: '',
+      path: '/',
       acl: []
     };
 

@@ -10,23 +10,18 @@ angular.module('minetrocity').controller('headerCtrl',
     $scope.logout = function () {
       $http.get('/logout').then(
         function (resp) {
-          if (resp.data.success) {
-            user.isLoggedIn = false;
-            user.name = '';
-            user.acl = [];
-            $location.path('/login');
+          if (!resp.data.success) {
+            return alerts.create('error', resp.data.err);
           }
-          else {
-            console.log('couldn\'t logout: ' + resp.data.err);
-          }
+          user.isLoggedIn = false;
+          user.name = '';
+          user.acl = [];
+          $location.path('/login');
         },
         function (err) {
-          console.log('couldn\'t logout: ' + err);
+          alerts.create('error', err);
         }
       );
     };
-
-    $scope.alerts = alerts.alerts;
-    $scope.closeAlert = alerts.close;
   }
 );

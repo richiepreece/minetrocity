@@ -1,1 +1,5 @@
-&copy; Minetrocity {{year}}
+<div id="copyright">&copy; Minetrocity {{year}}</div>
+
+<div id="alerts">
+  <div alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index, alert)">{{alert.msg}}</div>
+</div>

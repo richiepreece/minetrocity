@@ -26,35 +26,63 @@
 #header #nav .security:hover {
   background-color: #008000;
 }
-#header #alerts {
+#footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+#footer #copyright {
+  text-align: center;
+}
+#footer #alerts {
   position: absolute;
   width: 50%;
-  height: 0;
+  bottom: 0;
   right: 10px;
-  margin-top: 10px;
-}
-#footer {
-  text-align: center;
+  z-index: 1051;
 }
 #login {
   text-align: center;
   padding-top: 100px;
 }
-#users .acl-option {
+#users {
+  padding-top: 10px;
+}
+#servers {
+  padding-top: 15px;
+}
+#servers .create-server {
+  float: right;
+  margin-right: 20px;
+}
+#servers .no-servers {
+  padding-left: 20px;
+}
+#servers .title {
   display: inline-block;
-  width: 220px;
 }
-#users .delete-btn {
-  cursor: pointer;
-  text-align: center;
+#servers .status {
+  background-color: #008000;
+  display: inline-block;
+  padding: 10px 20px;
+  margin-left: 40px;
+  position: relative;
+  top: -8px;
 }
-#users .delete-btn:hover {
+#servers .status.stopped {
   background-color: #f00;
+}
+#servers .lbl {
+  display: inline-block;
+  width: 100px;
+  font-weight: bold;
 }
 * {
   padding: 0;
   margin: 0;
 }
-#view {
-  min-height: 630px;
+html,
+body {
+  height: 100%;
 }

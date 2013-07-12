@@ -1,17 +1,60 @@
-<button ng-click="newServer()">Create New Server</button>
+<div id="servers">
+  <div>
+    <button class="btn btn-primary create-server" ng-click="openModal()">Create New Server</button>
+    <select ng-show="servers.length" ng-model="server" ng-options="server.server_name + ' (' + server.port + ')' for server in servers"></select>
+    <div class="no-servers" ng-show="!servers.length">You have no servers. Create One.</div>
+  </div>
 
-<div ng-show="server">
-  <select ng-model="server" ng-options="server.server_name + ' (' + server.port + ')' for server in servers"></select>
+  <div ng-show="server">
+    <h1 class="title">{{server.server_name}}</h1>
+    <div class="status" ng-class="{stopped:!server.running}">{{server.running && 'Running!' || 'Stopped.'}}</div>
 
-  <h1>{{server.server_name}}</h1>
-  <div>{{server.version_type}} - {{server.version}}</div>
-  <div>Running on port: {{server.port}}</div>
+    <tabset>
+      <tab heading="Info">
+        <div>
+          <span class="lbl">Version:</span>
+          <span>{{server.version_type}} - {{server.version}}</span>
+        </div>
+        <div>
+          <span class="lbl">Port:</span>
+          <span>{{server.port}}</span>
+        </div>
+      </tab>
 
-  <button ng-click="startServer(server)">Start</button>
-  <button ng-click="restartServer(server)">Restart</button>
-  <button ng-click="stopServer(server)">Stop</button>
-  <button ng-click="deleteServer(server)">Delete</button>
+      <tab heading="Actions">
+        <button ng-disabled="server.running" class="btn btn-success" ng-click="startServer(server)">Start</button>
+        <button ng-disabled="!server.running" class="btn btn-warning" ng-click="restartServer(server)">Restart</button>
+        <button ng-disabled="!server.running" class="btn btn-danger" ng-click="stopServer(server)">Stop</button>
+        <button ng-disabled="server.running" class="btn btn-danger" ng-click="deleteServer(server)">Delete</button>
+      </tab>
+
+      <tab heading="Logger">
+        Logs go here
+      </tab>
+    </tabset>
+  </div>
+
+  <div modal="showModal" close="closeModal()" options="modalOpts">
+    <div class="modal-header"><h3>Create Server</h3></div>
+
+    <div class="modal-body">
+      <form>
+        <fieldset>
+          <label>Name:</label>
+          <input type="text" ng-model="name">
+
+          <label>Port:</label>
+          <input type="text" ng-model="port">
+
+          <label>Version:</label>
+          <select ng-model="version" ng-options="version.type + ' ' + version.id for version in versions"></select>
+        </fieldset>
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button ng-click="closeModal()" class="btn">Cancel</button>
+      <button ng-disabled="!name || !port" ng-click="createServer(name, port, version)" class="btn btn-success">Create</button>
+    </div>
+  </div>
 </div>
-
-<div ng-show="!server">You have no servers. Create one above</div>
-

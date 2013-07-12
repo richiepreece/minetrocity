@@ -6,7 +6,7 @@ angular.module('minetrocity').controller('loginCtrl',
           user.isLoggedIn = true;
           user.name = resp.data.username;
           user.acl = resp.data.acl;
-          $location.path('/');
+          $location.path(user.path || '/');
         },
         function (err) {
           console.error('Could Not Find Pre-Logged In User.');
@@ -16,9 +16,9 @@ angular.module('minetrocity').controller('loginCtrl',
     }
     checkForUser();
 
-    $scope.login = function (user, pass) {
+    $scope.login = function (username, pass) {
       var json = {
-        username: user,
+        username: username,
         password: pass
       };
 
@@ -39,7 +39,7 @@ angular.module('minetrocity').controller('loginCtrl',
             user.name = d.username;
             user.acl = d.acl;
             alerts.create('success', 'Logged In!');
-            $location.path('/');
+            $location.path(user.path || '/');
           }
           else {
             console.error(d.err);

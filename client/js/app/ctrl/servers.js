@@ -1,20 +1,73 @@
 angular.module('minetrocity').controller('serversCtrl',
-  function ($scope, $location, $http, serversData, alerts) {
-    serversData.getServers().then(
-      function (servers) {
-        $scope.servers = servers;
-        $scope.server = servers[0];
-      },
-      function (err) {
-        console.error(err);
-        alerts.create('error', err);
-      }
-    );
+  function ($scope, $http, serversData, alerts) {
+    function getInfo() {
+      serversData.getInfo().then(
+        function (data) {
+          $scope.servers = data.servers;
+          $scope.server = data.servers[0];
+          $scope.versions = data.versions;
+          $scope.version = data.versions[0];
+        },
+        function (err) {
+          console.error(err);
+          alerts.create('error', err);
+        }
+      );
+    }
+    getInfo();
 
-    $scope.newServer = function () {
-      $location.path('/newServer');
+    ////////////////////////////////////////////////////////////////////////////////
+    //-- Modal Stuff -------------------------------------------------------------//
+    ////////////////////////////////////////////////////////////////////////////////
+    $scope.modalOpts = { backdropFade: true, dialogFade: true };
+
+    $scope.openModal = function () {
+      $scope.showModal = true;
     };
 
+    $scope.closeModal = function () {
+      $scope.showModal = false;
+    };
+
+    $scope.createServer = function (name, port, version) {
+      if (isNaN(port)) {
+        return alerts.create('error', 'Invalid Port. Needs to be a number.');
+      }
+
+      var json = {
+        server_name: name,
+        port: port,
+        version: version.id,
+        version_type: version.type
+      };
+
+      alerts.create('info', 'Creating Server...');
+      $http.post('/add_server', json).then(
+        function (resp) {
+          var d = resp.data;
+          if (!d.success) {
+            console.error(d.err);
+            return alerts.create('error', d.err);
+          }
+          alerts.create('success', 'Created the Server!');
+          json.id = d.id;
+          json.running = false;
+          $scope.servers.push(json);
+
+          $scope.name = '';
+          $scope.port = '';
+          $scope.showModal = false;
+        },
+        function (err) {
+          console.error(err);
+          alerts.create('error', err);
+        }
+      );
+    };
+
+    ////////////////////////////////////////////////////////////////////////////////
+    //-- Server Actions ----------------------------------------------------------//
+    ////////////////////////////////////////////////////////////////////////////////
     $scope.deleteServer = function (server) {
       var json = {
         id: server.id
@@ -56,6 +109,7 @@ angular.module('minetrocity').controller('serversCtrl',
             console.error(d.err);
             return alerts.create('error', d.err);
           }
+          server.running = true;
           alerts.create('success', 'Server Started!');
         },
         function (err) {
@@ -77,6 +131,7 @@ angular.module('minetrocity').controller('serversCtrl',
             console.error(d.err);
             return alerts.create('error', d.err);
           }
+          server.running = false;
           alerts.create('success', 'Server Stopped!');
         },
         function (err) {

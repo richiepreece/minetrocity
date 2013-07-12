@@ -5,9 +5,6 @@ angular.module('minetrocity').factory('serversData',
       $http.get('/servers').then(
         function (resp) {
           var d = resp.data;
-          // if (!d.success) {
-          //   return deferred.reject(d.err);
-          // }
           var servers = [];
           for (var key in d.servers) {
             servers.push(d.servers[key]);
@@ -30,9 +27,27 @@ angular.module('minetrocity').factory('serversData',
       return deferred.promise;
     }
 
+    function getInfo() {
+      var deferred = $q.defer();
+      $q.all([
+        getServers(),
+        getVersions()
+      ]).then(
+        function (resp) {
+          deferred.resolve({
+            servers: resp[0],
+            versions: resp[1]
+          });
+        },
+        deferred.reject
+      );
+      return deferred.promise;
+    }
+
     return {
       getServers: getServers,
-      getVersions: getVersions
+      getVersions: getVersions,
+      getInfo: getInfo
     };
   }
 );
