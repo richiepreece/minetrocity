@@ -1,5 +1,5 @@
 angular.module('minetrocity').controller('serversCtrl',
-  function ($scope, $location, $http, serversData, alerts) {
+  function ($scope, $http, serversData, alerts) {
     function getInfo() {
       serversData.getInfo().then(
         function (data) {

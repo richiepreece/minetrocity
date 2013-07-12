@@ -41,16 +41,8 @@
   text-align: center;
   padding-top: 100px;
 }
-#users .acl-option {
-  display: inline-block;
-  width: 220px;
-}
-#users .delete-btn {
-  cursor: pointer;
-  text-align: center;
-}
-#users .delete-btn:hover {
-  background-color: #f00;
+#users {
+  padding-top: 10px;
 }
 #servers {
   padding-top: 15px;

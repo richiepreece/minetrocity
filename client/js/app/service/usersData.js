@@ -1,5 +1,7 @@
 angular.module('minetrocity').factory('usersData',
   function ($http, $q) {
+    var perms;
+
     function getPermissions() {
       var deferred = $q.defer();
       $http.get('/permissions').then(
@@ -38,19 +40,26 @@ angular.module('minetrocity').factory('usersData',
       ]).then(
         function (resp) {
           var users = resp[0];
-          var perms = resp[1];
+          perms = resp[1];
           for (var i = 0; i < users.length; ++i) {
-            var acl = users[i].acl;
-            users[i].acl = [];
-            for (var j = 0; j < perms.length; ++j) {
-              users[i].acl.push({ name: perms[j], has: contains(perms[j], acl) });
-            }
+            users[i].acl = getAcl(users[i].acl);
           }
           deferred.resolve(users);
         },
         deferred.reject
       );
       return deferred.promise;
+    }
+
+    function getAcl(acl) {
+      var temp = [];
+      for (var i = 0; i < perms.length; ++i) {
+        temp.push({
+          name: perms[i],
+          has: contains(perms[i], acl)
+        });
+      }
+      return temp;
     }
 
 
@@ -64,7 +73,8 @@ angular.module('minetrocity').factory('usersData',
     }
 
     return {
-      getData: getData
+      getData: getData,
+      getAcl: getAcl
     };
   }
 );

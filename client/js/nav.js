@@ -23,12 +23,5 @@ var mNav = [
     url:  '/users',
     tmpl: 'tmpl/users.html',
     ctrl: 'usersCtrl'
-  },
-  {
-    label: 'NewUser',
-    url:  '/newUser',
-    tmpl: 'tmpl/new-user.html',
-    ctrl: 'newUserCtrl',
-    hidden: true
   }
 ];
