@@ -50,6 +50,7 @@ function servers(request, response, next){
         var curr = shared.get('servers')[index];
         if(shared.get('child' + curr['id'])){
           curr['running'] = true;
+          curr['history'] = shared.get('history' + curr['id']);
         } else {
           curr['running'] = false;
         }
@@ -67,6 +68,7 @@ function servers(request, response, next){
 
   for(index in shared.get('servers')){
     delete shared.get('servers')[index]['running'];
+    delete shared.get('servers')[index]['history'];
   }
   console.log(shared.get('servers'));
 }
@@ -132,11 +134,9 @@ function startServer(request, response, next){
 
               responseData['id'] = server['id'];
               responseData['success'] = true;
-              responseData['history'] = []; //TODO: set history
             } else {
               responseData['success'] = false;
               responseData['err'] = 'The server is already running';
-              responseData['history'] = shared.get('history' + server['id']);
             }
           } else {
             responseData['success'] = false;
