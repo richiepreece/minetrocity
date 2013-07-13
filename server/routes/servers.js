@@ -709,5 +709,3 @@ function getServer(newServer){
 
   process.chdir(currDir);
 }
-process.chdir(currDir);
-}
