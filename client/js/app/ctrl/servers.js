@@ -1,5 +1,7 @@
 angular.module('minetrocity').controller('serversCtrl',
-  function ($scope, $http, serversData, alerts) {
+  function ($scope, $http, $rootScope, serversData, alerts) {
+    var serversObj = {};
+
     function getInfo() {
       serversData.getInfo().then(
         function (data) {
@@ -7,6 +9,7 @@ angular.module('minetrocity').controller('serversCtrl',
           $scope.server = data.servers[0];
           $scope.versions = data.versions;
           $scope.version = data.versions[0];
+          serversObj = data.serversObj;
         },
         function (err) {
           console.error(err);
@@ -15,6 +18,20 @@ angular.module('minetrocity').controller('serversCtrl',
       );
     }
     getInfo();
+
+    ////////////////////////////////////////////////////////////////////////////////
+    //-- Socket IO Stuff ---------------------------------------------------------//
+    ////////////////////////////////////////////////////////////////////////////////
+    $scope.history = [];
+    $rootScope.$on('msg', function (e, data) {
+      var currServer = serversObj[data.id];
+      if (!currServer) return;
+      currServer.history = currServer.history || [];
+      var msgs = data.msg.split('\n');
+      for (var i = 0; i < msgs.length; ++i) {
+        currServer.history.push(msgs[i]);
+      }
+    });
 
     ////////////////////////////////////////////////////////////////////////////////
     //-- Modal Stuff -------------------------------------------------------------//

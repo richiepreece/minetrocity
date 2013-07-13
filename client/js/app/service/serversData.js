@@ -9,7 +9,10 @@ angular.module('minetrocity').factory('serversData',
           for (var key in d.servers) {
             servers.push(d.servers[key]);
           }
-          deferred.resolve(servers);
+          deferred.resolve({
+            arr: servers,
+            obj: d.servers
+          });
         },
         deferred.reject
       );
@@ -35,7 +38,8 @@ angular.module('minetrocity').factory('serversData',
       ]).then(
         function (resp) {
           deferred.resolve({
-            servers: resp[0],
+            serversObj: resp[0].obj,
+            servers: resp[0].arr,
             versions: resp[1]
           });
         },
