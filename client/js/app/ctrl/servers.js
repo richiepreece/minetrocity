@@ -29,6 +29,29 @@ angular.module('minetrocity').controller('serversCtrl',
       currServer.history.push(data.msg);
     });
 
+    $scope.sendCommand = function (cmd, server) {
+      var json = {
+        id: server.id,
+        cmd: cmd
+      };
+
+      alerts.create('info', 'Telling Server: ' + cmd);
+      $http.post('/command_server', json).then(
+        function (resp) {
+          if (!resp.data.success) {
+            console.error(resp.data.err);
+            return alerts.create('error', resp.data.err);
+          }
+          alerts.create('success', 'Command Sent!');
+          $scope.msg = '';
+        },
+        function (err) {
+          console.error(err);
+          alerts.create('error', err);
+        }
+      );
+    };
+
     ////////////////////////////////////////////////////////////////////////////////
     //-- Modal Stuff -------------------------------------------------------------//
     ////////////////////////////////////////////////////////////////////////////////

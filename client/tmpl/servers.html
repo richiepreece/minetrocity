@@ -22,10 +22,21 @@
       </tab>
 
       <tab heading="Actions">
-        <button ng-disabled="server.running" class="btn btn-success" ng-click="startServer(server)">Start</button>
-        <button ng-disabled="!server.running" class="btn btn-warning" ng-click="restartServer(server)">Restart</button>
-        <button ng-disabled="!server.running" class="btn btn-danger" ng-click="stopServer(server)">Stop</button>
-        <button ng-disabled="server.running" class="btn btn-danger" ng-click="deleteServer(server)">Delete</button>
+        <div>
+          <button ng-disabled="server.running" class="btn btn-success" ng-click="startServer(server)">Start</button>
+          <button ng-disabled="!server.running" class="btn btn-warning" ng-click="restartServer(server)">Restart</button>
+          <button ng-disabled="!server.running" class="btn btn-danger" ng-click="stopServer(server)">Stop</button>
+          <button ng-disabled="server.running" class="btn btn-danger" ng-click="deleteServer(server)">Delete</button>
+        </div>
+        <div>
+          <form>
+            <fieldset>
+              <label>Type a Command:</label>
+              <input type="text" ng-model="cmd">
+              <button ng-disabled="!cmd || !server.running" class="btn send-command" ng-click="sendCommand(cmd, server)">Send</button>
+            </fieldset>
+          </form>
+        </div>
       </tab>
 
       <tab heading="Logger">

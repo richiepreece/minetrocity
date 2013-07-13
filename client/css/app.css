@@ -73,6 +73,9 @@
 #servers .status.stopped {
   background-color: #f00;
 }
+#servers .send-command {
+  vertical-align: top;
+}
 #servers .lbl {
   display: inline-block;
   width: 100px;
