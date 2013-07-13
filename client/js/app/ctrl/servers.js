@@ -27,6 +27,7 @@ angular.module('minetrocity').controller('serversCtrl',
       if (!currServer) return;
       // data.msg = data.msg.replace(/\n/g, '<br>');
       currServer.history.push(data.msg);
+      $scope.$apply();
     });
 
     $scope.sendCommand = function (cmd, server) {
@@ -43,7 +44,7 @@ angular.module('minetrocity').controller('serversCtrl',
             return alerts.create('error', resp.data.err);
           }
           alerts.create('success', 'Command Sent!');
-          $scope.msg = '';
+          $scope.cmd = '';
         },
         function (err) {
           console.error(err);
@@ -88,7 +89,10 @@ angular.module('minetrocity').controller('serversCtrl',
           alerts.create('success', 'Created the Server!');
           json.id = d.id;
           json.running = false;
+          json.history = [];
           $scope.servers.push(json);
+          serversObj[d.id] = json;
+          if (!$scope.server) $scope.server = json;
 
           $scope.name = '';
           $scope.port = '';
