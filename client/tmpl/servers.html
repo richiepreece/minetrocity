@@ -32,8 +32,8 @@
           <form>
             <fieldset>
               <label>Type a Command:</label>
-              <input type="text" ng-model="cmd">
-              <button ng-disabled="!cmd || !server.running" class="btn send-command" ng-click="sendCommand(cmd, server)">Send</button>
+              <input type="text" ng-model="$parent.cmd">
+              <button ng-disabled="!$parent.cmd || !server.running" class="btn send-command" ng-click="sendCommand($parent.cmd, server)">Send</button>
             </fieldset>
           </form>
         </div>
