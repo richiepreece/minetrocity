@@ -22,15 +22,11 @@ angular.module('minetrocity').controller('serversCtrl',
     ////////////////////////////////////////////////////////////////////////////////
     //-- Socket IO Stuff ---------------------------------------------------------//
     ////////////////////////////////////////////////////////////////////////////////
-    $scope.history = [];
     $rootScope.$on('msg', function (e, data) {
       var currServer = serversObj[data.id];
       if (!currServer) return;
-      currServer.history = currServer.history || [];
-      var msgs = data.msg.split('\n');
-      for (var i = 0; i < msgs.length; ++i) {
-        currServer.history.push(msgs[i]);
-      }
+      // data.msg = data.msg.replace(/\n/g, '<br>');
+      currServer.history.push(data.msg);
     });
 
     ////////////////////////////////////////////////////////////////////////////////

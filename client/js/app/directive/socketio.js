@@ -6,8 +6,6 @@ angular.module('minetrocity').directive('socketIo',
       for (var i = 0; i < msgs.length; ++i) {
         (function (msg) {
           socket.on(msg, function (data) {
-            console.log('GOT A MESSAGE ' + msg);
-            console.log(data);
             $rootScope.$emit(msg, data);
           });
         }(msgs[i]));

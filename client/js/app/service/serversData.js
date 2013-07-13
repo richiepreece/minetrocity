@@ -7,7 +7,12 @@ angular.module('minetrocity').factory('serversData',
           var d = resp.data;
           var servers = [];
           for (var key in d.servers) {
-            servers.push(d.servers[key]);
+            var currServer = d.servers[key];
+            servers.push(currServer);
+            currServer.history = currServer.history || [];
+            // for (var i = 0; i < currServer.history.length; ++i) {
+            //   currServer.history[i] = currServer.history[i].replace(/\n/g, '<br>');
+            // }
           }
           deferred.resolve({
             arr: servers,
