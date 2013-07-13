@@ -22,8 +22,7 @@ angular.module('minetrocity').directive('checkUser',
 
     return {
       restrict: 'EA',
-      link: link,
-      scope: {}
+      link: link
     };
   }
 );

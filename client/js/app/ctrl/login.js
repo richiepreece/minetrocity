@@ -30,7 +30,7 @@ angular.module('minetrocity').controller('loginCtrl',
         return alerts.create('error', 'You must enter a password.');
       }
 
-      alerts.create('info', 'Logging in');
+      alerts.create('info', 'Logging in...');
       $http.post('/login', json).then(
         function (result) {
           var d = result.data;

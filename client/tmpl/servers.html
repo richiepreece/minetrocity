@@ -29,7 +29,9 @@
       </tab>
 
       <tab heading="Logger">
-        Logs go here
+        <div class="log-box">
+          <div ng-repeat="msg in server.history">{{msg}}</div>
+        </div>
       </tab>
     </tabset>
   </div>
