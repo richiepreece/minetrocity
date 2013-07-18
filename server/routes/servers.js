@@ -222,7 +222,7 @@ function deleteServer(request, response, next){
 
   var server = request.body;
 
-  if(server.id === undefined) return fail('You must specify a server id');
+  if(server.id === undefined || server.id === null) return fail('You must specify a server id');
   if(shared.get('servers')[server.id] === undefined || shared.get('servers')[server.id] === null) return fail('The server doesn\'t exist');
   if(shared.get('child' + server.id) !== undefined && shared.get('child' + server.id) !== null) return fail('The server is running');
 
@@ -249,7 +249,7 @@ function serverHistory(request, response, next){
 
   var server = request.body;
 
-  if(server.id === undefined) return fail('You must specify a server id');
+  if(server.id === undefined || server.id === null) return fail('You must specify a server id');
   if(shared.get('servers')[server.id] === undefined || shared.get('servers')[server.id] === null) return fail('The server doesn\'t exist');
   if(shared.get('child' + server.id) === undefined || shared.get('child' + server.id) === null) return fail('The server isn\'t running');
 
@@ -273,7 +273,7 @@ function commandServer(request, response, next){
 
   var server = request.body;
 
-  if(server.id === undefined) return fail('You must specify a server id');
+  if(server.id === undefined || server.id === null) return fail('You must specify a server id');
   if(shared.get('servers')[server.id] === undefined || shared.get('servers')[server.id] === null) return fail('The server doesn\'t exist');
   if(shared.get('child' + server.id) === undefined || shared.get('child' + server.id) === null) return fail('The server isn\'t running');
 
@@ -298,11 +298,15 @@ function updateServer(request, response, next){
 
   var server = request.body;
 
-  if(server.id === undefined) return fail('You must specify a server id');
+  if(server.id === undefined || server.id === null) return fail('You must specify a server id');
   if(shared.get('servers')[server.id] === undefined || shared.get('servers')[server.id] === null) return fail('The server doesn\'t exist');
   if(shared.get('child' + server.id) !== undefined && shared.get('child' + server.id) !== null) return fail('The server is running');
 
   var oldServer = shared.get('servers')[server.id];
+
+  if(server.version !== undefined){
+    oldServer.version = server.version;
+  }
 
   for(index in server.mainproperties){
     oldServer.mainproperties[index] = server.mainproperties[index];
