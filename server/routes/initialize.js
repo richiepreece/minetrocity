@@ -26,17 +26,7 @@ function checkFolders(versions){
     fs.mkdirSync('models');
   }
 
-  if(fs.existsSync('models/permissions.json')){
-    shared.set('permissions', JSON.parse(fs.readFileSync('models/permissions.json')));
-  } else {
-    console.log('Making permissions.json file');
-    shared.set('permissions', JSON.parse('{"permissions":["VIEW_USERS","ADD_USERS",' +
-      '"UPDATE_USERS","DELETE_USERS","VIEW_SERVERS","START_SERVERS","STOP_SERVERS",' +
-      '"ADD_SERVERS","UPDATE_SERVERS","DELETE_SERVERS","RESTART_SERVERS","GET_VERSIONS",' +
-      '"CHANGE_PORTS","VIEW_HISTORIES","CLEAR_NOTIFICATIONS","COMMAND_SERVERS"],' +
-      '"deprecated_permissions":[]}'));
-    fs.writeFileSync('models/permissions.json', JSON.stringify(shared.get('permissions'), null, '\t'));
-  }
+  shared.set('permissions', defaultperms);
 
   if(fs.existsSync('models/users.json')){
     shared.set('users', JSON.parse(fs.readFileSync('models/users.json')));
@@ -110,6 +100,29 @@ function getVersions(){
 
   request.end();
 }
+
+var defaultperms =
+{
+  "permissions": [
+    "VIEW_USERS",
+    "ADD_USERS",
+    "UPDATE_USERS",
+    "DELETE_USERS",
+    "VIEW_SERVERS",
+    "START_SERVERS",
+    "STOP_SERVERS",
+    "ADD_SERVERS",
+    "UPDATE_SERVERS",
+    "DELETE_SERVERS",
+    "RESTART_SERVERS",
+    "GET_VERSIONS",
+    "CHANGE_PORTS",
+    "VIEW_HISTORIES",
+    "CLEAR_NOTIFICATIONS",
+    "COMMAND_SERVERS"
+  ],
+  "deprecated_permissions": []
+};
 
 var defaultprops = 
 {
@@ -431,4 +444,4 @@ var defaultprops =
     }
   },
   "udfproperties": {}
-}
+};

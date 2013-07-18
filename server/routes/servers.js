@@ -19,7 +19,6 @@ module.exports = function (app) {
   app.post('/stop_server', stopServer);
   app.post('/add_server', addServer);
   app.put('/update_server', updateServer);
-  //app.post('/change_port', changePort);
   app.post('/delete_server', deleteServer);
   app.post('/restart_server', restartServer);
   app.post('/server_history', serverHistory);
@@ -48,17 +47,7 @@ function servers(request, response, next){
   }
 
   if(request.session.user === undefined) return fail('You are not logged in');
-    
-  var isAllowed = false;
-
-  //Check permissions
-  for(index in request.session.user['acl']){
-    if(request.session.user['acl'][index] == 'VIEW_SERVERS'){
-      isAllowed = true;
-    }
-  }
-
-  if(!isAllowed) return fail('You do not have the necessary permissions.');
+  if(!hasPermission(request.session.user, 'VIEW_SERVERS')) return fail('You do not have the necessary permissions');
 
   for(index in shared.get('servers')){
     var curr = shared.get('servers')[index];
@@ -90,17 +79,7 @@ function startServer(request, response, next){
   }
 
   if(request.session.user === undefined) return fail('You are not logged in');
-
-  var allowed = false;
-
-  //Check permissions
-  for(index in request.session.user['acl']){
-    if(request.session.user['acl'][index] == 'START_SERVERS'){
-      isAllowed = true;
-    }
-  }
-
-  if(!isAllowed) return fail('You do not have the necessary permissions');
+  if(!hasPermission(request.session.user, 'START_SERVERS')) return fail('You do not have the necessary permissions');
 
   var server = request.body;
 
@@ -152,17 +131,7 @@ function stopServer(request, response, next){
   }
 
   if(request.session.user === undefined) return fail('You are not logged in');
-
-  var allowed = false;
-
-  //Check permissions
-  for(index in request.session.user['acl']){
-    if(request.session.user['acl'][index] == 'STOP_SERVERS'){
-      isAllowed = true;
-    }
-  }
-
-  if(!isAllowed) return fail('You do not have the necessary permissions');
+  if(!hasPermission(request.session.user, 'STOP_SERVERS')) return fail('You do not have the necessary permissions');
 
   var server = request.body;
 
@@ -192,17 +161,7 @@ function restartServer(request, response, next){
   }
 
   if(request.session.user === undefined) return fail('You are not logged in');
-
-  var allowed = false;
-
-  //Check permissions
-  for(index in request.session.user['acl']){
-    if(request.session.user['acl'][index] == 'RESTART_SERVERS'){
-      isAllowed = true;
-    }
-  }
-
-  if(!isAllowed) return fail('You do not have the necessary permissions');
+  if(!hasPermission(request.session.user, 'RESTART_SERVERS')) return fail('You do not have the necessary permissions');
 
   var server = request.body;
 
@@ -224,17 +183,7 @@ function addServer(request, response, next){
   }
 
   if(request.session.user === undefined) return fail('You are not logged in');
-
-  var allowed = false;
-
-  //Check permissions
-  for(index in request.session.user['acl']){
-    if(request.session.user['acl'][index] == 'ADD_SERVERS'){
-      isAllowed = true;
-    }
-  }
-
-  if(!isAllowed) return fail('You do not have the necessary permissions');
+  if(!hasPermission(request.session.user, 'ADD_SERVERS')) return fail('You do not have the necessary permissions');
 
   var newServer = request.body;
   //TODO: Do validity checks here
@@ -265,17 +214,7 @@ function deleteServer(request, response, next){
   }
 
   if(request.session.user === undefined) return fail('You are not logged in');
-
-  var allowed = false;
-
-  //Check permissions
-  for(index in request.session.user['acl']){
-    if(request.session.user['acl'][index] == 'DELETE_SERVERS'){
-      isAllowed = true;
-    }
-  }
-
-  if(!isAllowed) return fail('You do not have the necessary permissions');
+  if(!hasPermission(request.session.user, 'DELETE_SERVERS')) return fail('You do not have the necessary permissions');
 
   var server = request.body;
 
@@ -302,17 +241,7 @@ function serverHistory(request, response, next){
   }
 
   if(request.session.user === undefined) return fail('You are not logged in');
-
-  var allowed = false;
-
-  //Check permissions
-  for(index in request.session.user['acl']){
-    if(request.session.user['acl'][index] == 'VIEW_HISTORIES'){
-      isAllowed = true;
-    }
-  }
-
-  if(!isAllowed) return fail('You do not have the necessary permissions');
+  if(!hasPermission(request.session.user, 'VIEW_HISTORIES')) return fail('You do not have the necessary permissions');
 
   var server = request.body;
 
@@ -336,17 +265,7 @@ function commandServer(request, response, next){
   }
 
   if(request.session.user === undefined) return fail('You are not logged in');
-
-  var allowed = false;
-
-  //Check permissions
-  for(index in request.session.user['acl']){
-    if(request.session.user['acl'][index] == 'COMMAND_SERVERS'){
-      isAllowed = true;
-    }
-  }
-
-  if(!isAllowed) return fail('You do not have the necessary permissions');
+  if(!hasPermission(request.session.user, 'COMMAND_SERVERS')) return fail('You do not have the necessary permissions');
 
   var server = request.body;
 
@@ -371,17 +290,7 @@ function updateServer(request, response, next){
   }
 
   if(request.session.user === undefined) return fail('You are not logged in');
-
-  var allowed = false;
-
-  //Check permissions
-  for(index in request.session.user['acl']){
-    if(request.session.user['acl'][index] == 'UPDATE_SERVERS'){
-      isAllowed = true;
-    }
-  }
-
-  if(!isAllowed) return fail('You do not have the necessary permissions');
+  if(!hasPermission(request.session.user, 'UPDATE_SERVERS')) return fail('You do not have the necessary permissions');
 
   var server = request.body;
 
@@ -417,6 +326,17 @@ function updateServer(request, response, next){
 /***************************
 * HELPER METHODS
 ***************************/
+
+function hasPermission(user, perm){
+  //Check permissions
+  for(index in user.acl){
+    if(user.acl[index] === perm){
+      return true;
+    }
+  }
+
+  return false;
+}
 
 /**
  * This method removes a directory recursively
