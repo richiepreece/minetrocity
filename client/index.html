@@ -1,53 +1,100 @@
-<!DOCTYPE html>
 <html>
-<head>
-  <title>Minetrocity</title>
-  <link rel="stylesheet" href="css/app.css">
-  <link rel="stylesheet" href="css/bootstrap.min.css">
-</head>
-<body check-user socket-io>
+  <head>
+  </head>
+  <body>
+    REQ: <input type="text" id="req" />
+    <br />
+    MSG: <input type="text" id="msg" />
+    <br />
+    <input type="button" id="get" value="GET" /><input type="button" id="post" value="POST" /><input type="button" id="put" value="PUT" /><input type="button" id="delete" value="DELETE" />
+    <br />
+    <div id="resp"></div>
 
-  <div header id="header"></div>
-  <div ng-view id="view"></div>
-  <div footer id="footer"></div>
+    <script type="text/javascript" src="/js/lib/jquery.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+      $(function(){
+        function _ajax_request(url, data, callback, type, method) {
+          if (jQuery.isFunction(data)) {
+            callback = data;
+            data = {};
+          }
+          return jQuery.ajax({
+            type: method,
+            url: url,
+            data: data,
+            success: callback,
+            dataType: type
+          });
+        }
 
-<!-- Libraries -->
-<script src="js/lib/d3/d3.v3.min.js"></script>
-<script src="/socket.io/socket.io.js"></script>
-<script src="js/lib/jquery/jquery-1.9.1.js"></script>
-<script src="js/lib/moment/moment-2.0.0.js"></script>
-<script src="js/lib/underscore/underscore-min.js"></script>
-<script src="js/lib/angular/angular.min.js"></script>
-<script src="js/lib/ui-bootstrap.min.js"></script>
+        jQuery.extend({
+          put: function(url, data, callback, type) {
+            return _ajax_request(url, data, callback, type, 'PUT');
+          },
+          delete_: function(url, data, callback, type) {
+            return _ajax_request(url, data, callback, type, 'DELETE');
+          }
+        });
 
-<!-- Module -->
-<script src="js/nav.js"></script>
-<script src="js/module.js"></script>
+        var socket = io.connect();
 
-<!-- Controllers -->
-<script src="js/app/ctrl/main.js"></script>
-<script src="js/app/ctrl/login.js"></script>
-<script src="js/app/ctrl/users.js"></script>
-<script src="js/app/ctrl/servers.js"></script>
-<script src="js/app/ctrl/header.js"></script>
-<script src="js/app/ctrl/footer.js"></script>
+        $('#get').click(function(){
+          console.log('GET clicked');
 
-<!-- Directives -->
-<script src="js/app/directive/header.js"></script>
-<script src="js/app/directive/footer.js"></script>
-<script src="js/app/directive/redirect.js"></script>
-<script src="js/app/directive/socketio.js"></script>
+          var req = document.getElementById('req').value;
+          var msg = document.getElementById('msg').value;
 
-<!-- Services -->
-<script src="js/app/service/user.js"></script>
-<script src="js/app/service/alerts.js"></script>
-<script src="js/app/service/usersData.js"></script>
-<script src="js/app/service/serversData.js"></script>
+          console.log(req + ' -- ' + msg);
 
-<!-- Filters -->
+          $.get(req, function(data){
+            console.log(data);
+            $('#resp').html(data);
+          });
+        });
 
-<!-- Main -->
-<script src="js/main.js"></script>
+        $('#post').click(function(){
+          console.log('POST clicked');
 
-</body>
+          var req = document.getElementById('req').value;
+          var msg = document.getElementById('msg').value;
+
+          console.log(req + ' -- ' + msg);
+
+          $.post(req, JSON.parse(msg), function(data){
+            console.log(data);
+            $('#resp').html(data);
+          });
+        });
+
+        $('#put').click(function(){
+          console.log('PUT clicked');
+
+          var req = document.getElementById('req').value;
+          var msg = document.getElementById('msg').value;
+
+          console.log(req + ' -- ' + msg);
+
+          $.put(req, JSON.parse(msg), function(data){
+            console.log(data);
+            $('#resp').html(data);
+          });
+        });
+
+        $('#delete').click(function(){
+          console.log('DELETE clicked');
+
+          var req = document.getElementById('req').value;
+          var msg = document.getElementById('msg').value;
+
+          console.log(req + ' -- ' + msg);
+
+          $.delete_(req, JSON.parse(msg), function(data){
+            console.log(data);
+            $('#resp').html(data);
+          });
+        });
+      });
+    </script>
+  </body>
 </html>

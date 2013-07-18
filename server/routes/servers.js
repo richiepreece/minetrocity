@@ -33,7 +33,7 @@ function serverTemplate(request, response, next){
     });
   }
 
-  if(request.session.user === undefined) return fail('You are not logged in');
+  if(request.session.user === undefined || request.session.user === null) return fail('You are not logged in');
 
   response.send(shared.get('serverproperties'));
 }
@@ -46,7 +46,7 @@ function servers(request, response, next){
     });
   }
 
-  if(request.session.user === undefined) return fail('You are not logged in');
+  if(request.session.user === undefined || request.session.user === null) return fail('You are not logged in');
   if(!hasPermission(request.session.user, 'VIEW_SERVERS')) return fail('You do not have the necessary permissions');
 
   for(index in shared.get('servers')){
@@ -78,14 +78,14 @@ function startServer(request, response, next){
     });
   }
 
-  if(request.session.user === undefined) return fail('You are not logged in');
+  if(request.session.user === undefined || request.session.user === null) return fail('You are not logged in');
   if(!hasPermission(request.session.user, 'START_SERVERS')) return fail('You do not have the necessary permissions');
 
   var server = request.body;
 
-  if(server.id === undefined) return fail('You must specify a server id');
-  if(shared.get('servers')[server.id] === undefined) return fail('The server doesn\'t exist');
-  if(shared.get('child' + server.id) !== undefined) return fail('The server is already running.');
+  if(server.id === undefined || server.id === null) return fail('You must specify a server id');
+  if(shared.get('servers')[server.id] === undefined || shared.get('servers')[server.id] === null) return fail('The server doesn\'t exist');
+  if(shared.get('child' + server.id) !== undefined && shared.get('child' + server.id) !== null) return fail('The server is already running.');
 
   var savedServer = shared.get('servers')[server.id];
   var currDir = process.cwd();
@@ -97,11 +97,13 @@ function startServer(request, response, next){
       require('child_process').exec('java -Xmx1024M -Xms1024M -jar ../../versions/' +
           savedServer.version.current.type + '/' + savedServer.version.current.id + '/minecraft_server.jar',
           function(err, stdout, stderr){
-            delete shared.get('child' + server.id);
-            delete shared.get('output' + server.id);
-            delete shared.get('input' + server.id);
-            delete shared.get('history' + server.id);
+            shared.set('child' + server.id, null);
+            shared.set('output' + server.id, null);
+            shared.set('input' + server.id, null);
+            shared.set('history' + server.id, null);
           }));
+
+  process.chdir(currDir);
 
   shared.set('output' + server.id, shared.get('child' + server.id).stderr);
   shared.set('input' + server.id, shared.get('child' + server.id).stdin);
@@ -118,7 +120,7 @@ function startServer(request, response, next){
 
   response.send({
     id : server.id,
-    msg : data
+    success : true
   });
 }
 
@@ -130,26 +132,29 @@ function stopServer(request, response, next){
     });
   }
 
-  if(request.session.user === undefined) return fail('You are not logged in');
+  if(request.session.user === undefined || request.session.user === null) return fail('You are not logged in');
   if(!hasPermission(request.session.user, 'STOP_SERVERS')) return fail('You do not have the necessary permissions');
 
   var server = request.body;
 
-  if(server.id === undefined) return fail('You must specify a server id');
-  if(shared.get('servers')[server.id] === undefined) return fail('The server doesn\'t exist');
+  if(server.id === undefined || server.id === null) return fail('You must specify a server id');
+  if(shared.get('servers')[server.id] === undefined || shared.get('servers')[server.id] === null) return fail('The server doesn\'t exist');
+  if(shared.get('child' + server.id) === undefined || shared.get('child' + server.id) === null) return fail('The server isn\'t running.');
 
-  if(shared.get('child' + server.id) === undefined){
-    response.send({
-      id : server.id,
-      success : true
-    });
-  } else {
-    shared.get('input' + server.id).write('/stop\n');
+  shared.get('input' + server.id).write('/stop\n');
 
-    setTimeout(function(){
-      stopServer(request, response, next);
-    }, 100);
+  function recursiveStop(){
+    if(shared.get('child' + server.id) === undefined || shared.get('child' + server.id) === null){
+      response.send({
+        id : server.id,
+        success : true
+      });
+    } else {
+      setTimeout(recursiveStop, 100);
+    }
   }
+
+  setTimeout(recursiveStop, 100);
 }
 
 function restartServer(request, response, next){
@@ -160,14 +165,13 @@ function restartServer(request, response, next){
     });
   }
 
-  if(request.session.user === undefined) return fail('You are not logged in');
+  if(request.session.user === undefined || request.session.user === null) return fail('You are not logged in');
   if(!hasPermission(request.session.user, 'RESTART_SERVERS')) return fail('You do not have the necessary permissions');
 
   var server = request.body;
 
-  if(server.id === undefined) return fail('You must specify a server id');
-  if(shared.get('servers')[server.id] === undefined) return fail('The server doesn\'t exist');
-  //if(shared.get('child' + server.id) === undefined) return fail('The server isn\'t running.');
+  if(server.id === undefined || server.id === null) return fail('You must specify a server id');
+  if(shared.get('servers')[server.id] === undefined || shared.get('servers')[server.id] === null) return fail('The server doesn\'t exist');
 
   stopServer(request, { send : function(rsp){
     startServer(request, response, next);
@@ -182,7 +186,7 @@ function addServer(request, response, next){
     });
   }
 
-  if(request.session.user === undefined) return fail('You are not logged in');
+  if(request.session.user === undefined || request.session.user === null) return fail('You are not logged in');
   if(!hasPermission(request.session.user, 'ADD_SERVERS')) return fail('You do not have the necessary permissions');
 
   var newServer = request.body;
@@ -193,7 +197,7 @@ function addServer(request, response, next){
 
   //Register new server, and write to file
   shared.get('servers')[newServer.id] = newServer;
-  fs.writeFileSync('models/servers.json', JSON.stringify(shared.get('servers')));
+  fs.writeFileSync('models/servers.json', JSON.stringify(shared.get('servers'), null, '\t'));
 
   //Get minecraft_server.jar and create server.properties file
   getServer(newServer);
@@ -213,14 +217,14 @@ function deleteServer(request, response, next){
     });
   }
 
-  if(request.session.user === undefined) return fail('You are not logged in');
+  if(request.session.user === undefined || request.session.user === null) return fail('You are not logged in');
   if(!hasPermission(request.session.user, 'DELETE_SERVERS')) return fail('You do not have the necessary permissions');
 
   var server = request.body;
 
   if(server.id === undefined) return fail('You must specify a server id');
-  if(shared.get('servers')[server.id] === undefined) return fail('The server doesn\'t exist');
-  if(shared.get('child' + server.id) !== undefined) return fail('The server is running');
+  if(shared.get('servers')[server.id] === undefined || shared.get('servers')[server.id] === null) return fail('The server doesn\'t exist');
+  if(shared.get('child' + server.id) !== undefined && shared.get('child' + server.id) !== null) return fail('The server is running');
 
   delete shared.get('servers')[server.id];
   fs.writeFileSync('models/servers.json', JSON.stringify(shared.get('servers'), null, '\t'));
@@ -240,16 +244,16 @@ function serverHistory(request, response, next){
     });
   }
 
-  if(request.session.user === undefined) return fail('You are not logged in');
+  if(request.session.user === undefined || request.session.user === null) return fail('You are not logged in');
   if(!hasPermission(request.session.user, 'VIEW_HISTORIES')) return fail('You do not have the necessary permissions');
 
   var server = request.body;
 
   if(server.id === undefined) return fail('You must specify a server id');
-  if(shared.get('servers')[server.id] === undefined) return fail('The server doesn\'t exist');
-  if(shared.get('child' + server.id) === undefined) return fail('The server isn\'t running');
+  if(shared.get('servers')[server.id] === undefined || shared.get('servers')[server.id] === null) return fail('The server doesn\'t exist');
+  if(shared.get('child' + server.id) === undefined || shared.get('child' + server.id) === null) return fail('The server isn\'t running');
 
-  resonse.send({
+  response.send({
     id : server.id,
     success : true,
     history : shared.get('history' + server['id'])
@@ -264,14 +268,14 @@ function commandServer(request, response, next){
     });
   }
 
-  if(request.session.user === undefined) return fail('You are not logged in');
+  if(request.session.user === undefined || request.session.user === null) return fail('You are not logged in');
   if(!hasPermission(request.session.user, 'COMMAND_SERVERS')) return fail('You do not have the necessary permissions');
 
   var server = request.body;
 
   if(server.id === undefined) return fail('You must specify a server id');
-  if(shared.get('servers')[server.id] === undefined) return fail('The server doesn\'t exist');
-  if(shared.get('child' + server.id) === undefined) return fail('The server isn\'t running');
+  if(shared.get('servers')[server.id] === undefined || shared.get('servers')[server.id] === null) return fail('The server doesn\'t exist');
+  if(shared.get('child' + server.id) === undefined || shared.get('child' + server.id) === null) return fail('The server isn\'t running');
 
   shared.get('input' + server.id).write(server.cmd + '\n');
 
@@ -289,14 +293,14 @@ function updateServer(request, response, next){
     });
   }
 
-  if(request.session.user === undefined) return fail('You are not logged in');
+   if(request.session.user === undefined || request.session.user === null) return fail('You are not logged in');
   if(!hasPermission(request.session.user, 'UPDATE_SERVERS')) return fail('You do not have the necessary permissions');
 
   var server = request.body;
 
   if(server.id === undefined) return fail('You must specify a server id');
-  if(shared.get('servers')[server.id] === undefined) return fail('The server doesn\'t exist');
-  if(shared.get('child' + server.id) !== undefined) return fail('The server is running');
+  if(shared.get('servers')[server.id] === undefined || shared.get('servers')[server.id] === null) return fail('The server doesn\'t exist');
+  if(shared.get('child' + server.id) !== undefined && shared.get('child' + server.id) !== null) return fail('The server is running');
 
   var oldServer = shared.get('servers')[server.id];
 
@@ -365,15 +369,15 @@ function createWorld(newServer){
   var defaultFile = "";
 
   for(index in newServer.mainproperties){
-    newServer += index + '=' + newServer.mainproperties[index].current + '\n';
+    defaultFile += index + '=' + newServer.mainproperties[index].current + '\n';
   }
 
   for(index in newServer.properties){
-    newServer += index + '=' + newServer.properties[index].current + '\n'; 
+    defaultFile += index + '=' + newServer.properties[index].current + '\n';
   }
 
   for(index in newServer.udfproperties){
-    newServer += index + '=' + newServer.udfproperties[index].current + '\n'; 
+    defaultFile += index + '=' + newServer.udfproperties[index].current + '\n';
   }
 
   var currDir = process.cwd();

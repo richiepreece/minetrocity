@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Minetrocity</title>
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body check-user socket-io>
+
+  <div header id="header"></div>
+  <div ng-view id="view"></div>
+  <div footer id="footer"></div>
+
+<!-- Libraries -->
+<script src="js/lib/d3/d3.v3.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="js/lib/jquery/jquery-1.9.1.js"></script>
+<script src="js/lib/moment/moment-2.0.0.js"></script>
+<script src="js/lib/underscore/underscore-min.js"></script>
+<script src="js/lib/angular/angular.min.js"></script>
+<script src="js/lib/ui-bootstrap.min.js"></script>
+
+<!-- Module -->
+<script src="js/nav.js"></script>
+<script src="js/module.js"></script>
+
+<!-- Controllers -->
+<script src="js/app/ctrl/main.js"></script>
+<script src="js/app/ctrl/login.js"></script>
+<script src="js/app/ctrl/users.js"></script>
+<script src="js/app/ctrl/servers.js"></script>
+<script src="js/app/ctrl/header.js"></script>
+<script src="js/app/ctrl/footer.js"></script>
+
+<!-- Directives -->
+<script src="js/app/directive/header.js"></script>
+<script src="js/app/directive/footer.js"></script>
+<script src="js/app/directive/redirect.js"></script>
+<script src="js/app/directive/socketio.js"></script>
+
+<!-- Services -->
+<script src="js/app/service/user.js"></script>
+<script src="js/app/service/alerts.js"></script>
+<script src="js/app/service/usersData.js"></script>
+<script src="js/app/service/serversData.js"></script>
+
+<!-- Filters -->
+
+<!-- Main -->
+<script src="js/main.js"></script>
+
+</body>
+</html>
