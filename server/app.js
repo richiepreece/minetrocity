@@ -6,6 +6,7 @@
  */
 
 var express  = require('express')
+  , https    = require('https')
   , http     = require('http')
   , stylus   = require('stylus')
   , fs       = require('fs')
@@ -18,19 +19,25 @@ var express  = require('express')
   , hash     = require('password-hash')
 
   , app      = express()
-  , server   = http.createServer(app)
   , io       = io.listen(server)
   ;
 
 shared.set('io', io);
+
+var options = {
+  key: fs.readFileSync('server/certs/privatekey.pem').toString(),
+  cert: fs.readFileSync('server/certs/certificate.pem').toString()
+};
 
 var sessOptions = {
   key: 'minetrocity.sid',
   secret: 'lyYw/^uWM rnZgEr6mt?v8]%|o,|%,|X9O<0K:nJt^wur^k2n&7j>df8zs7/xfsP'
 };
 
+var server = https.createServer(options, app);
+
 app.configure(function () {
-  app.set('port', process.env.VCAP_APP_PORT || process.env.PORT || 3000);
+  app.set('port', process.env.VCAP_APP_PORT || process.env.PORT || 443);
   app.use(express.favicon());
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
@@ -58,6 +65,19 @@ fs.readdirSync(__dirname + '/routes').forEach(
 
 server.listen(app.get('port'), function () {
   console.log("Express server listening on port " + app.get('port'));
+});
+
+/**
+ * httpApp is used to listen and forward any http/80 traffic
+ * to an ecrpted https/443 connection for security
+ */
+var httpApp = express();
+http.createServer(httpApp).listen(3000);
+httpApp.get('*', function(req, res, next){
+  res.redirect('https://' + //Forward traffic to https
+    req.headers.host.split(/:/g)[0] + //Strip off any ports
+    ":" + app.get('port') + //Add the https port
+    req.url); //Add the original request url
 });
 
 /**
