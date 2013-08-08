@@ -1,4 +1,5 @@
-var mNav = [
+var mNav;
+mNav = [
   {
     label: 'Main',
     url:  '/',

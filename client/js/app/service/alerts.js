@@ -1,5 +1,8 @@
+/* global angular */
 angular.module('minetrocity').factory('alerts',
   function ($timeout) {
+    'use strict';
+
     var alerts = [];
 
     function create(type, msg) {
@@ -12,8 +15,8 @@ angular.module('minetrocity').factory('alerts',
         function () {
           var index = alerts.indexOf(alert);
           close(index);
-        }
-      , 4000);
+        }, 4000
+      );
 
       alerts.push(alert);
     }

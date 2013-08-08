@@ -1,6 +1,9 @@
+/* global angular */
 angular.module('minetrocity').directive('header',
   function () {
-    function link(scope, el, attrs, ctrl) {}
+    'use strict';
+
+    function link() {}
 
     return {
       restrict: 'EA',

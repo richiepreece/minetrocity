@@ -1,5 +1,9 @@
-var app = angular.module('minetrocity', ['ui.bootstrap']).config(
+/* global angular, mNav */
+var app;
+app = angular.module('minetrocity', ['ui.bootstrap']).config(
   function ($routeProvider) {
+    'use strict';
+
     for (var i = 0; i < mNav.length; ++i) {
       $routeProvider.when(mNav[i].url, {
         templateUrl: mNav[i].tmpl,

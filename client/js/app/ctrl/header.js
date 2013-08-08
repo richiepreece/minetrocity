@@ -1,5 +1,8 @@
+/* global angular, mNav */
 angular.module('minetrocity').controller('headerCtrl',
   function ($scope, $location, $http, user, alerts) {
+    'use strict';
+
     $scope.nav = mNav;
     $scope.user = user;
 

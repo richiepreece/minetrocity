@@ -1,5 +1,8 @@
+/* global angular, console */
 angular.module('minetrocity').controller('usersCtrl',
   function ($scope, $http, usersData, alerts) {
+    'use strict';
+
     function getData() {
       usersData.getData().then(
         function (resp) {
@@ -78,7 +81,7 @@ angular.module('minetrocity').controller('usersCtrl',
 
       alerts.create('info', 'Updating User...');
       $http.put('/update_user', newUser).then(
-        function (resp) {
+        function () {
           alerts.create('success', 'Updated User!');
         },
         function (err) {

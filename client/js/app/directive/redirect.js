@@ -1,8 +1,11 @@
+/* global angular */
 angular.module('minetrocity').directive('checkUser',
   function ($rootScope, $location, user) {
+    'use strict';
+
     function link() {
       $rootScope.$on('$routeChangeStart',
-        function (e, next, curr) {
+        function (e, next) {
           var nextPage = (next || {}).name;
 
           if (!user.isLoggedIn && nextPage !== 'Login') {

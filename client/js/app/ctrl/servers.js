@@ -1,5 +1,8 @@
+/* global angular, console */
 angular.module('minetrocity').controller('serversCtrl',
   function ($scope, $http, $rootScope, serversData, alerts) {
+    'use strict';
+
     var serversObj = {};
 
     function getInfo() {

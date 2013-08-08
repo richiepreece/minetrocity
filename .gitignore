@@ -1,9 +1,14 @@
 #Server Folder
 versions/
 version_info/
-node_modules/
 worlds/
 old/
 models/
+
+node_modules/
 .DS_Store
 npm-debug.log
+
+client/css/app.css
+build/
+release/
