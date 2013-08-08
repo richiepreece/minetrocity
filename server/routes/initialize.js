@@ -68,12 +68,17 @@ function getVersions(){
     host: url.parse(mojangVersionUrl).host,
     port: 443,
     path: url.parse(mojangVersionUrl).path
-  }
+  };
 
   //Get the file
-  var request = https.request(options, function(result){
-    if(result.statusCode == 200){
-      result.on('data', function(data){
+  var request = https.request(options, function (res) {
+    if (res.statusCode == 200) {
+      var data = '';
+      res.on('data', function (d) {
+        data += d;
+      });
+
+      res.on('end', function () {
         //Ensure the versions folder exists
         if(!fs.existsSync("versions")){
           fs.mkdirSync("versions");
@@ -125,7 +130,7 @@ var defaultperms =
   "deprecated_permissions": []
 };
 
-var defaultprops = 
+var defaultprops =
 {
   "types": {
     "boolean": "checkbox",
