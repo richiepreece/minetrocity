@@ -1,4 +1,6 @@
+/* global angular */
 angular.module('minetrocity').controller('mainCtrl',
-  function ($scope) {
+  function () {
+    'use strict';
   }
 );

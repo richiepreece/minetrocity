@@ -1,5 +1,8 @@
+/* global angular */
 angular.module('minetrocity').factory('usersData',
   function ($http, $q) {
+    'use strict';
+
     var perms;
 
     function getPermissions() {

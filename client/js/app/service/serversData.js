@@ -1,5 +1,8 @@
+/* global angular */
 angular.module('minetrocity').factory('serversData',
   function ($http, $q) {
+    'use strict';
+
     function getServers() {
       var deferred = $q.defer();
       $http.get('/servers').then(

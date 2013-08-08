@@ -1,3 +1,4 @@
+/* jshint node:true */
 /*
  * Author: Richie Preece
  * Email:  richie@minetrocity.com
@@ -19,8 +20,9 @@ var express  = require('express')
   , hash     = require('password-hash')
 
   , app      = express()
-  , io       = io.listen(server)
   ;
+
+app.set('port', process.env.PORT || 3001);
 
 shared.set('io', io);
 
@@ -35,27 +37,51 @@ var sessOptions = {
 };
 
 var server = https.createServer(options, app);
+io = io.listen(server);
 
-app.configure(function () {
-  app.set('port', process.env.VCAP_APP_PORT || process.env.PORT || 443);
+var ioProdConfig = function () {
+  'use strict';
+
+  io.enable('browser client minification');
+};
+io.configure('staging', ioProdConfig);
+io.configure('production', ioProdConfig);
+
+var devConfig = function () {
+  'use strict';
+
   app.use(express.favicon());
+  app.use(stylus.middleware({
+    debug: true,
+    src: 'client',
+    dest: 'client'
+  }));
+  app.use(express.static('client'));
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
   app.use(express.session(sessOptions));
   app.use(app.router);
-    app.use(stylus.middleware({
-      debug: true,
-      src: 'client',
-      dest: 'client'
-    }));
-    app.use(express.static('client'));
-});
-
-app.configure('development', function () {
   app.use(express.errorHandler());
-});
+};
+app.configure('development', devConfig);
+app.configure('localdev', devConfig);
+
+var prodConfig = function () {
+  'use strict';
+
+  app.use(express.favicon());
+  app.use(express.static('build'));
+  app.use(express.logger('dev'));
+  app.use(express.bodyParser());
+  app.use(express.methodOverride());
+  app.use(express.cookieParser());
+  app.use(express.session(sessOptions));
+  app.use(app.router);
+};
+app.configure('staging', prodConfig);
+app.configure('production', prodConfig);
 
 fs.readdirSync(__dirname + '/routes').forEach(
   function (file) {
@@ -64,7 +90,7 @@ fs.readdirSync(__dirname + '/routes').forEach(
 );
 
 server.listen(app.get('port'), function () {
-  console.log("Express server listening on port " + app.get('port'));
+  console.log("Express server listening on port " + app.get('port') + ' in environment ' + app.get('env'));
 });
 
 /**

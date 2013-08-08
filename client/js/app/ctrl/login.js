@@ -1,5 +1,8 @@
+/* global angular, console */
 angular.module('minetrocity').controller('loginCtrl',
   function ($scope, $http, $location, user, alerts) {
+    'use strict';
+
     function checkForUser() {
       $http.get('/curr_user').then(
         function (resp) {
