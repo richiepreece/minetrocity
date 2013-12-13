@@ -6,25 +6,25 @@
  * ALL RIGHTS RESERVED
  */
 
-var express  = require('express')
-  , https    = require('https')
-  , http     = require('http')
-  , stylus   = require('stylus')
-  , fs       = require('fs')
-  , io       = require('socket.io')
-  , url      = require('url')
-  , timers   = require('timers')
-  , os       = require('os')
-  , shared   = require('./shared')
-  , uuid     = require('node-uuid')
-  , hash     = require('password-hash')
+var express = require('express');
+var https = require('https');
+var http = require('http');
+var stylus = require('stylus');
+var fs = require('fs');
+var io = require('socket.io');
+var url = require('url');
+var timers = require('timers');
+var os = require('os');
+var shared = require('./shared');
+var uuid = require('node-uuid');
+var hash = require('password-hash');
+var config = require('config').server;
 
-  , app      = express()
-  ;
+var app = express();
 
-app.set('port', process.env.PORT || 3001);
-
-shared.set('io', io);
+app.set('port', 
+    ((config.allow_ssl) ? config.ssl_port : config.port) || 
+    process.env.PORT || 3000);
 
 var options = {
   key: fs.readFileSync('server/certs/privatekey.pem').toString(),
@@ -36,7 +36,8 @@ var sessOptions = {
   secret: 'lyYw/^uWM rnZgEr6mt?v8]%|o,|%,|X9O<0K:nJt^wur^k2n&7j>df8zs7/xfsP'
 };
 
-var server = https.createServer(options, app);
+var server = ((config.allow_ssl) ? https.createServer(options, app) : http.createServer(app));
+
 io = io.listen(server);
 
 var ioProdConfig = function () {
@@ -97,14 +98,16 @@ server.listen(app.get('port'), function () {
  * httpApp is used to listen and forward any http/80 traffic
  * to an ecrpted https/443 connection for security
  */
-var httpApp = express();
-http.createServer(httpApp).listen(3000);
-httpApp.get('*', function(req, res, next){
-  res.redirect('https://' + //Forward traffic to https
-    req.headers.host.split(/:/g)[0] + //Strip off any ports
-    ":" + app.get('port') + //Add the https port
-    req.url); //Add the original request url
-});
+if(config.allow_ssl){
+  var httpApp = express();
+  http.createServer(httpApp).listen(config.port);
+  httpApp.get('*', function(req, res, next){
+    res.redirect('https://' + //Forward traffic to https
+      req.headers.host.split(/:/g)[0] + //Strip off any ports
+      ":" + app.get('port') + //Add the https port
+      req.url); //Add the original request url
+  });
+}
 
 /**
  * Socket stuff.... maybe

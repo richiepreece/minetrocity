@@ -5,13 +5,13 @@
  * ALL RIGHTS RESERVED
  */
 
-var shared   = require('../shared.js')
-  , url      = require('url')
-  , https    = require('https')
-  , hash     = require('password-hash')
-  , uuid     = require('node-uuid')
-  , fs       = require('fs')
-  ;
+var shared = require('../shared.js');
+var url = require('url');
+var https = require('https');
+var hash = require('password-hash');
+var uuid = require('node-uuid');
+var fs = require('fs');
+var request = require('request');
 
 module.exports = function(app){
   checkFolders();
@@ -27,7 +27,20 @@ function checkFolders(versions){
     fs.mkdirSync('models');
   }
 
-  shared.set('permissions', defaultperms);
+  if(fs.existsSync('models/org.json')){
+    shared.set('org', JSON.parse(fs.readFileSync('models/org.json')));
+  } else {
+    console.log('Making org.json file');
+    var root = {
+      id: uuid.v4(),
+      name: 'root',
+      parent: null,
+      children: []
+    };
+    shared.set('org', { 'root': root });
+    shared.set('root', root);
+    fs.writeFileSync('models/org.json', JSON.stringify(shared.get('org'), null, '  '));
+  }
 
   if(fs.existsSync('models/users.json')){
     shared.set('users', JSON.parse(fs.readFileSync('models/users.json')));
@@ -38,22 +51,22 @@ function checkFolders(versions){
       username: 'admin',
       password: hash.generate('admin'),
       email: 'no_reply@minetrocity.com',
-      acl: shared.get('permissions')['permissions']
+      org: shared.get('root').id
     };
     shared.set('users', { 'admin' : admin });
-    fs.writeFileSync('models/users.json', JSON.stringify(shared.get('users'), null, '\t'));
+    fs.writeFileSync('models/users.json', JSON.stringify(shared.get('users'), null, '  '));
   }
 
   if(fs.existsSync('models/servers.json')){
     shared.set('servers', JSON.parse(fs.readFileSync('models/servers.json')));
   } else {
     shared.set('servers', {});
-    fs.writeFileSync('models/servers.json', JSON.stringify(shared.get('servers'), null, '\t'));
+    fs.writeFileSync('models/servers.json', JSON.stringify(shared.get('servers'), null, '  '));
   }
 
   //Make sure a worlds folder exists
-  if(!fs.existsSync("worlds")){
-    fs.mkdirSync("worlds");
+  if(!fs.existsSync('worlds')){
+    fs.mkdirSync('worlds');
   }
 }
 
@@ -62,73 +75,21 @@ function checkFolders(versions){
  */
 function getVersions(){
   //Location of the versions.json file
-  var mojangVersionUrl = "https://s3.amazonaws.com/Minecraft.Download/versions/versions.json";
+  var mojangVersionUrl = 'https://s3.amazonaws.com/Minecraft.Download/versions/versions.json';
 
-  var options = {
-    host: url.parse(mojangVersionUrl).host,
-    port: 443,
-    path: url.parse(mojangVersionUrl).path
-  };
+  request(mojangVersionUrl, function(err, res, body){
+    body = JSON.parse(body);
 
-  //Get the file
-  var request = https.request(options, function (res) {
-    if (res.statusCode == 200) {
-      var data = '';
-      res.on('data', function (d) {
-        data += d;
-      });
-
-      res.on('end', function () {
-        //Ensure the versions folder exists
-        if(!fs.existsSync("versions")){
-          fs.mkdirSync("versions");
-        }
-
-        //Write out to a file for safe keeping
-        var file = fs.writeFileSync('versions/versions.json', data);
-
-        //Set the versions data for use (this way we have no IO when versions are requested)
-        shared.set('versions', JSON.parse(data));
-
-        shared.set('serverproperties', defaultprops);
-        shared.get('serverproperties').version.possible = shared.get('versions').versions;
-
-        if(shared.get('servers') !== undefined && shared.get('servers') !== null){
-          for(index in shared.get('servers')){
-            shared.get('servers')[index].version.possible = shared.get('versions').versions;
-          }
-
-          fs.writeFileSync('models/servers.json', JSON.stringify(shared.get('servers'), null, '\t'));
-        }
-      });
+    if(!fs.existsSync('versions')){
+      fs.mkdirSync('versions');
     }
+
+    fs.writeFileSync('versions/versions.json', JSON.stringify(body, null, '  '));
+    shared.set('versions', body);
+    defaultprops.version.possible = body.versions;
+    shared.set('serverproperties', defaultprops);
   });
-
-  request.end();
 }
-
-var defaultperms =
-{
-  "permissions": [
-    "VIEW_USERS",
-    "ADD_USERS",
-    "UPDATE_USERS",
-    "DELETE_USERS",
-    "VIEW_SERVERS",
-    "START_SERVERS",
-    "STOP_SERVERS",
-    "ADD_SERVERS",
-    "UPDATE_SERVERS",
-    "DELETE_SERVERS",
-    "RESTART_SERVERS",
-    "GET_VERSIONS",
-    "CHANGE_PORTS",
-    "VIEW_HISTORIES",
-    "CLEAR_NOTIFICATIONS",
-    "COMMAND_SERVERS"
-  ],
-  "deprecated_permissions": []
-};
 
 var defaultprops =
 {

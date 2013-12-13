@@ -16,7 +16,9 @@
     "waitress": "~0.1.2",
     "socket.io": "~0.9.13",
     "password-hash": "~1.2.1",
-    "node-uuid": "~1.4.0"
+    "node-uuid": "~1.4.0",
+    "request": "~2.30.0",
+    "config": "~0.4.33"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
